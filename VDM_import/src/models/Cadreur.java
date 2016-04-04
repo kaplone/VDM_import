@@ -11,8 +11,10 @@ import models.imports.*;
 
 public enum Cadreur {
 	
-	ALBARET("MXF", false, ModeleMXF.class),
-	AMOUROUX("M2T", true, ModeleM2T.class);
+	ALBARET("MXF", false, ModeleMXF_XDCAM.class),
+	AMOUROUX("M2T", true, ModeleM2T.class),
+	ARMATOL("MP4", false, ModeleMP4_CLPR.class),
+	BATMAN("MXF", true, ModeleMXF_P2.class);
 	
 	private String extension;
 	private boolean deint;

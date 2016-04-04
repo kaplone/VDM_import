@@ -24,6 +24,7 @@ public class MediaInfo {
 		boolean audio2 = false;
 		boolean audio3 = false;
 		boolean audio4 = false;
+		boolean autre = false;
 		boolean autre1 = false;
 		boolean autre2 = false;
 		boolean autre3 = false;
@@ -87,6 +88,15 @@ public class MediaInfo {
 				                  addRow(vbox, "Audio", String.format("Piste %d", ++piste));
 					              audio4 = true;
 				                  audio3 = false;
+				                  break;
+				case "Other"    : addRow(vbox);
+				                  addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
+					              autre = true;
+					              audio = false;
+					              audio1 = false;
+					              audio2 = false;
+					              audio3 = false;
+				                  audio4 = false;
 				                  break;
 				case "Other #1" : addRow(vbox);
 	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
@@ -225,6 +235,17 @@ public class MediaInfo {
 					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
                                               break;
 					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
+					
+				}
+                else if (autre){	
+                	switch(tag){
+					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
+                                              break;
+					case "Format"           : addRow(vbox, "Format", line.split(":")[1].trim());
+                                              break;
+					case "Time code settings" : addRow(vbox, "setting", line.split(":")[1].trim());
                                               break;
 					}
 					

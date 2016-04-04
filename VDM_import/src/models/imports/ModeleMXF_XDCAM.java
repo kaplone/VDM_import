@@ -1,8 +1,8 @@
 package models.imports;
 
-public class ModeleMXF extends ModeleImport{
+public class ModeleMXF_XDCAM extends ModeleImport{
 
-	public ModeleMXF () {
+	public ModeleMXF_XDCAM () {
 		System.out.println("constructeur ModeleMXF");
 	}
 	
