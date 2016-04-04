@@ -22,6 +22,8 @@ public class MediaInfo {
 		boolean audio = false;
 		boolean audio1 = false;
 		boolean audio2 = false;
+		boolean audio3 = false;
+		boolean audio4 = false;
 		boolean autre1 = false;
 		boolean autre2 = false;
 		boolean autre3 = false;
@@ -76,10 +78,24 @@ public class MediaInfo {
 					              audio2 = true;
                                   audio1 = false;
                                   break;
+				case "Audio #3" : addRow(vbox);
+				                  addRow(vbox, "Audio", String.format("Piste %d", ++piste));
+					              audio3 = true;
+				                  audio2 = false;
+				                  break;
+				case "Audio #4" : addRow(vbox);
+				                  addRow(vbox, "Audio", String.format("Piste %d", ++piste));
+					              audio4 = true;
+				                  audio3 = false;
+				                  break;
 				case "Other #1" : addRow(vbox);
 	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
 					              autre1 = true;
-				                  audio2 = false;
+					              audio = false;
+					              audio1 = false;
+					              audio2 = false;
+					              audio3 = false;
+				                  audio4 = false;
                                   break;
 				case "Other #2" : addRow(vbox);
 	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
@@ -114,6 +130,8 @@ public class MediaInfo {
 					
 					case "Commercial name"  : addRow(vbox, "Format", line.split(":")[1].trim());
 					                          break;
+					case "Format/Info"      : addRow(vbox, "Codec", line.split(":")[1].trim());
+                                              break;
 					case "Duration"         : addRow(vbox, "Durée",line.split(":")[1].trim());
 					                          break;
 					case "Bit rate"         : addRow(vbox, "Bitrate"  , line.split(":")[1].trim());
@@ -181,6 +199,36 @@ public class MediaInfo {
 					}
 					
 				}
+                else if (audio3){	
+                	switch(tag){
+					case "Format"           : addRow(vbox, "Codec", line.split(":")[1].trim());
+	                                          break;
+					case "Format settings, Endianness" : addRow(vbox, "Endian", line.split(":")[1].trim());
+                                              break;
+					case "Bit rate"         : addRow(vbox, "Bitrate", line.split(":")[1].trim());
+                                              break;
+					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
+                                              break;
+					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
+					
+				}
+                else if (audio4){
+                	switch(tag){
+					case "Format"           : addRow(vbox, "Codec", line.split(":")[1].trim());
+	                                          break;
+					case "Format settings, Endianness" : addRow(vbox, "Endian", line.split(":")[1].trim());
+                                              break;
+					case "Bit rate"         : addRow(vbox, "Bitrate", line.split(":")[1].trim());
+                                              break;
+					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
+                                              break;
+					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
+					
+				}
                 else if (autre1){	
                 	switch(tag){
 					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
@@ -222,9 +270,6 @@ public class MediaInfo {
                                               break;
 					}
 				}
-				
-				
-				System.out.println(line + "\n");
 			}
 		}
 		catch (Exception e) {

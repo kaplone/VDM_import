@@ -5,16 +5,34 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPane" prefHeight="708.0" prefWidth="1277.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
+<BorderPane fx:id="borderPane" prefHeight="757.0" prefWidth="1277.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
 <center><VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
 <children><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
-<children><Button fx:id="dossier_source_button" mnemonicParsing="false" text="Dossier Source" /><ChoiceBox fx:id="cadreur_choicebox" prefWidth="150.0" /><ChoiceBox fx:id="extension_choicebox" prefWidth="150.0" />
+<children><Button fx:id="dossier_source_button" mnemonicParsing="false" prefHeight="45.0" prefWidth="390.0" text="Dossier Source" />
+<VBox alignment="CENTER">
+<children><Label text="Cadreur" /><ChoiceBox fx:id="cadreur_choicebox" prefWidth="150.0" />
+</children>
+</VBox>
+<VBox alignment="CENTER">
+<children><Label text="Extension" /><ChoiceBox fx:id="extension_choicebox" prefWidth="150.0" />
+</children>
+</VBox>
 </children></HBox><HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-<children><ChoiceBox fx:id="sample_choicebox" prefHeight="25.0" prefWidth="842.0" /><CheckBox fx:id="deint_checkbox" mnemonicParsing="false" text="CheckBox" />
-</children></HBox><HBox prefHeight="469.0" prefWidth="800.0" spacing="10.0">
+<children>
+<VBox>
+<children><Label text="Sample :" /><ChoiceBox fx:id="sample_choicebox" prefHeight="25.0" prefWidth="842.0" />
+</children>
+</VBox><CheckBox fx:id="deint_checkbox" mnemonicParsing="false" text="Désentrelacer" />
+</children></HBox><HBox prefHeight="550.0" prefWidth="1277.0" spacing="10.0">
 <children><VBox prefHeight="200.0" prefWidth="100.0">
 <children><ImageView fx:id="imageview" fitHeight="478.0" fitWidth="1014.0" pickOnBounds="true" preserveRatio="true" /><Slider fx:id="mediaview_slider" prefHeight="125.0" prefWidth="1152.0" />
 </children></VBox><VBox fx:id="resume_vbox" prefHeight="494.0" prefWidth="255.0" />
 </children></HBox>
 </children></VBox>
-</center></BorderPane>
+</center>
+<bottom>
+<VBox alignment="CENTER">
+<children><Button fx:id="importer_button" mnemonicParsing="false" text="Importer" BorderPane.alignment="CENTER" />
+</children>
+</VBox>
+</bottom></BorderPane>

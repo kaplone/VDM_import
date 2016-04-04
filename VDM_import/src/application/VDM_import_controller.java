@@ -23,6 +23,8 @@ import javafx.scene.media.MediaView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import models.Cadreur;
+import models.imports.ModeleImport;
+import utils.Import;
 import utils.MediaInfo;
 import utils.ScreenShot;
 import utils.Walk;
@@ -44,10 +46,14 @@ public class VDM_import_controller implements Initializable{
 	private Slider mediaview_slider;
 	@FXML
 	private VBox resume_vbox;
+	@FXML
+	private Button importer_button;
 	
 	private Image im;
 	private File repPreview;
 	private ObservableList<Path> liste_sample;
+	
+	private ModeleImport modele_import;
 
     protected File chooseRepLec(String s){
 		
@@ -123,6 +129,18 @@ public class VDM_import_controller implements Initializable{
 		dossier_source_button.setOnAction(a -> select_dossier());
 		
 		cadreur_choicebox.setItems(FXCollections.observableArrayList(Cadreur.values()));
+		cadreur_choicebox.setOnAction(a -> {
+			deint_checkbox.setSelected(cadreur_choicebox.getValue().isDeint());
+			extension_choicebox.getSelectionModel().select(cadreur_choicebox.getValue().getExtension());
+			Class modele = cadreur_choicebox.getValue().getModele_import();
+			
+			try {
+				modele.newInstance();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 		
 		extension_choicebox.setItems(Cadreur.getExtensions());
 		extension_choicebox.setOnAction(a -> {
@@ -152,6 +170,10 @@ public class VDM_import_controller implements Initializable{
 //				affichePreview(Integer.parseInt(Math.round((double)newValue) + ""));
 //			}
 //		});
+		
+		modele_import = new ModeleImport();
+		
+		importer_button.setOnAction(a -> Import.importer(repPreview, modele_import));
 		
 	
 	}
