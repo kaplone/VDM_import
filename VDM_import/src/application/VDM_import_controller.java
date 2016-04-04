@@ -18,10 +18,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import models.Cadreur;
+import utils.MediaInfo;
 import utils.ScreenShot;
 import utils.Walk;
 
@@ -40,6 +42,8 @@ public class VDM_import_controller implements Initializable{
 	private ImageView imageview;
 	@FXML
 	private Slider mediaview_slider;
+	@FXML
+	private VBox resume_vbox;
 	
 	private Image im;
 	private File repPreview;
@@ -94,6 +98,11 @@ public class VDM_import_controller implements Initializable{
 		}
 		imageview.setImage(im);
     }
+    
+    protected void afficherResume(){
+    	
+    	MediaInfo.getInfos(sample_choicebox.getValue(), resume_vbox);
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -115,7 +124,10 @@ public class VDM_import_controller implements Initializable{
 		
 		sample_choicebox.setOnAction(a -> {
             affichePreview(100);
+            afficherResume();
 		});
+		
+		resume_vbox.setPrefWidth(700);
 		
 		mediaview_slider.setMax(1000);
 		mediaview_slider.setSnapToTicks(true);

@@ -1,0 +1,7 @@
+General;Name.........: %FileName%.%FileExtension%\r\nformat...... : %Format%\r\ncommercial.. : %Format_Commercial%\r\nSize.........: %FileSize/String%\r\nDuration.....: %Duration/String3%\r\nencoded_date : %Encoded_Date%\r\n
+Video;Resolution...: %Width%x%Height%\r\nCodec........: %Codec/String% %Format_Profile%\r\nFramerate....: %FrameRate% fps\r\nAspect Ratio.: %DisplayAspectRatio/String%\r\nentrelacement: %ScanType/String% (%ScanOrder/String%)\r\n
+Audio;Audio........: %Language/String% %BitRate/String% %BitRate_Mode% %Channel(s)% chnls %Codec/String%\r\n
+Text;%Language/String%
+Text_Begin;Subs.........: 
+Text_Middle;, 
+Text_End;.\r\n
