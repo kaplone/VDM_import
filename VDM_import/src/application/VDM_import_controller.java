@@ -47,12 +47,21 @@ public class VDM_import_controller implements Initializable{
 	
 	private Image im;
 	private File repPreview;
+	private ObservableList<Path> liste_sample;
 
     protected File chooseRepLec(String s){
 		
 		Stage newStage = new Stage();
 		
 		DirectoryChooser dirChooser = new DirectoryChooser();
+		
+        if(repPreview != null){
+        	dirChooser.setInitialDirectory(repPreview.getParentFile());
+    	}
+        else {
+        	dirChooser.setInitialDirectory(new File("/mnt/nfs2"));
+        }
+				
 		dirChooser.setTitle(s);
 		File selectedDir = dirChooser.showDialog(newStage);
 		 if (selectedDir != null) {
@@ -65,6 +74,7 @@ public class VDM_import_controller implements Initializable{
 	}
     
     protected void select_dossier(){
+    	
     	repPreview = chooseRepLec("Répertoire sources");
     	dossier_source_button.setText(repPreview.toString());
     	try {
@@ -78,7 +88,8 @@ public class VDM_import_controller implements Initializable{
     protected void peupler_samples(){
     	
     	try {
-			ObservableList<Path> liste_sample = Walk.walk(repPreview.toPath(), extension_choicebox.getValue());
+    		liste_sample.clear();
+    		liste_sample = Walk.walk(repPreview.toPath(), extension_choicebox.getValue());
 			sample_choicebox.setItems(liste_sample);
 			
 		} catch (FileNotFoundException e) {
@@ -107,6 +118,7 @@ public class VDM_import_controller implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		liste_sample = FXCollections.observableArrayList();
 		
 		dossier_source_button.setOnAction(a -> select_dossier());
 		

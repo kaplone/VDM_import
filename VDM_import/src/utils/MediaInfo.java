@@ -4,10 +4,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class MediaInfo {
+	
+	static HBox hbox;
+	static int piste; 
+	static int meta; 
 	
 	public static VBox getInfos(Path fichier, VBox vbox){
 		
@@ -19,10 +25,17 @@ public class MediaInfo {
 		boolean autre1 = false;
 		boolean autre2 = false;
 		boolean autre3 = false;
+		boolean autre4 = false;
+		
+		piste = 0;
+		meta = 0;
 		
 		String color = "";
 		
 		vbox.getChildren().clear();
+		
+		
+		
 		
 		String[] mediaInfo = new String[] {"mediainfo", 
                 "--Inform=ressources/templates/template1.txt",
@@ -44,78 +57,170 @@ public class MediaInfo {
 				switch(tag){
 				case "General" : general = true;
 	                           break;
-				case "Video" : video = true;
+				case "Video" : addRow(vbox);
+	                           video = true;
 				               general = false;
 				               break;
-				case "Audio" : audio = true;
+				case "Audio" : addRow(vbox);
+				               addRow(vbox, "Audio", String.format("Piste %d", ++piste));
+					           audio = true;
 	                           video = false;
 	                           break;
-				case "Audio #1" : audio1 = true;
+				case "Audio #1" : addRow(vbox);
+	                              addRow(vbox, "Audio", String.format("Piste %d", ++piste));
+					              audio1 = true;
 				                  video = false;
                                   break;
-				case "Audio #2" : audio2 = true;
+				case "Audio #2" : addRow(vbox);
+	                              addRow(vbox, "Audio", String.format("Piste %d", ++piste));
+					              audio2 = true;
                                   audio1 = false;
                                   break;
-				case "Other #1" : autre1 = true;
+				case "Other #1" : addRow(vbox);
+	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
+					              autre1 = true;
 				                  audio2 = false;
+                                  break;
+				case "Other #2" : addRow(vbox);
+	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
+	                              autre2 = true;
+                                  autre1 = false;
+                                  break;
+				case "Other #3" : addRow(vbox);
+	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
+	                              autre3 = true;
+                                  autre2 = false;
+                                  break;
+				case "Other #4" : addRow(vbox);
+	                              addRow(vbox, "Métadata", String.format("Méta %d", ++meta));
+	                              autre4 = true;
+                                  autre3 = false;
                                   break;
 				}
                 
 				if (general){	
 					switch(tag){
 					
-					case "Complete name"    : vbox.getChildren().add(new Label(String.format("Nom complet  : %s", line.split(":")[1].trim())));
-					                          vbox.getChildren().add(new Label());
+					case "Complete name"    : addRow(vbox, "Nom complet", line.split(":")[1].trim());
                                               break;
-					case "Encoded date"     : vbox.getChildren().add(new Label(String.format("Timestamp      : %s", line.split(":")[1].trim())));
+					case "Encoded date"     : addRow(vbox, "Timestamp", String.format("%s:%s:%s", line.split(":")[1].trim(), 
+                                                                                                  line.split(":")[2].trim(),
+                                                                                                  line.split(":")[3].trim()));
                                               break;
 					}
 				}
 				else if (video){
 					switch(tag){
 					
-					case "Commercial name"  : vbox.getChildren().add(new Label(String.format("Encodage        : %s", line.split(":")[1].trim())));
+					case "Commercial name"  : addRow(vbox, "Format", line.split(":")[1].trim());
 					                          break;
-					case "Duration"         : vbox.getChildren().add(new Label(String.format("Durée              : %s", line.split(":")[1].trim())));
+					case "Duration"         : addRow(vbox, "Durée",line.split(":")[1].trim());
 					                          break;
-					case "Bit rate"         : vbox.getChildren().add(new Label(String.format("Bitrate             : %s", line.split(":")[1].trim())));
+					case "Bit rate"         : addRow(vbox, "Bitrate"  , line.split(":")[1].trim());
 	                                          break;
-					case "Width"            : vbox.getChildren().add(new Label(String.format("Largeur          : %s", line.split(":")[1].trim())));
+					case "Width"            : addRow(vbox, "Largeur", line.split(":")[1].trim());
                                               break;
-					case "Height"           : vbox.getChildren().add(new Label(String.format("Hauteur           : %s", line.split(":")[1].trim())));
+					case "Height"           : addRow(vbox, "Hauteur", line.split(":")[1].trim());
                                               break;
-				    case "Display aspect ratio" : vbox.getChildren().add(new Label(String.format("%-15s : %s:%s", "Ratio",  line.split(":")[1].trim(),
-				    		                                                                                                    line.split(":")[2].trim())));
+				    case "Display aspect ratio" : addRow(vbox, "Ratio",  String.format("%s:%s", line.split(":")[1].trim(),line.split(":")[2].trim()));
                                               break;
-				    case "Frame rate"       : vbox.getChildren().add(new Label(String.format("%-15s : %s", "Framerate", line.split(":")[1].trim())));
+				    case "Frame rate"       : addRow(vbox, "Framerate", line.split(":")[1].trim());
                                               break;     
 				    case "Color space"      : color =  line.split(":")[1].trim();
                                               break;
-				    case "Chroma subsampling" : vbox.getChildren().add(new Label(String.format("%-15s : %s %s:%s:%s", "Couleurs", color, line.split(":")[1].trim(), 
-				    		                                                                                                            line.split(":")[2].trim(),
-				    		                                                                                                            line.split(":")[3].trim())));
+				    case "Chroma subsampling" : addRow(vbox, "Couleurs", String.format("%s:%s:%s", line.split(":")[1].trim(), 
+				    		                                                                       line.split(":")[2].trim(),
+				    		                                                                       line.split(":")[3].trim()));
                                               break;
-				    case "Scan type"        : vbox.getChildren().add(new Label(String.format("%-15s : %s", "Entrelacement", line.split(":")[1].trim())));
+				    case "Scan type"        : addRow(vbox, "Entrelacement", ":",  line.split(":")[1].trim(), true);
                                               break;
 					}
 				}
-				else if (audio){	
-					
+				else if (audio){
+					switch(tag){
+					case "Format"           : addRow(vbox, "Codec", line.split(":")[1].trim());
+	                                          break;
+					case "Format settings, Endianness" : addRow(vbox, "Endian", line.split(":")[1].trim());
+                                              break;
+					case "Bit rate"         : addRow(vbox, "Bitrate", line.split(":")[1].trim());
+                                              break;
+					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
+                                              break;
+					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
+				
 				}
                 else if (audio1){	
+                	switch(tag){
+					case "Format"           : addRow(vbox, "Codec", line.split(":")[1].trim());
+	                                          break;
+					case "Format settings, Endianness" : addRow(vbox, "Endian", line.split(":")[1].trim());
+                                              break;
+					case "Bit rate"         : addRow(vbox, "Bitrate", line.split(":")[1].trim());
+                                              break;
+					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
+                                              break;
+					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
 					
 				}
-                else if (audio2){	
+                else if (audio2){
+                	switch(tag){
+					case "Format"           : addRow(vbox, "Codec", line.split(":")[1].trim());
+	                                          break;
+					case "Format settings, Endianness" : addRow(vbox, "Endian", line.split(":")[1].trim());
+                                              break;
+					case "Bit rate"         : addRow(vbox, "Bitrate", line.split(":")[1].trim());
+                                              break;
+					case "Channel(s)"       : addRow(vbox, "Canaux", line.split(":")[1].trim());
+                                              break;
+					case "Sampling rate"    : addRow(vbox, "Echantillonage", line.split(":")[1].trim());
+                                              break;
+					}
 					
 				}
                 else if (autre1){	
+                	switch(tag){
+					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
+                                              break;
+					case "Format"           : addRow(vbox, "Format", line.split(":")[1].trim());
+                                              break;
+					case "Time code settings" : addRow(vbox, "setting", line.split(":")[1].trim());
+                                              break;
+					}
 					
 				}
                 else if (autre2){	
-					
+                	switch(tag){
+					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
+                                              break;
+					case "Format"           : addRow(vbox, "Format", line.split(":")[1].trim());
+                                              break;
+					case "Time code settings" : addRow(vbox, "setting", line.split(":")[1].trim());
+                                              break;
+					}
 				}
                 else if (autre3){	
-					
+                	switch(tag){
+					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
+                                              break;
+					case "Format"           : addRow(vbox, "Format", line.split(":")[1].trim());
+                                              break;
+					case "Time code settings" : addRow(vbox, "setting", line.split(":")[1].trim());
+                                              break;
+					}
+				}
+                else if (autre4){	
+                	switch(tag){
+					case "Type"             : addRow(vbox, "Type", line.split(":")[1].trim());
+                                              break;
+					case "Format"           : addRow(vbox, "Format", line.split(":")[1].trim());
+                                              break;
+					case "Time code settings" : addRow(vbox, "setting", line.split(":")[1].trim());
+                                              break;
+					}
 				}
 				
 				
@@ -128,5 +233,34 @@ public class MediaInfo {
 		
 		return vbox;		
 	}
-
+	
+	protected static VBox addRow(VBox vbox, String nom, String valeur){        
+        return addRow(vbox, nom, ":", valeur, false);
+	}
+	
+	protected static VBox addRow(VBox vbox){        
+        return addRow(vbox, "", "", "", false);
+	}
+	
+    protected static VBox addRow(VBox vbox, String nom, String sep, String valeur, boolean bold){
+		
+		hbox = new HBox();
+        hbox.setSpacing(10);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        Label l = new Label(nom);
+        l.setPrefWidth(100);
+        Label lb = new Label(valeur);
+        if (bold){
+            if (valeur.equals("Progressive")){
+            	lb.setStyle("-fx-text-fill: green;-fx-font-weight: bold;");
+            }
+            else{
+            	lb.setStyle("-fx-text-fill: red;-fx-font-weight: bold;");
+            }
+        } 
+        hbox.getChildren().addAll(l, new Label(sep), lb);
+        vbox.getChildren().add(hbox);
+        
+        return vbox;
+	}
 }
