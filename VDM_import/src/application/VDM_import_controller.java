@@ -93,6 +93,8 @@ public class VDM_import_controller implements Initializable{
     
     protected void peupler_samples(){
     	
+    	System.out.println("peupler les samples");
+    	
     	try {
     		liste_sample.clear();
     		liste_sample = Walk.walk(repPreview.toPath(), extension_choicebox.getValue());

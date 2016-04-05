@@ -3,13 +3,12 @@ package utils;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javafx.scene.layout.VBox;
+import models.Rush;
 
 public class TimeStamp {
 	
@@ -21,8 +20,11 @@ public class TimeStamp {
 
 		System.out.println("durée : " + duree);
 		
-		debut = debut.split("UTC")[1].trim();
-		LocalDateTime ldt = LocalDateTime.parse(debut, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		if(debut.startsWith("UTC")){
+			debut = debut.split("UTC")[1].trim();
+		}
+		
+		LocalDateTime ldt = LocalDateTime.parse(debut, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 		Instant debut_instant = ldt.toInstant(ZoneOffset.UTC);
         
 		if(duree.split("mn").length > 1){
@@ -62,9 +64,9 @@ public class TimeStamp {
 		//Duration between = Duration.between(firstInstant, secondInstant);
 	}
 	
-	public static void plage(Path path){
+	public static void plage(Rush rush){
 		
-		MediaInfo.getInfos(path, new VBox());
+		MediaInfo.getInfos(rush.toPath(), new VBox());
 		plage(Messages.getTimestamp(), Messages.getDuration());
 	}
 	

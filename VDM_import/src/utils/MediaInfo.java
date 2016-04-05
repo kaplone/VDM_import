@@ -3,6 +3,7 @@ package utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -19,8 +20,17 @@ public class MediaInfo {
 	static int piste; 
 	static int meta; 
 	static String timestamp;
+	static String duree;
+	private static int minutes;
+	private static int secondes;
+	private static Duration duration;
+	private static boolean boucle;
 	
 	public static long getTimeStamp(Path fichier) {
+		
+		boucle = true;
+		
+		System.out.println("getTimeStamp(fichier) : " + fichier) ;
 
 		String[] mediaInfo = new String[] {"mediainfo", 
                 fichier.toString()};
@@ -33,16 +43,25 @@ public class MediaInfo {
 			BufferedReader reader = 
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            String line = "";			
-			while ((line = reader.readLine())!= null) {
+            String line = "";	
+
+			while (boucle && (line = reader.readLine())!= null) {
                 String tag = line.split(":")[0].trim();
 				
 				switch(tag){
+				case "Video"            : boucle = false;
+				                          break;
+				
 				case "Encoded date"     :  timestamp = String.format("%s:%s:%s", line.split(":")[1].trim(), 
                                                                                  line.split(":")[2].trim(),
                                                                                  line.split(":")[3].trim());
+				                           System.out.println("timestamp trouvé : " + timestamp);
                                            break;
                                            
+				case "Duration"         : duree = line.split(":")[1].trim();
+                                          Messages.setDuration(line.split(":")[1].trim());
+                                          System.out.println("boucle breakée");
+                                          break;                           
 				}
 			}
 		}
@@ -50,10 +69,44 @@ public class MediaInfo {
 			e.printStackTrace();
 		}
 		
-		timestamp = timestamp.split("UTC")[1].trim();
-		long secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toEpochSecond(ZoneOffset.UTC);
+		if(timestamp.startsWith("UTC")){
+			timestamp = timestamp.split("UTC")[1].trim();
+		}
+		
+		long secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")).toEpochSecond(ZoneOffset.UTC);
 		
 		return secondsFromEpoch;
+		
+	}
+	
+	public static Duration getDuree(){
+		
+		if(duree.split("mn").length > 1){
+			minutes = Integer.parseInt(duree.split("mn")[0].trim());
+			if(duree.split("s").length > 0){
+				secondes = Integer.parseInt(duree.split("mn")[1].trim().split("s")[0].trim());
+			}
+			else {
+				secondes = 0;
+			}
+		}
+		else {
+			if(duree.split("s").length > 0){
+				minutes = 0;
+				secondes = Integer.parseInt(duree.split("s")[0].trim());	
+		    }
+			else {
+				secondes = 0;
+			}
+			    
+		}
+		
+		System.out.println("minutes : " + minutes + " ,  secondes : " + secondes);
+		
+		duration = duration.ZERO;
+		duration = Duration.ofMinutes(minutes).plusSeconds(secondes);
+		
+		return duration;
 		
 	}
 	

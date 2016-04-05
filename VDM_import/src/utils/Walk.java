@@ -21,18 +21,21 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Rush;
 
 
 public class Walk {
 	
 	private static String extension;
-	private static List<Path> list;
-	private static ObservableList<Path>  liste;
+	private static List<Rush> list;
+	private static ObservableList<Rush>  liste_rush;
+	private static ObservableList<Path>  liste_path;
 	
 	public static ObservableList<Path> walk(Path homeFolder, String extension_) throws FileNotFoundException {
 		
 		list = new ArrayList<>();
-		liste = FXCollections.observableArrayList();
+		liste_rush = FXCollections.observableArrayList();
+		liste_path = FXCollections.observableArrayList();
 		
 		extension = extension_;
 
@@ -44,19 +47,21 @@ public class Walk {
 		}
 		
 		list .stream()
-             .sorted((e1, e2) -> Long.compare(MediaInfo.getTimeStamp(e1),
-            		                             MediaInfo.getTimeStamp(e2)))
-             .forEach(e -> liste.add(e));
+             .sorted((e1, e2) -> Long.compare(e1.getDebutLong(),
+            		                          e2.getDebutLong()))
+             .forEach(e -> {
+            	 liste_rush.add(e);
+            	 liste_path.add(e.toPath());
+             });
 		
-		liste.stream()
-		     .forEach(a-> {
-		    	 System.out.println(a);
+		liste_rush.stream()
+		     .forEach(a-> { 
 		    	 TimeStamp.plage(a);
 		     });
-				
-				
 		
-		return liste;
+		Chart.bilan(homeFolder.getFileName().toString(), "Morel", liste_rush);
+
+		return liste_path;
 		
 	}
   
@@ -87,7 +92,12 @@ public class Walk {
 
 			if(path.toString().toUpperCase().endsWith(extension)){
 				
-				list.add(path);
+				System.out.println("walk trouvé " + path);
+				
+				Rush r = new Rush(path.toString());
+				r.setDebut(MediaInfo.getTimeStamp(path));
+				r.setDuree(MediaInfo.getDuree());
+				list.add(r);
 				
 			}
 			return FileVisitResult.CONTINUE;
