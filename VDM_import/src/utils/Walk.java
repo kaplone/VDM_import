@@ -14,7 +14,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,9 +26,13 @@ import javafx.collections.ObservableList;
 public class Walk {
 	
 	private static String extension;
-	private static ObservableList<Path>  liste = FXCollections.observableArrayList();
+	private static List<Path> list;
+	private static ObservableList<Path>  liste;
 	
 	public static ObservableList<Path> walk(Path homeFolder, String extension_) throws FileNotFoundException {
+		
+		list = new ArrayList<>();
+		liste = FXCollections.observableArrayList();
 		
 		extension = extension_;
 
@@ -35,6 +42,19 @@ public class Walk {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		list .stream()
+             .sorted((e1, e2) -> Long.compare(MediaInfo.getTimeStamp(e1),
+            		                             MediaInfo.getTimeStamp(e2)))
+             .forEach(e -> liste.add(e));
+		
+		liste.stream()
+		     .forEach(a-> {
+		    	 System.out.println(a);
+		    	 TimeStamp.plage(a);
+		     });
+				
+				
 		
 		return liste;
 		
@@ -66,7 +86,9 @@ public class Walk {
 				throws IOException {
 
 			if(path.toString().toUpperCase().endsWith(extension)){
-				liste.add(path);
+				
+				list.add(path);
+				
 			}
 			return FileVisitResult.CONTINUE;
 		}

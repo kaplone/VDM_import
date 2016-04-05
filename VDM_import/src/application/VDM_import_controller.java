@@ -97,7 +97,8 @@ public class VDM_import_controller implements Initializable{
     		liste_sample.clear();
     		liste_sample = Walk.walk(repPreview.toPath(), extension_choicebox.getValue());
 			sample_choicebox.setItems(liste_sample);
-			
+			sample_choicebox.getSelectionModel().select(0);
+			affichePreview(100);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

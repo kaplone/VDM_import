@@ -3,6 +3,10 @@ package utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,6 +18,44 @@ public class MediaInfo {
 	static HBox hbox;
 	static int piste; 
 	static int meta; 
+	static String timestamp;
+	
+	public static long getTimeStamp(Path fichier) {
+
+		String[] mediaInfo = new String[] {"mediainfo", 
+                fichier.toString()};
+		
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(mediaInfo);
+			p.waitFor();
+			
+			BufferedReader reader = 
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = "";			
+			while ((line = reader.readLine())!= null) {
+                String tag = line.split(":")[0].trim();
+				
+				switch(tag){
+				case "Encoded date"     :  timestamp = String.format("%s:%s:%s", line.split(":")[1].trim(), 
+                                                                                 line.split(":")[2].trim(),
+                                                                                 line.split(":")[3].trim());
+                                           break;
+                                           
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		timestamp = timestamp.split("UTC")[1].trim();
+		long secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toEpochSecond(ZoneOffset.UTC);
+		
+		return secondsFromEpoch;
+		
+	}
 	
 	public static VBox getInfos(Path fichier, VBox vbox){
 		
@@ -41,8 +83,7 @@ public class MediaInfo {
 		
 		
 		String[] mediaInfo = new String[] {"mediainfo", 
-                "--Inform=ressources/templates/template1.txt",
-                fichier.toString()};
+                                            fichier.toString()};
 		
 		Process p;
 		try {
@@ -132,6 +173,9 @@ public class MediaInfo {
 					case "Encoded date"     : addRow(vbox, "Timestamp", String.format("%s:%s:%s", line.split(":")[1].trim(), 
                                                                                                   line.split(":")[2].trim(),
                                                                                                   line.split(":")[3].trim()));
+					                          Messages.setTimestamp(String.format("%s:%s:%s", line.split(":")[1].trim(), 
+                                                                                              line.split(":")[2].trim(),
+                                                                                              line.split(":")[3].trim()));
                                               break;
 					}
 				}
@@ -143,6 +187,7 @@ public class MediaInfo {
 					case "Format/Info"      : addRow(vbox, "Codec", line.split(":")[1].trim());
                                               break;
 					case "Duration"         : addRow(vbox, "Durée",line.split(":")[1].trim());
+					                          Messages.setDuration(line.split(":")[1].trim());
 					                          break;
 					case "Bit rate"         : addRow(vbox, "Bitrate"  , line.split(":")[1].trim());
 	                                          break;
