@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -55,12 +56,10 @@ public class MediaInfo {
 				case "Encoded date"     :  timestamp = String.format("%s:%s:%s", line.split(":")[1].trim(), 
                                                                                  line.split(":")[2].trim(),
                                                                                  line.split(":")[3].trim());
-				                           System.out.println("timestamp trouvé : " + timestamp);
                                            break;
                                            
 				case "Duration"         : duree = line.split(":")[1].trim();
                                           Messages.setDuration(line.split(":")[1].trim());
-                                          System.out.println("boucle breakée");
                                           break;                           
 				}
 			}
@@ -73,7 +72,15 @@ public class MediaInfo {
 			timestamp = timestamp.split("UTC")[1].trim();
 		}
 		
-		long secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")).toEpochSecond(ZoneOffset.UTC);
+		long secondsFromEpoch = 0;
+		
+		try {
+			secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")).toEpochSecond(ZoneOffset.UTC);
+		}
+		catch (DateTimeParseException dtpe) {
+			secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toEpochSecond(ZoneOffset.UTC);
+		}
+		
 		
 		return secondsFromEpoch;
 		

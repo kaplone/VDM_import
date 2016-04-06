@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javafx.scene.layout.VBox;
 import models.Rush;
@@ -24,7 +25,16 @@ public class TimeStamp {
 			debut = debut.split("UTC")[1].trim();
 		}
 		
-		LocalDateTime ldt = LocalDateTime.parse(debut, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		
+		LocalDateTime ldt = null;
+		
+		try {
+			ldt = LocalDateTime.parse(debut, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+		}
+		catch (DateTimeParseException dtpe) {
+			ldt = LocalDateTime.parse(debut, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		}
+		
 		Instant debut_instant = ldt.toInstant(ZoneOffset.UTC);
         
 		if(duree.split("mn").length > 1){

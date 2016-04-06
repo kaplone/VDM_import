@@ -3,15 +3,33 @@ package models;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 public class Rush extends File{
 	
+	/**
+	 * 
+	 */
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Instant debut;
 	private Duration duree;
+	private List<Rush> chunks;
 
 	public Rush(String pathname) {
 		super(pathname);
-		// TODO Auto-generated constructor stub
+		this.duree = Duration.ofSeconds(0);
+	}
+	
+	public Rush(String pathname, List<Rush> chunks) {
+		this(pathname);
+		this.chunks = chunks;
+		this.debut = chunks.get(0).getDebut();
+		for(int i= 0; i < chunks.size(); i++){
+			duree = duree.plus(chunks.get(i).getDuree());
+		}
+		
 	}
 
 	public Instant getDebut() {
@@ -30,7 +48,6 @@ public class Rush extends File{
 		return debut.getEpochSecond();
 	}
 
-
 	public Duration getDuree() {
 		return duree;
 	}
@@ -38,8 +55,13 @@ public class Rush extends File{
 	public void setDuree(Duration duree) {
 		this.duree = duree;
 	}
-	
-	
-	
 
+	public List<Rush> getChunks() {
+		return chunks;
+	}
+
+	public void setChunks(List<Rush> chunks) {
+		this.chunks = chunks;
+	}
+	
 }
