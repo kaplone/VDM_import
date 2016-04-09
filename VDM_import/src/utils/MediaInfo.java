@@ -9,11 +9,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import models.Rush;
 
 public class MediaInfo {
 	
@@ -22,14 +28,16 @@ public class MediaInfo {
 	static int meta; 
 	static String timestamp;
 	static String duree;
+	private static int heures;
 	private static int minutes;
 	private static int secondes;
 	private static Duration duration;
 	private static boolean boucle;
 	
-	public static long getTimeStamp(Path fichier) {
+	public static Rush getTimeStamp(Path fichier) {
 		
 		boucle = true;
+		Rush r = new Rush(fichier.toString());
 		
 		System.out.println("getTimeStamp(fichier) : " + fichier) ;
 
@@ -81,37 +89,43 @@ public class MediaInfo {
 			secondsFromEpoch = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toEpochSecond(ZoneOffset.UTC);
 		}
 		
+		r.setDebut(secondsFromEpoch);
+		r.setDuree(getDuree(duree));
 		
-		return secondsFromEpoch;
+		return r;
 		
 	}
 	
-	public static Duration getDuree(){
+	public static Duration getDuree(String duree){
 		
-		if(duree.split("mn").length > 1){
-			minutes = Integer.parseInt(duree.split("mn")[0].trim());
-			if(duree.split("s").length > 0){
-				secondes = Integer.parseInt(duree.split("mn")[1].trim().split("s")[0].trim());
+		heures = 0;
+		minutes = 0;
+		secondes = 0;
+		
+		String[] bouts_duree = duree.split(" ");
+        Pattern p_heures = Pattern.compile("\\dh");
+        Pattern p_minutes = Pattern.compile("\\dmn");
+        Pattern p_secondes = Pattern.compile("\\ds");
+		
+		for (String s0 : bouts_duree){
+			
+			Matcher h = p_heures.matcher(s0);
+			Matcher m = p_minutes.matcher(s0);
+			Matcher s = p_secondes.matcher(s0);
+			
+			if (h.find()){
+				heures = Integer.parseInt(s0.split("h")[0]);
 			}
-			else {
-				secondes = 0;
+			else if (m.find()){
+				minutes = Integer.parseInt(s0.split("mn")[0]);
+			}
+			else if (s.find()){
+				secondes = Integer.parseInt(s0.split("s")[0]);
 			}
 		}
-		else {
-			if(duree.split("s").length > 0){
-				minutes = 0;
-				secondes = Integer.parseInt(duree.split("s")[0].trim());	
-		    }
-			else {
-				secondes = 0;
-			}
-			    
-		}
-		
-		System.out.println("minutes : " + minutes + " ,  secondes : " + secondes);
 		
 		duration = duration.ZERO;
-		duration = Duration.ofMinutes(minutes).plusSeconds(secondes);
+		duration = Duration.ofHours(heures).plusMinutes(minutes).plusSeconds(secondes);
 		
 		return duration;
 		

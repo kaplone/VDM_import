@@ -19,7 +19,7 @@ public class Rush extends File{
 
 	public Rush(String pathname) {
 		super(pathname);
-		this.duree = Duration.ofSeconds(0);
+		this.duree = Duration.ZERO;
 	}
 	
 	public Rush(String pathname, List<Rush> chunks) {

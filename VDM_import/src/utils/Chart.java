@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
+import models.Cadreur;
 import models.Parties;
 import models.Rush;
 
@@ -47,59 +49,15 @@ public class Chart {
     static ObservableList<XYChart.Data<Date, Number>> series1Data;
     static int index;
     
+    static String extension ;
+    static int duree_coupure;
+    static int duree_min;
+    
+    static boolean partie;
+    
     static Duration duree_partie;
 	
-	public static void bilan_string (String plan, String cadreur, List<Rush> times){
-		
-		stage = new Stage();
-		
-		stage.setTitle("Bar Chart Sample");
-        
-		bc.setTitle("Bilan tournage");
-	    xAxis.setLabel("Heure");       
-	    yAxis.setLabel("Durée");
- 
-        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        series1.setName(plan + " (" + cadreur + ")");     
-        times.stream().forEach(a -> {
-        	LocalDateTime ldt = LocalDateTime.ofInstant(a.getDebut(), ZoneId.systemDefault());
-        	series1.getData().add(new XYChart.Data<>(ldt.format(DateTimeFormatter.ofPattern("HH:mm:ss")), a.getDuree().getSeconds())); 
-        });
-           
-
-        
-        Scene scene  = new Scene(bc,800,600);
-        bc.getData().addAll(series1);
-        stage.setScene(scene);
-        stage.show();
-	}
-	
-//    public static void bilan_heures (String plan, String cadreur, List<Rush> times){
-//		
-//		stage = new Stage();
-//		
-//		stage.setTitle("Bar Chart Sample");
-//        
-//		bc.setTitle("Bilan tournage");
-//	    instantAxis.setLabel("Heure");       
-//	    yAxis.setLabel("Durée");
-// 
-//        XYChart.Series<Instant, Number> series1 = new XYChart.Series<>();
-//        series1.setName(plan + " (" + cadreur + ")");     
-//        times.stream().forEach(a -> {
-//        	LocalDateTime ldt = LocalDateTime.ofInstant(a.getDebut(), ZoneId.systemDefault());
-//        	series1.getData().add(new XYChart.Data<>(ldt.format(DateTimeFormatter.ofPattern("HH:mm:ss")), a.getDuree().getSeconds())); 
-//        });
-//           
-//
-//        
-//        Scene scene  = new Scene(bc,800,600);
-//        bc_instant.getData().addAll(series1);
-//        stage.setScene(scene);
-//        stage.show();
-//	}
-    
-    public static void bilan (String plan, String cadreur, List<Rush> times){
+    public static void bilan (String plan, Cadreur cadreur, List<Rush> times){
     	
     	index = 0;
 		
@@ -111,35 +69,109 @@ public class Chart {
 	    yAxis.setLabel("Durée");
 	    
 	    precedent = null;
+	    partie = false;
+	    
+	    duree_min = 90;
+	    
+	    extension = cadreur.getExtension();
+	    if (extension.equals("MXF")){
+	    	duree_coupure = 294;
+	    	
+	    }
+	    else {
+	    	duree_coupure = 300;
+	    }
 	    
 	    ObservableList<XYChart.Series<Date, Number>> series = FXCollections.observableArrayList();
 	    
         times.stream().forEach(a -> {
         	
         	if (precedent != null){
-        		if (a.getDuree().toMinutes() > 5 && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).getSeconds()) < 2
-        			|| a.getDuree().toMinutes() < 5){
+        		
+        		// cas général des bouts consécutifs dans une partie
+        		if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < 1200){
+        			
+        			System.out.println("cas général des bouts consécutifs dans une partie");
+        			
         			Date ldt = Date.from(a.getDebut().minus(Duration.ofHours(2)));
             	    series1Data.add(new Data<Date, Number>(ldt, a.getDuree().getSeconds())); 
-            	    duree_partie.plus(a.getDuree());
+            	    duree_partie = duree_partie.plus(a.getDuree());
+            	    
+            	    partie = true;
         		}
-        		else {        			
-        	        series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
+        		// cas bouts avant/apres entracte
+        		else if(partie && a.getDuree().getSeconds() > duree_coupure){
+        			
+        			System.out.println(partie + ", " +a.getDuree() + "," + a.getDuree().getSeconds() + ", " + duree_coupure);
+        			System.out.println("cas bouts avant/apres entracte");
+        			
+        			Date ldt = Date.from(precedent.getDebut().plus(precedent.getDuree()).minus(Duration.ofHours(2)));
+            	    series1Data.add(new Data<Date, Number>(ldt, 0));	
+            	  //flush partie terminée
+                    series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
         	        
         			series1Data = FXCollections.observableArrayList();
         			duree_partie = Duration.ZERO;
-            		duree_partie.plus(a.getDuree());
-            		
+        			ldt = Date.from(a.getDebut().minus(Duration.ofHours(2)));
+        			series1Data.add(new Data<Date, Number>(ldt, a.getDuree().getSeconds())); 
+        			duree_partie = duree_partie.plus(a.getDuree());
+        		}
+        		// cas du premier bout partie apres bonus
+                else if(a.getDuree().getSeconds() > duree_coupure){
+                	
+                	System.out.println(a.getDuree() + "," + a.getDuree().getSeconds() + ", " + duree_coupure);
+                	System.out.println("cas du premier bout partie apres bonus");
+                	
+                	//flush des bonus
+                	series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
+                	
+        			series1Data = FXCollections.observableArrayList();
+        			duree_partie = Duration.ZERO;
+        			Date ldt = Date.from(a.getDebut().minus(Duration.ofHours(2)));
+        			series1Data.add(new Data<Date, Number>(ldt, a.getDuree().getSeconds())); 
+        			duree_partie = duree_partie.plus(a.getDuree());
+        			
+        			partie = true;
+        		}
+        		//cas bouts non consécutifs (bonus)
+        		else if(a.getDuree().getSeconds() < duree_coupure){
+        			
+        			System.out.println("cas bouts non consécutifs (bonus)");
+        			
+        			if (partie){
+        				//flush partie terminée
+                        series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
+            	        
+            			series1Data = FXCollections.observableArrayList();
+            			duree_partie = Duration.ZERO;
+        			}
+        			
+        			Date ldt = Date.from(a.getDebut().minus(Duration.ofHours(2)));
+            	    series1Data.add(new Data<Date, Number>(ldt, a.getDuree().getSeconds())); 
+            	    duree_partie = duree_partie.plus(a.getDuree());
+            	    
+            	    partie = false;
+        		}
+        		// cas général (??)
+        		else {    
+        			
+        			System.out.println("cas général");
+        	        		
         			Date ldt = Date.from(a.getDebut().minus(Duration.ofHours(2)));
             	    series1Data.add(new Data<Date, Number>(ldt, a.getDuree().getSeconds()));
-            	    duree_partie.plus(a.getDuree());
+            	    duree_partie = duree_partie.plus(a.getDuree());
+            	    
+            	    partie = false;
+            	    
         		}
         		
         	}
+        	// initialisation
         	else{
         		series1Data = FXCollections.observableArrayList();
         		duree_partie = Duration.ZERO;
-        		duree_partie.plus(a.getDuree());
+        		duree_partie = duree_partie.plus(a.getDuree());
+        		partie = a.getDuree().getSeconds() > duree_coupure;
         	}
         	precedent = a;
         	
@@ -147,11 +179,11 @@ public class Chart {
     	    
         });
         
+        Date ldt = Date.from(precedent.getDebut().plus(precedent.getDuree()).minus(Duration.ofHours(2)));
+	    series1Data.add(new Data<Date, Number>(ldt, 0));
+	  //flush dernière partie
         series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
 
-        
-        
-        System.out.println("lineChart addAll");
         lineChart.getData().addAll(series);
 		//lineChart.setTitle("Bilan tournage");
         scene  = new Scene(lineChart,1920,500);
@@ -161,7 +193,7 @@ public class Chart {
         stage.show();
         stage.toFront();
         
-        //saveAsPng(plan, cadreur);
+        saveAsPng(plan, cadreur.toString());
         //TODO n'affiche pas les graduations dans l'image exportée
 	}
     

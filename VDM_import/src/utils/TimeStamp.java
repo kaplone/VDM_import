@@ -7,12 +7,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.scene.layout.VBox;
 import models.Rush;
 
 public class TimeStamp {
 	
+	private static int heures;
 	private static int minutes;
 	private static int secondes;
 	private static Duration duration;
@@ -37,30 +40,34 @@ public class TimeStamp {
 		
 		Instant debut_instant = ldt.toInstant(ZoneOffset.UTC);
         
-		if(duree.split("mn").length > 1){
-			minutes = Integer.parseInt(duree.split("mn")[0].trim());
-			if(duree.split("s").length > 0){
-				secondes = Integer.parseInt(duree.split("mn")[1].trim().split("s")[0].trim());
-			}
-			else {
-				secondes = 0;
-			}
-		}
-		else {
-			if(duree.split("s").length > 0){
-				minutes = 0;
-				secondes = Integer.parseInt(duree.split("s")[0].trim());	
-		    }
-			else {
-				secondes = 0;
-			}
-			    
-		}
+        String[] bouts_duree = duree.split(" ");
+        Pattern p_heures = Pattern.compile("\\dh");
+        Pattern p_minutes = Pattern.compile("\\dmn");
+        Pattern p_secondes = Pattern.compile("\\ds");
+        
+		heures = 0;
+		minutes = 0;
+		secondes = 0;
 		
-		System.out.println("minutes : " + minutes + " ,  secondes : " + secondes);
+		for (String s0 : bouts_duree){
+			
+			Matcher h = p_heures.matcher(s0);
+			Matcher m = p_minutes.matcher(s0);
+			Matcher s = p_secondes.matcher(s0);
+			
+			if (h.find()){
+				heures = Integer.parseInt(s0.split("h")[0]);
+			}
+			else if (m.find()){
+				minutes = Integer.parseInt(s0.split("mn")[0]);
+			}
+			else if (s.find()){
+				secondes = Integer.parseInt(s0.split("s")[0]);
+			}
+		}
 		
 		duration = duration.ZERO;
-		duration = Duration.ofMinutes(minutes).plusSeconds(secondes);
+		duration = Duration.ofHours(heures).plusMinutes(minutes).plusSeconds(secondes);
 		
 		Instant fin_instant = debut_instant.plus(duration);
 		
@@ -68,10 +75,6 @@ public class TimeStamp {
 		System.out.println("debut : " + debut_instant);
 		System.out.println("durée : " + duration);
 		System.out.println("fin : " + fin_instant);
-		
-		//Instant fromIso8601 = Instant.parse("2010-01-01T12:00:00Z");
-		//Instant firstInstant= Instant.ofEpochSecond( 1294881180 ); // 2011-01-13 01:13
-		//Duration between = Duration.between(firstInstant, secondInstant);
 	}
 	
 	public static void plage(Rush rush){

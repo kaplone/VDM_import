@@ -26,6 +26,7 @@ import models.Cadreur;
 import models.imports.ModeleImport;
 import utils.Import;
 import utils.MediaInfo;
+import utils.Messages;
 import utils.ScreenShot;
 import utils.Walk;
 
@@ -93,11 +94,11 @@ public class VDM_import_controller implements Initializable{
     
     protected void peupler_samples(){
     	
-    	System.out.println("peupler les samples");
+    	Messages.setCadreur(cadreur_choicebox.getValue());
     	
     	try {
     		liste_sample.clear();
-    		liste_sample = Walk.walk(repPreview.toPath(), extension_choicebox.getValue());
+    		liste_sample = Walk.walk(repPreview.toPath(), cadreur_choicebox.getValue());
 			sample_choicebox.setItems(liste_sample);
 			sample_choicebox.getSelectionModel().select(0);
 			affichePreview(100);

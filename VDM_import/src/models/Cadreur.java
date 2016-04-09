@@ -14,7 +14,14 @@ public enum Cadreur {
 	ALBARET("MXF", false, ModeleMXF_XDCAM.class),
 	AMOUROUX("M2T", true, ModeleM2T.class),
 	ARMATOL("MP4", false, ModeleMP4_CLPR.class),
-	BATMAN("MXF", true, ModeleMXF_P2.class);
+	BATMAN("MXF", true, ModeleMXF_P2.class),
+	BAUDON("MP4",false, ModeleMP4_CLPR.class),
+	BIGEAULT("MP4",false, ModeleMP4_CLPR.class),
+	DE_KERDREL("MXF", true, ModeleMXF_P2.class),
+	DUCOING("MOV", false, ModeleMXF_P2.class),
+	GIRARD("MP4",false, ModeleMP4_CLPR.class),
+	GAUTIER("M2T", false, ModeleM2T.class),
+	GORWA("MTS", false, ModeleMTS.class),;
 	
 	private String extension;
 	private boolean deint;

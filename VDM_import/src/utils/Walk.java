@@ -1,26 +1,18 @@
 package utils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Cadreur;
 import models.Rush;
 
 
@@ -31,13 +23,13 @@ public class Walk {
 	private static ObservableList<Rush>  liste_rush;
 	private static ObservableList<Path>  liste_path;
 	
-	public static ObservableList<Path> walk(Path homeFolder, String extension_) throws FileNotFoundException {
+	public static ObservableList<Path> walk(Path homeFolder, Cadreur cadreur) throws FileNotFoundException {
 		
 		list = new ArrayList<>();
 		liste_rush = FXCollections.observableArrayList();
 		liste_path = FXCollections.observableArrayList();
 		
-		extension = extension_;
+		extension = cadreur.getExtension();
 
 		FileVisitor<Path> fileVisitor = new FileSizeVisitor(new Long(50));
 		try {
@@ -46,10 +38,10 @@ public class Walk {
 			e.printStackTrace();
 		}
 		
-		list .stream()
-             .sorted((e1, e2) -> Long.compare(e1.getDebutLong(),
+		list.stream()
+            .sorted((e1, e2) -> Long.compare(e1.getDebutLong(),
             		                          e2.getDebutLong()))
-             .forEach(e -> {
+            .forEach(e -> {
             	 liste_rush.add(e);
             	 liste_path.add(e.toPath());
              });
@@ -59,7 +51,7 @@ public class Walk {
 		    	 TimeStamp.plage(a);
 		     });
 		
-		Chart.bilan(homeFolder.getFileName().toString(), "Morel", liste_rush);
+		Chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
 
 		return liste_path;
 		
@@ -80,6 +72,16 @@ public class Walk {
 		@Override
 		public FileVisitResult preVisitDirectory(Path path,
 				BasicFileAttributes attrs) throws IOException {
+			
+			if(extension.equals("MXF") && (path.endsWith("AUDIO")
+                    || path.endsWith("CLIP")
+                    || path.endsWith("ICON")
+                    || path.endsWith("PROXY")
+                    || path.endsWith("VOICE")))
+			{
+			    return FileVisitResult.SKIP_SUBTREE;	
+			}
+			
 			return FileVisitResult.CONTINUE;
 		}
 
@@ -89,14 +91,16 @@ public class Walk {
 		@Override
 		public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
 				throws IOException {
-
+			
 			if(path.toString().toUpperCase().endsWith(extension)){
 				
 				System.out.println("walk trouvé " + path);
 				
-				Rush r = new Rush(path.toString());
-				r.setDebut(MediaInfo.getTimeStamp(path));
-				r.setDuree(MediaInfo.getDuree());
+				Rush r = MediaInfo.getTimeStamp(path);
+				
+//				Rush r = new Rush(path.toString());
+//				r.setDebut(MediaInfo.getTimeStamp(path));
+//				r.setDuree(MediaInfo.getDuree());
 				list.add(r);
 				
 			}
