@@ -216,7 +216,7 @@ public class Chart {
     	long minutes = duree.minusHours(hours).toMinutes();
     	long secondes = duree.minusHours(hours).minusMinutes(minutes).getSeconds();
     		
-    	return String.format(" (%2dh %2dm %2ds)", hours, minutes, secondes);
+    	return String.format(" (%2dh %02dm %02ds)", hours, minutes, secondes);
     }
 
 }

@@ -7,6 +7,7 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.GuardedObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,16 @@ public class Walk {
 	private static ObservableList<Rush>  liste_rush;
 	private static ObservableList<Path>  liste_path;
 	
-	public static ObservableList<Path> walk(Path homeFolder, Cadreur cadreur) throws FileNotFoundException {
+	private static Cadreur cadreur;
+	
+	public static ObservableList<Path> walk(Path homeFolder, Cadreur cadreur_) throws FileNotFoundException {
 		
 		list = new ArrayList<>();
 		liste_rush = FXCollections.observableArrayList();
 		liste_path = FXCollections.observableArrayList();
 		
-		extension = cadreur.getExtension();
+		extension = cadreur_.getExtension();
+		cadreur = cadreur_;
 
 		FileVisitor<Path> fileVisitor = new FileSizeVisitor(new Long(50));
 		try {

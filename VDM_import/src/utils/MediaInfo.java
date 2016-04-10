@@ -1,8 +1,11 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -34,14 +37,24 @@ public class MediaInfo {
 	private static Duration duration;
 	private static boolean boucle;
 	
+
+	private static String[] mediaInfo;
+	
+	private static String[] exiftool;
+	
 	public static Rush getTimeStamp(Path fichier) {
 		
 		boucle = true;
 		Rush r = new Rush(fichier.toString());
+		timestamp = null;
 		
 		System.out.println("getTimeStamp(fichier) : " + fichier) ;
 
-		String[] mediaInfo = new String[] {"mediainfo", 
+		mediaInfo = new String[] {"mediainfo",
+				"--File_TestContinuousFileNames=0",
+                fichier.toString()};
+		
+		exiftool = new String[] {"exiftool",
                 fichier.toString()};
 		
 		Process p;
@@ -55,6 +68,7 @@ public class MediaInfo {
             String line = "";	
 
 			while (boucle && (line = reader.readLine())!= null) {
+
                 String tag = line.split(":")[0].trim();
 				
 				switch(tag){
@@ -71,10 +85,47 @@ public class MediaInfo {
                                           break;                           
 				}
 			}
+
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		if (timestamp == null){
+			
+			boucle = true;
+			
+			try {
+				p = Runtime.getRuntime().exec(exiftool);
+				p.waitFor();
+				
+				BufferedReader reader = 
+	                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+	            String line = "";	
+
+				while (boucle && (line = reader.readLine())!= null) {
+	                String tag = line.split(":")[0].trim();
+	                
+	                switch(tag){
+	                case "Date/Time Original"     :  String date = line.split("\\+")[0].trim();
+	                	                             String [] elements = date.split(":");
+	                	                             timestamp = String.format("%s-%s-%s %s:%s:%s", elements[1],
+	                	                            		                                        elements[2],
+	                	                            		                                        elements[3].split(" ")[0],
+	                	                            		                                        elements[3].split(" ")[1],
+	                	                            		                                        elements[4],
+	                	                            		                                        elements[5]).trim();
+                            break;
+	                }
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+        }
 		
 		if(timestamp.startsWith("UTC")){
 			timestamp = timestamp.split("UTC")[1].trim();
@@ -146,18 +197,23 @@ public class MediaInfo {
 		boolean autre3 = false;
 		boolean autre4 = false;
 		
+		Messages.setTimestamp(null);
+		
 		piste = 0;
 		meta = 0;
+		
+		timestamp = null;
 		
 		String color = "";
 		
 		vbox.getChildren().clear();
 		
+		mediaInfo = new String[] {"mediainfo",
+				"--File_TestContinuousFileNames=0",
+                fichier.toString()};
 		
-		
-		
-		String[] mediaInfo = new String[] {"mediainfo", 
-                                            fichier.toString()};
+		exiftool = new String[] {"exiftool",
+                fichier.toString()};
 		
 		Process p;
 		try {
@@ -253,6 +309,7 @@ public class MediaInfo {
                                               break;
 					}
 				}
+
 				else if (video){
 					switch(tag){
 					
@@ -415,6 +472,60 @@ public class MediaInfo {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+        if (true){
+			
+			try {
+				p = Runtime.getRuntime().exec(exiftool);
+				p.waitFor();
+				
+				BufferedReader reader = 
+	                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+	            String line = "";	
+
+	            while (boucle && (line = reader.readLine())!= null) {
+	                String tag = line.split(":")[0].trim();
+	                
+	                switch(tag){
+	                case "Date/Time Original"     :  String date = line.split("\\+")[0].trim();
+	                	                             String [] elements = date.split(":");
+	                	                             timestamp = String.format("%s-%s-%s %s:%s:%s", elements[1],
+	                	                            		                                        elements[2],
+	                	                            		                                        elements[3].split(" ")[0],
+	                	                            		                                        elements[3].split(" ")[1],
+	                	                            		                                        elements[4],
+	                	                            		                                        elements[5]).trim();
+	                	                             addRow(vbox);
+	                	                             addRow(vbox, "Timestamp", timestamp);
+                                                     Messages.setTimestamp(timestamp);
+                                                     break;
+	                case "Video Format Video Frame Capture Fps"       :  addRow(vbox, "Ouverture", line.split(":")[1].trim());
+                                                     break;
+	                case "Gain"                   :  addRow(vbox, "gain", line.split(":")[1].trim());
+                    break;
+	                case "Exposure Program"       :  addRow(vbox, "controle d'exposition", line.split(":")[1].trim());
+                    break;
+	                case "White Balance"          :  addRow(vbox, "balance des blancs", line.split(":")[1].trim());
+                    break;
+	                case "Focus"                  :  addRow(vbox, "Focus", line.split(":")[1].trim());
+                    break;
+	                case "Image Stabilization"    :  addRow(vbox, "Stabilisateur", line.split(":")[1].trim());
+                    break;
+	                case "Exposure Time"    :  addRow(vbox, "Vitesse d'exposition", line.split(":")[1].trim());
+                    break;
+	                case "Aperture"    :  addRow(vbox, "Ouverture", line.split(":")[1].trim());
+                    break;
+	                case "Focal Length In 35mm Format"    :  addRow(vbox, "Distance focale", line.split(":")[1].trim());
+                    break;
+	                }
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+        }
 		
 		return vbox;		
 	}
