@@ -1,5 +1,12 @@
 package models.imports;
 
-public class ModeleMTS extends ModeleImport{
+import java.io.File;
 
+public class ModeleMTS implements ModeleImport{
+
+	@Override
+	public void import_rushs(File dossier) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -175,9 +175,7 @@ public class VDM_import_controller implements Initializable{
 //			}
 //		});
 		
-		modele_import = new ModeleImport();
-		
-		importer_button.setOnAction(a -> Import.importer(repPreview, modele_import));
+		importer_button.setOnAction(a -> Import.importer(repPreview, cadreur_choicebox.getValue()));
 		
 	
 	}

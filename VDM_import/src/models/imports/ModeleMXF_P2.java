@@ -1,5 +1,12 @@
 package models.imports;
 
-public class ModeleMXF_P2 extends ModeleImport{
+import java.io.File;
 
+public class ModeleMXF_P2 implements ModeleImport{
+
+	@Override
+	public void import_rushs(File dossier) {
+		// TODO Auto-generated method stub
+		
+	}
 }

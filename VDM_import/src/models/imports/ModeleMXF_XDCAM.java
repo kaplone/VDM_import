@@ -1,9 +1,13 @@
 package models.imports;
 
-public class ModeleMXF_XDCAM extends ModeleImport{
+import java.io.File;
 
-	public ModeleMXF_XDCAM () {
-		System.out.println("constructeur ModeleMXF");
+public class ModeleMXF_XDCAM implements ModeleImport{
+
+	@Override
+	public void import_rushs(File dossier) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

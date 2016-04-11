@@ -3,6 +3,7 @@ package models;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rush extends File{
@@ -20,6 +21,7 @@ public class Rush extends File{
 	public Rush(String pathname) {
 		super(pathname);
 		this.duree = Duration.ZERO;
+		this.chunks = new ArrayList<>();
 	}
 	
 	public Rush(String pathname, List<Rush> chunks) {
@@ -30,6 +32,29 @@ public class Rush extends File{
 			duree = duree.plus(chunks.get(i).getDuree());
 		}
 		
+	}
+	
+	public Rush getCopie(){
+		
+		Rush copie = new Rush(this.getPath());
+		
+		copie.addChunk(copie);
+		copie.setDebut(this.getDebut());
+		copie.setDuree(this.getDuree());
+		
+		return copie;
+		
+	}
+	
+	public void add(Rush ajout){
+		chunks.add(ajout);
+		duree = duree.plus(ajout.getDuree());
+	}
+	
+	public void addChunk(Rush ajout){
+		if (this.chunks.isEmpty() || ! this.chunks.contains(this)){
+			this.chunks.add(this);
+		}
 	}
 
 	public Instant getDebut() {

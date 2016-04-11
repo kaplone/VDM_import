@@ -22,6 +22,7 @@ public class Walk {
 	private static String extension;
 	private static List<Rush> list;
 	private static ObservableList<Rush>  liste_rush;
+	private static List<Rush>  liste_plans;
 	private static ObservableList<Path>  liste_path;
 	
 	private static Cadreur cadreur;
@@ -54,8 +55,12 @@ public class Walk {
 		     .forEach(a-> { 
 		    	 TimeStamp.plage(a);
 		     });
+
 		
 		Chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
+		
+		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
+		Messages.setListeDesPlans(liste_plans);
 
 		return liste_path;
 		

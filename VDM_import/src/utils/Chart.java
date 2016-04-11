@@ -186,22 +186,22 @@ public class Chart {
 
         lineChart.getData().addAll(series);
 		//lineChart.setTitle("Bilan tournage");
+        
         scene  = new Scene(lineChart,1920,500);
-
         stage.setScene(scene);
 
         stage.show();
         stage.toFront();
         
-        saveAsPng(plan, cadreur.toString());
-        //TODO n'affiche pas les graduations dans l'image exportée
+        saveAsPng(plan, cadreur.toString(), scene);
+      //TODO n'affiche pas les graduations dans l'image exportée
 	}
     
-    public static void saveAsPng(String plan, String cadreur) {
-        WritableImage image = scene.snapshot(null);
+    public static void saveAsPng(String plan, String cadreur, Scene sceneAsPng) {
+        WritableImage image = sceneAsPng.snapshot(null);
 
         // TODO: probably use a file chooser here
-        File file = new File(String.format("/home/autor/Desktop/%s_%s.png", plan, cadreur));
+        File file = new File(String.format("/home/autor/Desktop/bilans/%s_%s.png", plan, cadreur));
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
@@ -210,7 +210,7 @@ public class Chart {
         }
     }
     
-    public static String affDuree(Duration duree){
+    public static String affDuree(Duration duree){	
     	
     	long hours = duree.toHours();
     	long minutes = duree.minusHours(hours).toMinutes();
