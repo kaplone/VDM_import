@@ -66,7 +66,9 @@ public class VDM_import_controller implements Initializable{
         	dirChooser.setInitialDirectory(repPreview.getParentFile());
     	}
         else {
-        	dirChooser.setInitialDirectory(new File("/mnt/nfs2"));
+        	//dirChooser.setInitialDirectory(new File("/mnt/nfs2"));
+        	//dirChooser.setInitialDirectory(new File("/mnt/2015_cartes"));
+        	dirChooser.setInitialDirectory(new File("/mnt"));
         }
 				
 		dirChooser.setTitle(s);

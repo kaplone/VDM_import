@@ -100,7 +100,8 @@ public class Chart {
             	    partie = true;
         		}
         		// cas bouts avant/apres entracte
-        		else if(partie && a.getDuree().getSeconds() > duree_coupure){
+        		// else if(partie && a.getDuree().getSeconds() > duree_coupure){
+        		else if(partie){
         			
         			System.out.println(partie + ", " +a.getDuree() + "," + a.getDuree().getSeconds() + ", " + duree_coupure);
         			System.out.println("cas bouts avant/apres entracte");
@@ -201,13 +202,13 @@ public class Chart {
         WritableImage image = sceneAsPng.snapshot(null);
 
         // TODO: probably use a file chooser here
-        File file = new File(String.format("/home/autor/Desktop/bilans/%s_%s.png", plan, cadreur));
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-        }
+//        File file = new File(String.format("/home/david/Desktop/bilans/%s_%s.png", plan, cadreur));
+//
+//        try {
+//            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+//        } catch (IOException e) {
+//            // TODO: handle exception here
+//        }
     }
     
     public static String affDuree(Duration duree){	

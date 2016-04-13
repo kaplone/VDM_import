@@ -40,6 +40,8 @@ public class RushToPlan {
 	
 	public static void joindre (Rush r0, Rush r1){
 		
+		System.out.println("r0.getDebut() : " + r0.getDebut() + "r0.getDuree() : " + r0.getDuree() + " =  r0.getDebut().plus(r0.getDuree()) : " + r0.getDebut().plus(r0.getDuree()));
+		System.out.println("r1.getDebut() : " + r1.getDebut());
 		System.out.println("écart : " + Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()));
 		
 		if (Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()) < 1200){
