@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import models.Cadreur;
 import models.Rush;
+import utils.AfficheurFlux;
 import utils.Messages;
 
 public class ModeleMP4_CLPR implements ModeleImport{
@@ -48,6 +49,9 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	
 	private FileWriter fw;
 	
+	private AfficheurFlux fluxSortieSTD;
+	private AfficheurFlux fluxErreurERR;
+	
 	public void ecritureTxt(){
 		
 		File txt = new File(ram + "/liste.txt");
@@ -77,16 +81,34 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		for (int i = 0; i < liste_des_plans.size(); i++){
 			
 			Process pr = importer(liste_des_plans.get(i));
+			Process p3;
 			try {
+				fluxSortieSTD = new AfficheurFlux(pr.getInputStream());
+				fluxErreurERR = new AfficheurFlux(pr.getErrorStream());
+				new Thread(fluxSortieSTD).start();
+	            new Thread(fluxErreurERR).start();
 				pr.waitFor();
-			} catch (InterruptedException e) {
+				
+				System.out.println("\n**script_rmfifos**");
+				
+				for(String f : liste_des_fifos){
+					
+					script_rmfifos = new String[] {"rm",
+		                    "-f",
+		                    f
+		            };
+					p3 = Runtime.getRuntime().exec(script_rmfifos);
+					fluxSortieSTD = new AfficheurFlux(pr.getInputStream());
+					fluxErreurERR = new AfficheurFlux(pr.getErrorStream());
+					new Thread(fluxSortieSTD).start();
+		            new Thread(fluxErreurERR).start();
+		            p3.waitFor();		
+				}
+			} catch (InterruptedException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-////		
-////		liste_des_plans.stream()
-////		               .forEach(p -> importer(p));
 	}
 		
 	public Process importer(Rush plan){
@@ -186,14 +208,16 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-b:a",
                 "384k",
                 "-vcodec",
-                "copy",
+                "mpeg2video",
+                "-q:v",
+                "0",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
  	
     	Process [] p0 = new Process [50];
 		Process [] p1 = new Process [50];
     	Process p2 = null;
-		Process p3;
+		
 
 		try {
 			
@@ -204,8 +228,33 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				System.out.println("\n**script_fifo**");
 				System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
 				
+				fluxSortieSTD = new AfficheurFlux(p0[i].getInputStream());
+				fluxErreurERR = new AfficheurFlux(p0[i].getErrorStream());
+				new Thread(fluxSortieSTD).start();
+	            new Thread(fluxErreurERR).start();
+				p0[i].waitFor();
+				
 				i++;
 
+			}
+			
+            System.out.println("\n**script_remux**");
+			
+			if (plan.getChunks().size() > 1){
+				p2 = Runtime.getRuntime().exec(script_remux_concat);
+				fluxSortieSTD = new AfficheurFlux(p2.getInputStream());
+				fluxErreurERR = new AfficheurFlux(p2.getErrorStream());
+				new Thread(fluxSortieSTD).start();
+	            new Thread(fluxErreurERR).start();
+				System.out.println(affcommande(script_remux_concat));
+			}
+			else {
+				p2 = Runtime.getRuntime().exec(script_remux);
+				fluxSortieSTD = new AfficheurFlux(p2.getInputStream());
+				fluxErreurERR = new AfficheurFlux(p2.getErrorStream());
+				new Thread(fluxSortieSTD).start();
+	            new Thread(fluxErreurERR).start();
+				System.out.println(affcommande(script_remux));
 			}
 			
 			i = 0;
@@ -219,33 +268,16 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				System.out.println(cadreur.isDeint() ? affcommande(liste_des_scripts_encode_deint.get(i))
                                                      : affcommande(liste_des_scripts_encode.get(i)));
 				
+				fluxSortieSTD = new AfficheurFlux(p1[i].getInputStream());
+				fluxErreurERR = new AfficheurFlux(p1[i].getErrorStream());
+				new Thread(fluxSortieSTD).start();
+	            new Thread(fluxErreurERR).start();
 				p1[i].waitFor();
-				
-				BufferedReader reader = 
-	                    new BufferedReader(new InputStreamReader(p1[i].getErrorStream()));
-				BufferedReader reader_ = 
-	                    new BufferedReader(new InputStreamReader(p1[i].getInputStream()));
-
-	            String line = "";	
-
-				while ((line = reader.readLine())!= null) {
-					System.out.println(line);
-					reader_.readLine();
-				}
 
 				i++;
 		    }
 			
-			System.out.println("\n**script_remux**");
 			
-			if (plan.getChunks().size() > 1){
-				p2 = Runtime.getRuntime().exec(script_remux_concat);
-				System.out.println(affcommande(script_remux_concat));
-			}
-			else {
-				p2 = Runtime.getRuntime().exec(script_remux);
-				System.out.println(affcommande(script_remux));
-			}
 			
 //			if (p2 != null && p2.waitFor() == 0){
 //				System.out.println("\n**script_rmfifos**");
