@@ -14,7 +14,7 @@ import models.Rush;
 import utils.AfficheurFlux;
 import utils.Messages;
 
-public class ModeleMP4_CLPR implements ModeleImport{
+public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 	
 	private String[] script_fifo;
 	private String[] script_rmfifos;

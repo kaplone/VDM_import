@@ -31,6 +31,7 @@ public enum Cadreur {
 	MERCHADOU("MP4",false, ModeleMP4_CLPR.class),
 	MERCIER("M2T", false, ModeleM2T.class),
 	MICHARD("MP4",true, ModeleMP4_CLPR.class),
+	MISSANA("M2T", true, ModeleM2T_NO_DESPLIT.class),
 	MOREL("MP4",true, ModeleMP4_CLPR.class),
 	PARADIS("M2T", true, ModeleM2T.class),
 	PICHON("M2T", true, ModeleM2T.class),

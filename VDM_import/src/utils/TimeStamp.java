@@ -21,8 +21,11 @@ public class TimeStamp {
 	private static Duration duration;
 	
 	public static void plage(String debut, String duree){
+		
+		System.out.println("** plage");
 
 		System.out.println("durée : " + duree);
+		System.out.println("début : " + debut);
 		
 		if(debut.startsWith("UTC")){
 			debut = debut.split("UTC")[1].trim();
@@ -80,7 +83,8 @@ public class TimeStamp {
 	public static void plage(Rush rush){
 		
 		MediaInfo.getInfos(rush.toPath(), new VBox());
-		plage(Messages.getTimestamp(), Messages.getDuration());
+		//plage(Messages.getTimestamp(), Messages.getDuration());
+		plage(rush.getDebut_str(), rush.getDuree_str());
 	}
 	
 	

@@ -59,6 +59,9 @@ public class MediaInfo {
 		
 		Process p;
 		try {
+			
+			System.out.println("** mediainfo 2");
+			
 			p = Runtime.getRuntime().exec(mediaInfo);
 			p.waitFor();
 			
@@ -75,12 +78,15 @@ public class MediaInfo {
 				case "Video"            : boucle = false;
 				                          break;
 				
-				case "Encoded date"     :  timestamp = String.format("%s:%s:%s", line.split(":")[1].trim(), 
-                                                                                 line.split(":")[2].trim(),
-                                                                                 line.split(":")[3].trim());
+				case "Encoded date"     :  if (! line.split(":")[1].trim().startsWith("UTC 165-")){
+						                       timestamp = String.format("%s:%s:%s", line.split(":")[1].trim(), 
+	                                                                                 line.split(":")[2].trim(),
+	                                                                                 line.split(":")[3].trim());
+				                           }
                                            break;
                                            
 				case "Duration"         : duree = line.split(":")[1].trim();
+				                          System.out.println("durée = " + duree);
                                           Messages.setDuration(line.split(":")[1].trim());
                                           break;                           
 				}
@@ -97,6 +103,9 @@ public class MediaInfo {
 			boucle = true;
 			
 			try {
+				
+				System.out.println("** exiftool 2");
+				
 				p = Runtime.getRuntime().exec(exiftool);
 				p.waitFor();
 				
@@ -107,10 +116,14 @@ public class MediaInfo {
 
 				while (boucle && (line = reader.readLine())!= null) {
 	                String tag = line.split(":")[0].trim();
+	                String date ;
+	                String [] elements ;
 	                
 	                switch(tag){
-	                case "Date/Time Original"     :  String date = line.split("\\+")[0].trim();
-	                	                             String [] elements = date.split(":");
+	                
+	                case "File Modification Date/Time" : ;
+	                case "Date/Time Original"     :  date = line.split("\\+")[0].trim();
+	                	                             elements = date.split(":");
 	                	                             timestamp = String.format("%s-%s-%s %s:%s:%s", elements[1],
 	                	                            		                                        elements[2],
 	                	                            		                                        elements[3].split(" ")[0],
@@ -118,6 +131,7 @@ public class MediaInfo {
 	                	                            		                                        elements[4],
 	                	                            		                                        elements[5]).trim();
                             break;
+        
 	                }
 				}
 			}
@@ -141,13 +155,15 @@ public class MediaInfo {
 		}
 		
 		r.setDebut(secondsFromEpoch);
-		r.setDuree(getDuree(duree));
+		r.setDebut_str(timestamp);
+		r.setDuree(dureeFormatee());
+		r.setDuree_str(duree);
 		
 		return r;
 		
 	}
 	
-	public static Duration getDuree(String duree){
+	public static Duration dureeFormatee(){
 		
 		heures = 0;
 		minutes = 0;
@@ -217,6 +233,9 @@ public class MediaInfo {
 		
 		Process p;
 		try {
+			
+			System.out.println("** mediainfo 1");
+			
 			p = Runtime.getRuntime().exec(mediaInfo);
 			p.waitFor();
 			
@@ -299,13 +318,8 @@ public class MediaInfo {
 					switch(tag){
 					
 					case "Complete name"    : addRow(vbox, "Nom complet", line.split(":")[1].trim());
-                                              break;
-					case "Encoded date"     : addRow(vbox, "Timestamp", String.format("%s:%s:%s", line.split(":")[1].trim(), 
-                                                                                                  line.split(":")[2].trim(),
-                                                                                                  line.split(":")[3].trim()));
-					                          Messages.setTimestamp(String.format("%s:%s:%s", line.split(":")[1].trim(), 
-                                                                                              line.split(":")[2].trim(),
-                                                                                              line.split(":")[3].trim()));
+					                          addRow(vbox, "Timestamp", timestamp);
+					                          Messages.setTimestamp(timestamp);
                                               break;
 					}
 				}
@@ -473,7 +487,9 @@ public class MediaInfo {
 			e.printStackTrace();
 		}
 		
-        if (true){
+        if (timestamp == null){
+        	
+        	System.out.println("** exiftool");
 			
 			try {
 				p = Runtime.getRuntime().exec(exiftool);
@@ -488,6 +504,8 @@ public class MediaInfo {
 	                String tag = line.split(":")[0].trim();
 	                
 	                switch(tag){
+	                
+	                case "File Modification Date/Time" : ;
 	                case "Date/Time Original"     :  String date = line.split("\\+")[0].trim();
 	                	                             String [] elements = date.split(":");
 	                	                             timestamp = String.format("%s-%s-%s %s:%s:%s", elements[1],

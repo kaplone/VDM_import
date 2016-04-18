@@ -16,6 +16,8 @@ public class Rush extends File{
 	
 	private Instant debut;
 	private Duration duree;
+	private String debut_str;
+	private String duree_str;
 	private List<Rush> chunks;
 
 	public Rush(String pathname) {
@@ -88,5 +90,22 @@ public class Rush extends File{
 	public void setChunks(List<Rush> chunks) {
 		this.chunks = chunks;
 	}
+
+	public String getDebut_str() {
+		return debut_str;
+	}
+
+	public void setDebut_str(String debut_str) {
+		this.debut_str = debut_str;
+	}
+
+	public String getDuree_str() {
+		return duree_str;
+	}
+
+	public void setDuree_str(String duree_str) {
+		this.duree_str = duree_str;
+	}
+	
 	
 }

@@ -8,9 +8,13 @@ import java.io.InputStreamReader;
 public class AfficheurFlux implements Runnable {
 	
 	private final InputStream inputStream;
+	private String pre;
+	private boolean aff;
 
-    public AfficheurFlux(InputStream inputStream) {
+    public AfficheurFlux(InputStream inputStream, String pre, boolean aff) {
         this.inputStream = inputStream;
+        this.pre = pre;
+        this.aff = aff; 
     }
 
     private BufferedReader getBufferedReader(InputStream is) {
@@ -23,7 +27,10 @@ public class AfficheurFlux implements Runnable {
         String ligne = "";
         try {
             while ((ligne = br.readLine()) != null) {
-                System.out.println(ligne);
+            	if (aff){
+            		System.out.println(pre + ligne);
+            	}
+                
             }
         } catch (IOException e) {
             e.printStackTrace();

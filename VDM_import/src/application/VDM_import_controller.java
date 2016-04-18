@@ -96,6 +96,8 @@ public class VDM_import_controller implements Initializable{
     
     protected void peupler_samples(){
     	
+    	System.out.println("peupler liste des samples");
+    	
     	Messages.setCadreur(cadreur_choicebox.getValue());
     	
     	try {
