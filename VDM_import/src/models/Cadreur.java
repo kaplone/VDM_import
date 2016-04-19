@@ -1,5 +1,6 @@
 package models;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,42 +12,46 @@ import models.imports.*;
 
 public enum Cadreur {
 	
-	ALBARET("MXF", false, ModeleMXF_XDCAM.class),
-	AMOUROUX("M2T", true, ModeleM2T.class),
-	ARMATOL("MP4", false, ModeleMP4_CLPR.class),
-	BATMAN("MXF", true, ModeleMXF_P2.class),
-	BAUDON("MP4",false, ModeleMP4_CLPR.class),
-	BIGEAULT("MP4",false, ModeleMP4_CLPR.class),
-	DE_KERDREL("MXF", true, ModeleMXF_P2.class),
-	DUCOING("MOV", false, ModeleMOV_ProRes.class),
-	GIRARD("MP4",false, ModeleMP4_CLPR.class),
-	GAUTIER("M2T", false, ModeleM2T.class),
-	GORWA("MTS", false, ModeleMTS.class),
-	HUET("MTS", false, ModeleMTS.class),
-	HUGUES("MOV", false, ModeleMOV_ProRes.class),
-	LEUX("MTS", false, ModeleMTS.class),
-	LE_YOUDEC("MXF", false, ModeleMXF_XDCAM.class),
-	LOPACKI("MTS", true, ModeleMTS.class),
-	MAS("MP4",false, ModeleMP4_CLPR.class),
-	MERCHADOU("MP4",false, ModeleMP4_CLPR.class),
-	MERCIER("M2T", false, ModeleM2T.class),
-	MICHARD("MP4",true, ModeleMP4_CLPR.class),
-	MISSANA("M2T", true, ModeleM2T_NO_DESPLIT.class),
-	MOREL("MP4",true, ModeleMP4_CLPR.class),
-	PARADIS("M2T", true, ModeleM2T.class),
-	PICHON("M2T", true, ModeleM2T.class),
-	QUESADA("M2T", true, ModeleM2T.class),
-	RICO("M2T", true, ModeleM2T.class)
+	ALBARET   ("MXF", false, ModeleMXF_XDCAM.class, ""),
+	AMOUROUX  ("M2T", true,  ModeleM2T.class,       ""),
+	ARMATOL   ("MP4", false, ModeleMP4_CLPR.class , ""),
+	BATMAN    ("MXF", true,  ModeleMXF_P2.class, ""),
+	BAUDON    ("MP4", false, ModeleMP4_CLPR.class, ""),
+	BIGEAULT  ("MP4", false, ModeleMP4_CLPR.class, ""),
+	DE_KERDREL("MXF", true,  ModeleMXF_P2.class, ""),
+	DUCOING   ("MOV", false, ModeleMOV_ProRes.class, ""),
+	GIRARD    ("MP4", false, ModeleMP4_CLPR.class, ""),
+	GAUTIER   ("M2T", false, ModeleM2T.class, ""),
+	GORWA     ("MTS", false, ModeleMTS.class, ""),
+	HUET      ("MTS", false, ModeleMTS.class, ""),
+	HUGUES    ("MOV", false, ModeleMOV_ProRes.class, ""),
+	LEUX      ("MTS", false, ModeleMTS.class, ""),
+	LE_YOUDEC ("MXF", false, ModeleMXF_XDCAM.class, ""),
+	LOPACKI   ("MTS", true,  ModeleMTS.class, ""),
+	MAS       ("MP4", false, ModeleMP4_CLPR.class, ""),
+	MERCHADOU ("MP4", false, ModeleMP4_CLPR.class, ""),
+	MERCIER   ("M2T", false, ModeleM2T.class, ""),
+	MICHARD   ("MP4", true,  ModeleMP4_CLPR.class, ""),
+	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT.class, "merging_M2T_05_SD_deint_amouroux.py"),
+	MOREL     ("MP4", true,  ModeleMP4_CLPR.class, "merging_MP4_06_SD_deint.py"),
+	PARADIS   ("M2T", true,  ModeleM2T.class, ""),
+	PICHON    ("M2T", true,  ModeleM2T.class, ""),
+	QUESADA   ("M2T", true,  ModeleM2T.class, ""),
+	RICO      ("M2T", true,  ModeleM2T.class, "")
 	;
 	
 	private String extension;
 	private boolean deint;
 	private Class modele_import;
 	
-	Cadreur (String ext, boolean deint, Class modele_import){
+	private String currentUsersHomeDir = System.getProperty("user.home");
+	
+	private String python_file;
+	
+	Cadreur (String ext, boolean deint, Class modele_import, String python_file){
 		this.extension = ext;
 		this.deint = deint;
-		this.modele_import = modele_import;
+		this.python_file = python_file;
 	}
 
 	public String getExtension() {
@@ -71,6 +76,14 @@ public enum Cadreur {
 
 	public void setModele_import(Class modele_import) {
 		this.modele_import = modele_import;
+	}
+
+	public void setPython_file(String python_file) {
+		this.python_file = python_file;
+	}
+	
+	public String getPython_file(){
+		return currentUsersHomeDir + File.separator + "encodage" + File.separator + python_file;
 	}
 
 	public static ObservableList<String> getExtensions () {

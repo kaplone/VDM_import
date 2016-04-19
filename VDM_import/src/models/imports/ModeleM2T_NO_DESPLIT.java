@@ -104,10 +104,10 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
         for (int i = 0; i < taille_liste; i++){
 			
 			script_fifo = new String[] {"mkfifo",
-					                    String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i)
+					                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
 			                           };
 			
-			liste_des_fifos.add(String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i));
+			liste_des_fifos.add(String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i));
 
 			liste_des_scripts_fifo.add(script_fifo);
         }
@@ -136,14 +136,14 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
-                "-b:a",
-                "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
+                "-c:a",
+                "ac3",
+                "-b:a",
+                "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
     	
@@ -159,14 +159,14 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
-                "-b:a",
-                "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
+                "-c:a",
+                "ac3",
+                "-b:a",
+                "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
     	
@@ -182,14 +182,14 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
-                "-b:a",
-                "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
+                "-c:a",
+                "ac3",
+                "-b:a",
+                "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
     	
@@ -207,14 +207,14 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
-                "-b:a",
-                "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
+                "-c:a",
+                "ac3",
+                "-b:a",
+                "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
         }
@@ -254,9 +254,9 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 	                                                     : affcommande(script_remux_concat));
 					
 					//p2 = Runtime.getRuntime().exec(script_remux_concat);
-					fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
+					//fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
 					fluxErreurERR = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
-					new Thread(fluxSortieSTD).start();
+					//new Thread(fluxSortieSTD).start();
 		            new Thread(fluxErreurERR).start();
 				}
 				else {
@@ -268,9 +268,9 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 	                                                     : affcommande(script_remux));
 					
 					//p2 = Runtime.getRuntime().exec(script_remux);
-					fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
+					//fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
 					fluxErreurERR = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
-					new Thread(fluxSortieSTD).start();
+					//new Thread(fluxSortieSTD).start();
 		            new Thread(fluxErreurERR).start();
 				}
 			
@@ -300,13 +300,15 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 			                    "100M",
 			                    "-i",
 			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-acodec",
-			                    "pcm_s16le",
-			                    "-vcodec",
-			                    "mpeg2video",
-			                    "-q:v",
-			                    "0",
-			                    String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i)
+			                    "-map",
+			                    "0:0",
+			                    "-map",
+			                    "0:1",
+			                    "-c:v",
+			                    "copy",
+			                    "-b:a",
+			                    "384k", 
+			                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
 			                    };
 				
 
@@ -328,9 +330,9 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 				
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
 				
-				fluxSortieSTD = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
+				//fluxSortieSTD = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
 				fluxErreurERR = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", true);
-				new Thread(fluxSortieSTD).start();
+				//new Thread(fluxSortieSTD).start();
 	            new Thread(fluxErreurERR).start();
 				p1[i].waitFor();
 

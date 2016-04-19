@@ -16,6 +16,8 @@ import utils.Messages;
 
 public class ModeleMP4_CLPR implements ModeleImport{
 	
+	private String[] script_encode;
+	
 	private String[] script_fifo;
 	private String[] script_rmfifos;
 	private String[] script_lecture;
@@ -86,12 +88,26 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			
 			plan = liste_des_plans.get(i);
 
-			init();
-			open();
-			remux();
-			lire();
-			close();		
+//			init();
+//			open();
+//			remux();
+//			lire();
+//			close();
+			
+			encode();
+			
+			
+			
 		}
+	}
+	
+	public void encode(){
+		
+		script_encode = new String[] {"python2",
+                
+                String.format("%s/%s.mpg", outdir, outfile) 
+                };
+		
 	}
 	
 	public void init() {
@@ -127,7 +143,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		outfile = plan.getName();
     	
     	script_remux = new String[] {"ffmpeg",
-                "-y",
+                "-y",	
                 "-i",
                 concat_des_rush_du_plan,
                 "-s",

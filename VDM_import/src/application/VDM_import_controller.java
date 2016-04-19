@@ -140,14 +140,14 @@ public class VDM_import_controller implements Initializable{
 		cadreur_choicebox.setOnAction(a -> {
 			deint_checkbox.setSelected(cadreur_choicebox.getValue().isDeint());
 			extension_choicebox.getSelectionModel().select(cadreur_choicebox.getValue().getExtension());
-			Class modele = cadreur_choicebox.getValue().getModele_import();
-			
-			try {
-				modele.newInstance();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			Class modele = cadreur_choicebox.getValue().getModele_import();
+//			
+//			try {
+//				modele.newInstance();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		});
 		
 		extension_choicebox.setItems(Cadreur.getExtensions());

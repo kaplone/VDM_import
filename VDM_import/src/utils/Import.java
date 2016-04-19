@@ -3,6 +3,7 @@ package utils;
 import java.io.File;
 
 import models.Cadreur;
+import models.imports.Import_with_python;
 import models.imports.ModeleImport;
 
 public class Import {
@@ -13,7 +14,7 @@ public class Import {
 		
 		
 		try {
-			modele = (ModeleImport) cadreur.getModele_import().newInstance();
+			modele = (ModeleImport) Import_with_python.class.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
