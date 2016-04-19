@@ -88,27 +88,17 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			
 			plan = liste_des_plans.get(i);
 
-//			init();
-//			open();
-//			remux();
-//			lire();
-//			close();
-			
-			encode();
+			init();
+			open();
+			remux();
+			lire();
+			close();
 			
 			
 			
 		}
 	}
 	
-	public void encode(){
-		
-		script_encode = new String[] {"python2",
-                
-                String.format("%s/%s.mpg", outdir, outfile) 
-                };
-		
-	}
 	
 	public void init() {
 		
@@ -152,8 +142,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -175,8 +163,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -198,8 +184,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -223,8 +207,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
-                "-acodec",
-                "ac3",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -316,12 +298,12 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			                    "100M",
 			                    "-i",
 			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-acodec",
-			                    "pcm_s16le",
 			                    "-vcodec",
 			                    "mpeg2video",
 			                    "-q:v",
 			                    "0",
+			                    "-b:a",
+			                    "384k",
 			                    String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i)
 			                    };
 				

@@ -32,7 +32,11 @@
 </center>
 <bottom>
 <VBox alignment="CENTER">
-<children><Button fx:id="importer_button" mnemonicParsing="false" text="Importer" BorderPane.alignment="CENTER" />
+<children>
+<HBox alignment="CENTER" spacing="100.0">
+<children><Button fx:id="importer_python_button" mnemonicParsing="false" text="Importer (python)" BorderPane.alignment="CENTER" /><Button fx:id="importer_java_button" mnemonicParsing="false" text="Importer (java)" />
+</children>
+</HBox>
 </children>
 </VBox>
 </bottom></BorderPane>

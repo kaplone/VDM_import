@@ -32,7 +32,7 @@ public enum Cadreur {
 	MERCHADOU ("MP4", false, ModeleMP4_CLPR.class, ""),
 	MERCIER   ("M2T", false, ModeleM2T.class, ""),
 	MICHARD   ("MP4", true,  ModeleMP4_CLPR.class, ""),
-	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT.class, "merging_M2T_05_SD_deint_amouroux.py"),
+	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT.class, "merging_M2T_05_SD_NO_DESPLIT_deint.py"),
 	MOREL     ("MP4", true,  ModeleMP4_CLPR.class, "merging_MP4_06_SD_deint.py"),
 	PARADIS   ("M2T", true,  ModeleM2T.class, ""),
 	PICHON    ("M2T", true,  ModeleM2T.class, ""),
@@ -51,6 +51,7 @@ public enum Cadreur {
 	Cadreur (String ext, boolean deint, Class modele_import, String python_file){
 		this.extension = ext;
 		this.deint = deint;
+		this.modele_import = modele_import;
 		this.python_file = python_file;
 	}
 

@@ -6,7 +6,7 @@ import models.Cadreur;
 import models.imports.Import_with_python;
 import models.imports.ModeleImport;
 
-public class Import {
+public class Import_java {
     
 	private static ModeleImport modele;
 	
@@ -14,7 +14,7 @@ public class Import {
 		
 		
 		try {
-			modele = (ModeleImport) Import_with_python.class.newInstance();
+			modele = (ModeleImport) cadreur.getModele_import().newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

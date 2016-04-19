@@ -24,7 +24,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import models.Cadreur;
 import models.imports.ModeleImport;
-import utils.Import;
+import utils.Import_java;
+import utils.Import_python;
 import utils.MediaInfo;
 import utils.Messages;
 import utils.ScreenShot;
@@ -48,7 +49,9 @@ public class VDM_import_controller implements Initializable{
 	@FXML
 	private VBox resume_vbox;
 	@FXML
-	private Button importer_button;
+	private Button importer_python_button;
+	@FXML
+	private Button importer_java_button;
 	
 	private Image im;
 	private File repPreview;
@@ -179,7 +182,9 @@ public class VDM_import_controller implements Initializable{
 //			}
 //		});
 		
-		importer_button.setOnAction(a -> Import.importer(repPreview, cadreur_choicebox.getValue()));
+		importer_python_button.setOnAction(a -> Import_python.importer(repPreview, cadreur_choicebox.getValue()));
+		
+		importer_java_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue()));
 		
 	
 	}

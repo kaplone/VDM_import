@@ -140,8 +140,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "mpeg2video",
                 "-q:v",
                 "0",
-                "-c:a",
-                "ac3",
                 "-b:a",
                 "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
@@ -163,8 +161,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "mpeg2video",
                 "-q:v",
                 "0",
-                "-c:a",
-                "ac3",
                 "-b:a",
                 "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
@@ -186,8 +182,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "mpeg2video",
                 "-q:v",
                 "0",
-                "-c:a",
-                "ac3",
                 "-b:a",
                 "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
@@ -211,8 +205,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "mpeg2video",
                 "-q:v",
                 "0",
-                "-c:a",
-                "ac3",
                 "-b:a",
                 "384k",
                 String.format("%s/%s.mpg", outdir, outfile) 
