@@ -47,8 +47,14 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	
 	private FileWriter fw;
 	
-	private AfficheurFlux fluxSortieSTD;
-	private AfficheurFlux fluxErreurERR;
+	private AfficheurFlux[] fluxSortieSTD_MKFIFO;
+	private AfficheurFlux[] fluxErreurERR_MKFIFO;
+	private AfficheurFlux fluxSortieSTD_REMUX;
+	private AfficheurFlux fluxErreurERR_REMUX;
+	private AfficheurFlux[] fluxSortieSTD_LECTURE;
+	private AfficheurFlux[] fluxErreurERR_LECTURE;
+	private AfficheurFlux fluxSortieSTD_RMFIFO;
+	private AfficheurFlux fluxErreurERR_RMFIFO;
 	
 	private Process p2;
 	
@@ -110,10 +116,10 @@ public class ModeleMP4_CLPR implements ModeleImport{
         for (int i = 0; i < taille_liste; i++){
 			
 			script_fifo = new String[] {"mkfifo",
-					                    String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i)
+					                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
 			                           };
 			
-			liste_des_fifos.add(String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i));
+			liste_des_fifos.add(String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i));
 
 			liste_des_scripts_fifo.add(script_fifo);
         }
@@ -155,6 +161,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",
                 "-f",
                 "concat",
+                "-safe",
+                "0",
                 "-i",
                 concat_des_rush_du_plan,
                 "-s",
@@ -197,6 +205,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",
                 "-f",
                 "concat",
+                "-safe",
+                "0",
                 "-i",
                 concat_des_rush_du_plan,
                 "-vf",
@@ -220,6 +230,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
         public void remux(){
         	   		
     		Process [] p0 = new Process [100];
+    		fluxSortieSTD_MKFIFO = new AfficheurFlux[100];
+    		fluxErreurERR_MKFIFO = new AfficheurFlux[100];
 			
 			try {
 				
@@ -231,10 +243,10 @@ public class ModeleMP4_CLPR implements ModeleImport{
 					System.out.println("\n** " + i);
 					System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
 					
-					fluxSortieSTD = new AfficheurFlux(p0[i].getInputStream(), "[MKFIFO STD] ", false);
-					fluxErreurERR = new AfficheurFlux(p0[i].getErrorStream(), "[MKFIFO ERR] ", false);
-					new Thread(fluxSortieSTD).start();
-		            new Thread(fluxErreurERR).start();
+					fluxSortieSTD_MKFIFO[i] = new AfficheurFlux(p0[i].getInputStream(), "[MKFIFO STD] ", false);
+					fluxErreurERR_MKFIFO[i] = new AfficheurFlux(p0[i].getErrorStream(), "[MKFIFO ERR] ", false);
+					new Thread(fluxSortieSTD_MKFIFO[i]).start();
+		            new Thread(fluxErreurERR_MKFIFO[i]).start();
 					p0[i].waitFor();
 					
 					i++;
@@ -250,12 +262,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
 					
 					System.out.println(cadreur.isDeint() ? affcommande(script_remux_concat_deint)
 	                                                     : affcommande(script_remux_concat));
-					
-					//p2 = Runtime.getRuntime().exec(script_remux_concat);
-					fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
-					fluxErreurERR = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
-					new Thread(fluxSortieSTD).start();
-		            new Thread(fluxErreurERR).start();
 				}
 				else {
 					
@@ -264,13 +270,12 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		
 		            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
 	                                                     : affcommande(script_remux));
-					
-					//p2 = Runtime.getRuntime().exec(script_remux);
-					fluxSortieSTD = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
-					fluxErreurERR = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
-					new Thread(fluxSortieSTD).start();
-		            new Thread(fluxErreurERR).start();
 				}
+				
+				fluxSortieSTD_REMUX = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
+				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
+				new Thread(fluxSortieSTD_REMUX).start();
+	            new Thread(fluxErreurERR_REMUX).start();
 			
             }
 			catch (Exception e) {
@@ -304,7 +309,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			                    "0",
 			                    "-b:a",
 			                    "384k",
-			                    String.format("%s/fifo_%s_%d.mts", ram, plan.getName(), i)
+			                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
 			                    };
 				
 
@@ -314,9 +319,13 @@ public class ModeleMP4_CLPR implements ModeleImport{
 
     	
 		Process [] p1 = new Process [100];
-    	
+    	fluxSortieSTD_LECTURE = new AfficheurFlux[100];
+    	fluxErreurERR_LECTURE = new AfficheurFlux[100];
+		
     	try {
           	int i = 0;
+          	
+          	
 			while(i < liste_des_scripts_fifo.size()){
 
 				System.out.println("\n**script_lecture**");
@@ -326,11 +335,14 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
 				
-				fluxSortieSTD = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
-				fluxErreurERR = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false);
-				new Thread(fluxSortieSTD).start();
-	            new Thread(fluxErreurERR).start();
-				p1[i].waitFor();
+				fluxSortieSTD_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
+				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false);
+				new Thread(fluxSortieSTD_LECTURE[i]).start();
+	            new Thread(fluxErreurERR_LECTURE[i]).start();
+				
+	            if(i == liste_des_scripts_fifo.size() -1 ){
+	            	p1[i].waitFor();
+	            }            
 
 				i++;
 		    }
@@ -350,6 +362,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		
 		try {
 			
+			System.out.println("\n**fin process remux**");
+			p2.destroy();
 			
 			System.out.println("\n**script_rmfifos**");
 			
@@ -360,12 +374,13 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	                    f
 	            };
 				p3 = Runtime.getRuntime().exec(script_rmfifos);
-				fluxSortieSTD = new AfficheurFlux(p3.getInputStream(), "[RM STD] ", false);
-				fluxErreurERR = new AfficheurFlux(p3.getErrorStream(), "[RM ERR] ", false);
-				new Thread(fluxSortieSTD).start();
-	            new Thread(fluxErreurERR).start();
-	            p3.waitFor();		
+				fluxSortieSTD_RMFIFO = new AfficheurFlux(p3.getInputStream(), "[RM STD] ", false);
+				fluxErreurERR_RMFIFO = new AfficheurFlux(p3.getErrorStream(), "[RM ERR] ", false);
+				new Thread(fluxSortieSTD_RMFIFO).start();
+	            new Thread(fluxErreurERR_RMFIFO).start();
+	            p3.waitFor();	
 			}
+			
 		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
