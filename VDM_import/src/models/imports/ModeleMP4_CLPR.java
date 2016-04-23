@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,10 +118,10 @@ public class ModeleMP4_CLPR implements ModeleImport{
         for (int i = 0; i < taille_liste; i++){
 			
 			script_fifo = new String[] {"mkfifo",
-					                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
+					                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
 			                           };
 			
-			liste_des_fifos.add(String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i));
+			liste_des_fifos.add(String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i));
 
 			liste_des_scripts_fifo.add(script_fifo);
         }
@@ -151,7 +153,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-b:a",
                 "384k",
                 "-vcodec",
-                "mpeg2video",
+                "c:v",
                 "-q:v",
                 "0",
                 String.format("%s/%s.mpg", outdir, outfile) 
@@ -173,7 +175,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "yuv420p",
                 "-b:a",
                 "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
@@ -194,7 +196,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "yuv420p",
                 "-b:a",
                 "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
@@ -219,7 +221,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "yuv420p",
                 "-b:a",
                 "384k",
-                "-vcodec",
+                "-c:v",
                 "mpeg2video",
                 "-q:v",
                 "0",
@@ -278,7 +280,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				}
 				
 				//fluxSortieSTD_REMUX = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
-				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
+				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
 				//new Thread(fluxSortieSTD_REMUX).start();
 	            new Thread(fluxErreurERR_REMUX).start();
 			
@@ -310,13 +312,13 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			                    "100M",
 			                    "-i",
 			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-vcodec",
+			                    "-c:v",
 			                    "mpeg2video",
 			                    "-q:v",
 			                    "0",
 			                    "-b:a",
 			                    "384k",
-			                    String.format("%s/fifo_%s_%d.m2t", ram, plan.getName(), i)
+			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
 			                    };
 				
 
@@ -342,14 +344,21 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
 				
 				//fluxSortieSTD_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
-				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false);
+				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
 				//new Thread(fluxSortieSTD_LECTURE[i]).start();
 	            new Thread(fluxErreurERR_LECTURE[i]).start();
 	            
 	            System.out.println(String.format("Wait fo p1[%d]", i));
-            	p1[i].waitFor();           
-                
-	            System.out.println("i = " + i);
+            	p1[i].waitFor();
+	            
+//	            if(i == liste_des_scripts_lecture.size() -1){
+//	            	System.out.println(String.format("Wait for p1[%d]", i));
+//	            	p1[i].waitFor();  
+//	            }
+//	            else {
+//	            	System.out.println(String.format("execution p1[%d]", i));
+//	            }
+	            
 				i++;
 		    }
 			
@@ -373,13 +382,19 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		Process p3;
 		
 		try {
+
+//			fluxErreurERR_REMUX.close();
+//			p2.destroy();
+			
+			Instant deb = Instant.now();
+			
+			while (p2.isAlive()){	
+			}
+			System.out.println("== latence fin remux == " + Duration.between(deb, Instant.now()).toMillis() / 1000.0 + "secondes");
 			
 			System.out.println("\n**fin process remux**");
 			System.out.println("\n**p2 destroy()**");
-			
-			fluxErreurERR_REMUX.close();
-			p2.destroy();
-	
+
 			for(String f : liste_des_fifos){
 				
 				System.out.println("\n**script_rmfifos**");

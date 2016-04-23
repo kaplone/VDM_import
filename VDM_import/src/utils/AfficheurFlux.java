@@ -11,11 +11,13 @@ public class AfficheurFlux implements Runnable {
 	private final String pre;
 	private final boolean aff;
 	private BufferedReader br;
+	private final Process p;
 
-    public AfficheurFlux(InputStream inputStream, String pre, boolean aff) {
+    public AfficheurFlux(InputStream inputStream, String pre, boolean aff, Process p) {
         this.inputStream = inputStream;
         this.pre = pre;
         this.aff = aff; 
+        this.p = p;
     }
 
     private BufferedReader getBufferedReader(InputStream is) {
@@ -31,9 +33,13 @@ public class AfficheurFlux implements Runnable {
             while (! (ligne = br.readLine()).contains("muxing overhead:")) {
             	if (aff){
             		System.out.println(pre + ligne);
-            	}
-                
+            	}    
             }
+            
+            System.out.println("___ Derniere ligne " + pre + ligne);
+            close();
+            p.destroy();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
