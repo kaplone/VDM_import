@@ -8,8 +8,9 @@ import java.io.InputStreamReader;
 public class AfficheurFlux implements Runnable {
 	
 	private final InputStream inputStream;
-	private String pre;
-	private boolean aff;
+	private final String pre;
+	private final boolean aff;
+	private BufferedReader br;
 
     public AfficheurFlux(InputStream inputStream, String pre, boolean aff) {
         this.inputStream = inputStream;
@@ -23,10 +24,11 @@ public class AfficheurFlux implements Runnable {
 
     @Override
     public void run() {
-        BufferedReader br = getBufferedReader(inputStream);
+        br = getBufferedReader(inputStream);
         String ligne = "";
         try {
-            while ((ligne = br.readLine()) != null) {
+
+            while (! (ligne = br.readLine()).contains("muxing overhead:")) {
             	if (aff){
             		System.out.println(pre + ligne);
             	}
@@ -35,6 +37,17 @@ public class AfficheurFlux implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void close() {
+    	try {
+			br.close();
+			inputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
     }
 
 }

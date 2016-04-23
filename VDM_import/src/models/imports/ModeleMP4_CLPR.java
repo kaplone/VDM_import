@@ -49,9 +49,9 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	
 	private AfficheurFlux[] fluxSortieSTD_MKFIFO;
 	private AfficheurFlux[] fluxErreurERR_MKFIFO;
-	private AfficheurFlux fluxSortieSTD_REMUX;
+	//private AfficheurFlux fluxSortieSTD_REMUX;
 	private AfficheurFlux fluxErreurERR_REMUX;
-	private AfficheurFlux[] fluxSortieSTD_LECTURE;
+	//private AfficheurFlux[] fluxSortieSTD_LECTURE;
 	private AfficheurFlux[] fluxErreurERR_LECTURE;
 	private AfficheurFlux fluxSortieSTD_RMFIFO;
 	private AfficheurFlux fluxErreurERR_RMFIFO;
@@ -230,8 +230,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
         public void remux(){
         	   		
     		Process [] p0 = new Process [100];
-    		fluxSortieSTD_MKFIFO = new AfficheurFlux[100];
-    		fluxErreurERR_MKFIFO = new AfficheurFlux[100];
+    		//fluxSortieSTD_MKFIFO = new AfficheurFlux[100];
+    		//fluxErreurERR_MKFIFO = new AfficheurFlux[100];
 			
 			try {
 				
@@ -243,14 +243,19 @@ public class ModeleMP4_CLPR implements ModeleImport{
 					System.out.println("\n** " + i);
 					System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
 					
-					fluxSortieSTD_MKFIFO[i] = new AfficheurFlux(p0[i].getInputStream(), "[MKFIFO STD] ", false);
-					fluxErreurERR_MKFIFO[i] = new AfficheurFlux(p0[i].getErrorStream(), "[MKFIFO ERR] ", false);
-					new Thread(fluxSortieSTD_MKFIFO[i]).start();
-		            new Thread(fluxErreurERR_MKFIFO[i]).start();
+//					fluxSortieSTD_MKFIFO[i] = new AfficheurFlux(p0[i].getInputStream(), "[MKFIFO STD] ", false);
+//					fluxErreurERR_MKFIFO[i] = new AfficheurFlux(p0[i].getErrorStream(), "[MKFIFO ERR] ", false);
+//					new Thread(fluxSortieSTD_MKFIFO[i]).start();
+//		            new Thread(fluxErreurERR_MKFIFO[i]).start();
 					p0[i].waitFor();
 					
 					i++;
 
+				}
+				
+				System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
+				for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+					System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
 				}
 				
 	            System.out.println("\n**script_remux**");
@@ -272,9 +277,9 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	                                                     : affcommande(script_remux));
 				}
 				
-				fluxSortieSTD_REMUX = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
+				//fluxSortieSTD_REMUX = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
 				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false);
-				new Thread(fluxSortieSTD_REMUX).start();
+				//new Thread(fluxSortieSTD_REMUX).start();
 	            new Thread(fluxErreurERR_REMUX).start();
 			
             }
@@ -283,7 +288,9 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				
 				e.printStackTrace();
 			}
-		
+			
+			System.out.println("isAlive() p2 : " +  p2.isAlive());
+			
 	}
 		
 	public void lire(){
@@ -319,14 +326,13 @@ public class ModeleMP4_CLPR implements ModeleImport{
 
     	
 		Process [] p1 = new Process [100];
-    	fluxSortieSTD_LECTURE = new AfficheurFlux[100];
+    	//fluxSortieSTD_LECTURE = new AfficheurFlux[100];
     	fluxErreurERR_LECTURE = new AfficheurFlux[100];
 		
     	try {
           	int i = 0;
-          	
-          	
-			while(i < liste_des_scripts_fifo.size()){
+
+			while(i < liste_des_scripts_lecture.size()){
 
 				System.out.println("\n**script_lecture**");
 				System.out.println("** " + i);
@@ -335,18 +341,24 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
 				
-				fluxSortieSTD_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
+				//fluxSortieSTD_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
 				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false);
-				new Thread(fluxSortieSTD_LECTURE[i]).start();
+				//new Thread(fluxSortieSTD_LECTURE[i]).start();
 	            new Thread(fluxErreurERR_LECTURE[i]).start();
-				
-	            if(i == liste_des_scripts_fifo.size() -1 ){
-	            	p1[i].waitFor();
-	            }            
-
+	            
+	            System.out.println(String.format("Wait fo p1[%d]", i));
+            	p1[i].waitFor();           
+                
+	            System.out.println("i = " + i);
 				i++;
 		    }
 			
+			System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
+			for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+				System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
+				fluxErreurERR_LECTURE[j].close();
+			}
+					
 		}
 		catch (Exception e) {
 			System.out.println("une exception !");
@@ -363,23 +375,30 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		try {
 			
 			System.out.println("\n**fin process remux**");
+			System.out.println("\n**p2 destroy()**");
+			
+			fluxErreurERR_REMUX.close();
 			p2.destroy();
-			
-			System.out.println("\n**script_rmfifos**");
-			
+	
 			for(String f : liste_des_fifos){
+				
+				System.out.println("\n**script_rmfifos**");
+				System.out.println("** " + f);
 				
 				script_rmfifos = new String[] {"rm",
 	                    "-f",
 	                    f
 	            };
 				p3 = Runtime.getRuntime().exec(script_rmfifos);
-				fluxSortieSTD_RMFIFO = new AfficheurFlux(p3.getInputStream(), "[RM STD] ", false);
-				fluxErreurERR_RMFIFO = new AfficheurFlux(p3.getErrorStream(), "[RM ERR] ", false);
-				new Thread(fluxSortieSTD_RMFIFO).start();
-	            new Thread(fluxErreurERR_RMFIFO).start();
+//				fluxSortieSTD_RMFIFO = new AfficheurFlux(p3.getInputStream(), "[RM STD] ", false);
+//				fluxErreurERR_RMFIFO = new AfficheurFlux(p3.getErrorStream(), "[RM ERR] ", false);
+//				new Thread(fluxSortieSTD_RMFIFO).start();
+//	            new Thread(fluxErreurERR_RMFIFO).start();
+				System.out.println("isAlive() p3[pre] : " +  p3.isAlive());
 	            p3.waitFor();	
+	            System.out.println("isAlive() p3[post] : " +  p3.isAlive());
 			}
+
 			
 		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
