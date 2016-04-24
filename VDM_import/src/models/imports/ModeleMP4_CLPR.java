@@ -100,10 +100,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			open();
 			remux();
 			lire();
-			close();
-			
-			
-			
+			close();	
 		}
 	}
 	
@@ -144,8 +141,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",	
                 "-i",
                 concat_des_rush_du_plan,
-                "-ss",
-                "0.08",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -169,8 +164,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
-                "-ss",
-                "0.08",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -190,8 +183,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",
                 "-i",
                 concat_des_rush_du_plan,
-                "-ss",
-                "0.08",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -217,8 +208,6 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
-                "-ss",
-                "0.08",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -321,11 +310,9 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			                    "-i",
 			                    String.format("%s", plan.getChunks().get(i)),
 			                    "-c:v",
-			                    "mpeg2video",
-			                    "-q:v",
-			                    "0",
-			                    "-b:a",
-			                    "384k",
+			                    "huffyuv",
+			                    "-c:a",
+			                    "pcm_s16le",
 			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
 			                    };
 				
