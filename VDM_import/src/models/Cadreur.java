@@ -13,7 +13,7 @@ import models.imports.*;
 public enum Cadreur {
 	
 	ALBARET   ("MXF", false, ModeleMXF_XDCAM.class, ""),
-	AMOUROUX  ("M2T", true,  ModeleM2T.class,       ""),
+	AMOUROUX  ("M2T", true,  ModeleM2T_mencoder_desplit.class,       ""),
 	ARMATOL   ("MP4", false, ModeleMP4_CLPR.class , ""),
 	BATMAN    ("MXF", true,  ModeleMXF_P2.class, ""),
 	BAUDON    ("MP4", false, ModeleMP4_CLPR.class, ""),
@@ -32,12 +32,12 @@ public enum Cadreur {
 	MERCHADOU ("MP4", false, ModeleMP4_CLPR.class, ""),
 	MERCIER   ("M2T", false, ModeleM2T.class, ""),
 	MICHARD   ("MP4", true,  ModeleMP4_CLPR.class, ""),
-	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT.class, "merging_M2T_05_SD_NO_DESPLIT_deint.py"),
+	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT_drop20f.class, "merging_M2T_05_SD_NO_DESPLIT_deint.py"),
 	MOREL     ("MP4", true,  ModeleMP4_CLPR.class, "merging_MP4_06_SD_deint.py"),
 	PARADIS   ("M2T", true,  ModeleM2T.class, ""),
 	PICHON    ("M2T", true,  ModeleM2T.class, ""),
-	QUESADA   ("M2T", true,  ModeleM2T.class, ""),
-	RICO      ("M2T", true,  ModeleM2T.class, "")
+	QUESADA   ("M2T", true,  ModeleM2T_mencoder.class, ""),
+	RICO      ("M2T", true,  ModeleM2T_mencoder.class, "")
 	;
 	
 	private String extension;

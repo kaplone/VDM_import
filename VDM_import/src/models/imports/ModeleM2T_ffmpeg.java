@@ -1,24 +1,21 @@
 package models.imports;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
+import utils.AfficheurFlux2;
+import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleM2T_NO_DESPLIT implements ModeleImport{
-	
-	private String[] script_encode;
+public class ModeleM2T_ffmpeg implements ModeleImport{
 	
 	private String[] script_fifo;
 	private String[] script_rmfifos;
@@ -48,15 +45,12 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 	private Cadreur cadreur;
 	
 	private FileWriter fw;
-	
-	private AfficheurFlux[] fluxSortieSTD_MKFIFO;
-	private AfficheurFlux[] fluxErreurERR_MKFIFO;
-	//private AfficheurFlux fluxSortieSTD_REMUX;
+
 	private AfficheurFlux fluxErreurERR_REMUX;
-	//private AfficheurFlux[] fluxSortieSTD_LECTURE;
 	private AfficheurFlux[] fluxErreurERR_LECTURE;
-	private AfficheurFlux fluxSortieSTD_RMFIFO;
-	private AfficheurFlux fluxErreurERR_RMFIFO;
+	//private AfficheurFlux2[] fluxErreurSTD_LECTURE;
+	//private AfficheurFlux3[] fluxErreurERR_LECTURE;
+
 	
 	private Process p2;
 	
@@ -141,12 +135,16 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "-y",	
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-s",
                 "720x576",
                 "-sws_flags",
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -164,12 +162,16 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-s",
                 "720x576",
                 "-sws_flags",
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -183,6 +185,8 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "-y",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -191,6 +195,8 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -208,6 +214,8 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -216,6 +224,8 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -229,8 +239,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
         public void remux(){
         	   		
     		Process [] p0 = new Process [100];
-    		//fluxSortieSTD_MKFIFO = new AfficheurFlux[100];
-    		//fluxErreurERR_MKFIFO = new AfficheurFlux[100];
 			
 			try {
 				
@@ -241,11 +249,7 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 					System.out.println("\n**script_fifo**");
 					System.out.println("\n** " + i);
 					System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
-					
-//					fluxSortieSTD_MKFIFO[i] = new AfficheurFlux(p0[i].getInputStream(), "[MKFIFO STD] ", false);
-//					fluxErreurERR_MKFIFO[i] = new AfficheurFlux(p0[i].getErrorStream(), "[MKFIFO ERR] ", false);
-//					new Thread(fluxSortieSTD_MKFIFO[i]).start();
-//		            new Thread(fluxErreurERR_MKFIFO[i]).start();
+
 					p0[i].waitFor();
 					
 					i++;
@@ -275,10 +279,8 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 		            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
 	                                                     : affcommande(script_remux));
 				}
-				
-				//fluxSortieSTD_REMUX = new AfficheurFlux(p2.getInputStream(), "[FFMPEG STD remux] ", true);
+
 				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
-				//new Thread(fluxSortieSTD_REMUX).start();
 	            new Thread(fluxErreurERR_REMUX).start();
 			
             }
@@ -297,24 +299,26 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 		liste_des_scripts_lecture = new ArrayList<>();
 
 		for (int i = 0; i < taille_liste; i++){
-			
-		 	
-			
+
 			
 			script_lecture = new String[] {"ffmpeg",
-			                    "-y",
-			                    "-analyzeduration",
-			                    "100M",
-			                    "-probesize",
-			                    "100M",
-			                    "-i",
-			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-c:v",
-			                    "huffyuv",
-			                    "-c:a",
-			                    "pcm_s16le",
-			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-			                    };
+                    "-y",
+                    "-analyzeduration",
+                    "100M",
+                    "-probesize",
+                    "100M",
+                    "-i",
+                    String.format("%s", plan.getChunks().get(i)),
+                    "-map",
+                    "0:0",
+                    "-map",
+                    "0:1",
+                    "-c:v",
+                    "huffyuv",
+                    "-c:a",
+                    "pcm_s16le",
+                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+                    };
 				
 
 			liste_des_scripts_lecture.add(script_lecture);
@@ -323,7 +327,7 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 
     	
 		Process [] p1 = new Process [100];
-    	//fluxSortieSTD_LECTURE = new AfficheurFlux[100];
+    	//fluxErreurSTD_LECTURE = new AfficheurFlux2[100];
     	fluxErreurERR_LECTURE = new AfficheurFlux[100];
 		
     	try {
@@ -337,23 +341,15 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 				p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
 				
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
+                
+				//fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
+				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
 				
-				//fluxSortieSTD_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG STD lecture] ", true);
-				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-				//new Thread(fluxSortieSTD_LECTURE[i]).start();
 	            new Thread(fluxErreurERR_LECTURE[i]).start();
 	            
 	            System.out.println(String.format("Wait fo p1[%d]", i));
             	p1[i].waitFor();
-	            
-//	            if(i == liste_des_scripts_lecture.size() -1){
-//	            	System.out.println(String.format("Wait for p1[%d]", i));
-//	            	p1[i].waitFor();  
-//	            }
-//	            else {
-//	            	System.out.println(String.format("execution p1[%d]", i));
-//	            }
-	            
+
 				i++;
 		    }
 			
@@ -378,9 +374,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 		
 		try {
 
-//			fluxErreurERR_REMUX.close();
-//			p2.destroy();
-			
 			Instant deb = Instant.now();
 			
 			while (p2.isAlive()){	
@@ -400,10 +393,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 	                    f
 	            };
 				p3 = Runtime.getRuntime().exec(script_rmfifos);
-//				fluxSortieSTD_RMFIFO = new AfficheurFlux(p3.getInputStream(), "[RM STD] ", false);
-//				fluxErreurERR_RMFIFO = new AfficheurFlux(p3.getErrorStream(), "[RM ERR] ", false);
-//				new Thread(fluxSortieSTD_RMFIFO).start();
-//	            new Thread(fluxErreurERR_RMFIFO).start();
 				System.out.println("isAlive() p3[pre] : " +  p3.isAlive());
 	            p3.waitFor();	
 	            System.out.println("isAlive() p3[post] : " +  p3.isAlive());
@@ -411,7 +400,6 @@ public class ModeleM2T_NO_DESPLIT implements ModeleImport{
 
 			
 		} catch (InterruptedException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -11,13 +11,16 @@ import java.util.List;
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
+import utils.AfficheurFlux2;
+import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleMP4_CLPR implements ModeleImport{
+public class ModeleM2T_mencoder implements ModeleImport{
 	
 	private String[] script_fifo;
 	private String[] script_rmfifos;
 	private String[] script_lecture;
+	private String[] script_dd;
 	private String[] script_remux;
 	private String[] script_remux_concat;
 	private String[] script_remux_deint;
@@ -37,15 +40,18 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	
 	private List<String[]> liste_des_scripts_lecture;
 	private List<String[]> liste_des_scripts_fifo;
+	private List<String[]> liste_des_scripts_dd;
 	
 	private int taille_liste;
 	
 	private Cadreur cadreur;
 	
 	private FileWriter fw;
-	
+
 	private AfficheurFlux fluxErreurERR_REMUX;
-	private AfficheurFlux[] fluxErreurERR_LECTURE;
+	//private AfficheurFlux[] fluxErreurERR_LECTURE;
+	private AfficheurFlux2[] fluxInputSTD_LECTURE;
+	private AfficheurFlux3[] fluxErreurERR_LECTURE;
 
 	
 	private Process p2;
@@ -131,12 +137,16 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",	
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-s",
                 "720x576",
                 "-sws_flags",
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-vcodec",
@@ -154,12 +164,16 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-s",
                 "720x576",
                 "-sws_flags",
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -173,6 +187,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "-y",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -181,6 +197,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -198,6 +216,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "0",
                 "-i",
                 concat_des_rush_du_plan,
+                "-ss",
+                "0.24",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -206,6 +226,8 @@ public class ModeleMP4_CLPR implements ModeleImport{
                 "lanczos",
                 "-pix_fmt",
                 "yuv420p",
+                "-aspect",
+                "16:9",
                 "-b:a",
                 "384k",
                 "-c:v",
@@ -219,7 +241,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
         public void remux(){
         	   		
     		Process [] p0 = new Process [100];
-    		
+			
 			try {
 				
 				int i = 0;
@@ -279,33 +301,28 @@ public class ModeleMP4_CLPR implements ModeleImport{
 		liste_des_scripts_lecture = new ArrayList<>();
 
 		for (int i = 0; i < taille_liste; i++){
-			
-		 	
-			
-			
-			script_lecture = new String[] {"ffmpeg",
-			                    "-y",
-			                    "-analyzeduration",
-			                    "100M",
-			                    "-probesize",
-			                    "100M",
-			                    "-i",
+	
+			script_lecture = new String[] {"mencoder",
+			                    "-oac",
+			                    "pcm",
+			                    "-ovc",
+			                    "lavc",
+			                    "-lavcopts",
+			                    "vcodec=huffyuv:format=422p",
+			                    "-vf",
+			                    "scale=1440:1080",
 			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-c:v",
-			                    "huffyuv",
-			                    "-c:a",
-			                    "pcm_s16le",
+			                    "-o",
 			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
 			                    };
 				
-
 			liste_des_scripts_lecture.add(script_lecture);
 
 		}
-
-    	
+	
 		Process [] p1 = new Process [100];
-    	fluxErreurERR_LECTURE = new AfficheurFlux[100];
+    	fluxInputSTD_LECTURE = new AfficheurFlux2[100];
+    	fluxErreurERR_LECTURE = new AfficheurFlux3[100];
 		
     	try {
           	int i = 0;
@@ -318,14 +335,17 @@ public class ModeleMP4_CLPR implements ModeleImport{
 				p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
 				
 				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
+                
 				
-				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-
+				fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
+				fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[FFMPEG STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
+				
+	            new Thread(fluxInputSTD_LECTURE[i]).start();
 	            new Thread(fluxErreurERR_LECTURE[i]).start();
 	            
 	            System.out.println(String.format("Wait fo p1[%d]", i));
             	p1[i].waitFor();
-	         	            
+
 				i++;
 		    }
 			
@@ -341,6 +361,19 @@ public class ModeleMP4_CLPR implements ModeleImport{
 			
 			e.printStackTrace();
 		}
+
+	}
+	
+	public void dd(){
+		
+		long seeksize = 0;
+		String ifile = null;
+		String ofile = null;
+		
+		script_dd = new String[] {"dd",
+				                  String.format("if='%s'", ifile),
+				                  String.format("of='%s'", ofile),
+				                  String.format("seek=%d", seeksize)};
 
 	}
 	
