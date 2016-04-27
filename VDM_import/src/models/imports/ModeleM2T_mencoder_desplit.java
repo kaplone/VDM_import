@@ -49,8 +49,8 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 
 	private AfficheurFlux fluxErreurERR_REMUX;
 	//private AfficheurFlux[] fluxErreurERR_LECTURE;
-	private AfficheurFlux2[] fluxInputSTD_LECTURE;
-	private AfficheurFlux3[] fluxErreurERR_LECTURE;
+	private AfficheurFlux2 fluxInputSTD_LECTURE;
+	private AfficheurFlux3 fluxErreurERR_LECTURE;
 
 	
 	private Process p2;
@@ -95,21 +95,30 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 		script_fifo_dd = new String[] {"mkfifo",
                 String.format("%s/fifo_%s.M2T", ram, plan.getName())
                };
+	
+		try {
+			Process p0 = Runtime.getRuntime().exec(script_fifo);
+			System.out.println("\n**script_fifo**");
+			System.out.println(affcommande(script_fifo));
+
+			p0.waitFor();
+			
+			Process p00 = Runtime.getRuntime().exec(script_fifo_dd);
+			System.out.println("\n**script_fifo_dd**");
+			System.out.println(affcommande(script_fifo_dd));
+
+			p00.waitFor();
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 	}
 	
 	public void open() {
-		
-		if (plan.getChunks().size() > 1){
-			
-			dd(plan);
 
-//			ecritureTxt();
-//			concat_des_rush_du_plan = ram + String.format("/liste_%s.txt", numero_dossier);
-    	}
-    	else {
-    		concat_des_rush_du_plan = String.format("%s/fifo_%s.avi", ram, plan.getName());
-    	}
+		concat_des_rush_du_plan = String.format("%s/fifo_%s.avi", ram, plan.getName());
 		
 		outfile = plan.getName();
     	
@@ -135,65 +144,9 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
                 "0",
                 String.format("%s/%s.mpg", outdir, outfile) 
                 };
-    	
-    	script_remux_concat = new String[] {"ffmpeg",
-                "-y",
-                "-f",
-                "concat",
-                "-safe",
-                "0",
-                "-i",
-                concat_des_rush_du_plan,
-                "-ss",
-                "0.24",
-                "-s",
-                "720x576",
-                "-sws_flags",
-                "lanczos",
-                "-pix_fmt",
-                "yuv420p",
-                "-aspect",
-                "16:9",
-                "-b:a",
-                "384k",
-                "-c:v",
-                "mpeg2video",
-                "-q:v",
-                "0",
-                String.format("%s/%s.mpg", outdir, outfile) 
-                };
-    	
+
     	script_remux_deint = new String[] {"ffmpeg",
                 "-y",
-                "-i",
-                concat_des_rush_du_plan,
-                "-ss",
-                "0.24",
-                "-vf",
-                "yadif=0:0:0",
-                "-s",
-                "720x576",
-                "-sws_flags",
-                "lanczos",
-                "-pix_fmt",
-                "yuv420p",
-                "-aspect",
-                "16:9",
-                "-b:a",
-                "384k",
-                "-c:v",
-                "mpeg2video",
-                "-q:v",
-                "0",
-                String.format("%s/%s.mpg", outdir, outfile) 
-                };
-    	
-    	script_remux_concat_deint = new String[] {"ffmpeg",
-                "-y",
-                "-f",
-                "concat",
-                "-safe",
-                "0",
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
@@ -219,48 +172,16 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
         }
 
         public void remux(){
-        	   		
-    		Process [] p0 = new Process [100];
 			
 			try {
-				
-				int i = 0;
-				while(i < liste_des_scripts_fifo.size()){
-					
-					p0[i] = Runtime.getRuntime().exec(liste_des_scripts_fifo.get(i));
-					System.out.println("\n**script_fifo**");
-					System.out.println("\n** " + i);
-					System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
-
-					p0[i].waitFor();
-					
-					i++;
-
-				}
-				
-				System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
-				for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
-					System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
-				}
-				
 	            System.out.println("\n**script_remux**");
-				
-				if (plan.getChunks().size() > 1){
-					
-					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_concat_deint)
-	                                       : Runtime.getRuntime().exec(script_remux_concat);
-					
-					System.out.println(cadreur.isDeint() ? affcommande(script_remux_concat_deint)
-	                                                     : affcommande(script_remux_concat));
-				}
-				else {
-					
-					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
-	                                       : Runtime.getRuntime().exec(script_remux);
-		
-		            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
-	                                                     : affcommande(script_remux));
-				}
+	            
+	            p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
+                        : Runtime.getRuntime().exec(script_remux);
+
+				System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
+				                                     : affcommande(script_remux));
+
 
 				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
 	            new Thread(fluxErreurERR_REMUX).start();
@@ -277,63 +198,50 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 	}
 		
 	public void lire(){
-
+		
 		liste_des_scripts_lecture = new ArrayList<>();
+		
+		String source = plan.getPath();
+		if (plan.getChunks().size() > 1){
+			dd(plan);
+			source = String.format("%s/fifo_%s.M2T", ram, plan.getName());;
+    	}
 
-		for (int i = 0; i < taille_liste; i++){
-	
-			script_lecture = new String[] {"mencoder",
-			                    "-oac",
-			                    "pcm",
-			                    "-ovc",
-			                    "lavc",
-			                    "-lavcopts",
-			                    "vcodec=huffyuv:format=422p",
-			                    "-vf",
-			                    "scale=1440:1080",
-			                    String.format("%s", plan.getChunks().get(i)),
-			                    "-o",
-			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-			                    };
-				
-			liste_des_scripts_lecture.add(script_lecture);
+		script_lecture = new String[] {"mencoder",
+                "-oac",
+                "pcm",
+                "-ovc",
+                "lavc",
+                "-lavcopts",
+                "vcodec=huffyuv:format=422p",
+                "-vf",
+                "scale=1440:1080",
+                source,
+                "-o",
+                String.format("%s/fifo_%s.avi", ram, plan.getName())
+                };
 
-		}
-	
-		Process [] p1 = new Process [100];
-    	fluxInputSTD_LECTURE = new AfficheurFlux2[100];
-    	fluxErreurERR_LECTURE = new AfficheurFlux3[100];
+		Process p1;
 		
     	try {
-          	int i = 0;
-
-			while(i < liste_des_scripts_lecture.size()){
-
-				System.out.println("\n**script_lecture**");
-				System.out.println("** " + i);
-				
-				p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
-				
-				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
-                
-				
-				fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-				fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[FFMPEG STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
-				
-	            new Thread(fluxInputSTD_LECTURE[i]).start();
-	            new Thread(fluxErreurERR_LECTURE[i]).start();
-	            
-	            System.out.println(String.format("Wait fo p1[%d]", i));
-            	p1[i].waitFor();
-
-				i++;
-		    }
+    		
+    		System.out.println("\n**script_lecture**");
+    		
+    		
 			
-			System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
-			for (int j = 0;j < taille_liste; j++){
-				System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
-				fluxErreurERR_LECTURE[j].close();
-			}
+			p1 = Runtime.getRuntime().exec(script_lecture);
+			
+			System.out.println(affcommande(script_lecture));
+            
+			
+			fluxErreurERR_LECTURE = new AfficheurFlux3(p1.getErrorStream(), "[FFMPEG ERR lecture] ", false, p1);
+			fluxInputSTD_LECTURE = new AfficheurFlux2(p1.getInputStream(), "[FFMPEG STD lecture] ", false, p1, fluxErreurERR_LECTURE);
+			
+            new Thread(fluxInputSTD_LECTURE).start();
+            new Thread(fluxErreurERR_LECTURE).start();
+            
+            System.out.println(String.format("Wait fo p1"));
+        	p1.waitFor();
 					
 		}
 		catch (Exception e) {
@@ -346,43 +254,58 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 	
 	public void dd(Rush plan){
 		
-		long seeksize = 0;
-		Process p4;
-		
-		for (Rush r : plan.getChunks()){
-			
-			script_dd = new String[] {"dd",
-	                  String.format("if='%s'", r.getPath()),
-	                  String.format("of='%s'", String.format("%s/fifo_%s.M2T", ram, plan.getName())),
-	                  String.format("seek=%d", seeksize)};
-			
-			
-			
-//            
-//			
-//			fluxErreurERR_LECTURE = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-//			fluxInputSTD_LECTURE = new AfficheurFlux2(p1[i].getInputStream(), "[FFMPEG STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
-//			
-//            new Thread(fluxInputSTD_LECTURE[i]).start();
-//            new Thread(fluxErreurERR_LECTURE[i]).start();
-            
-            System.out.println(String.format("Wait fo p4"));
-            
-        	try {
-        		System.out.println("\n**script_lecture**");
-    			
-    			p4 = Runtime.getRuntime().exec(script_dd);
-    			
-    			System.out.println(affcommande(script_dd));
-				p4.waitFor();
-			} catch (InterruptedException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		System.out.println("\n**entrée_dd**");
 
+		Runnable dd_runnable = new Runnable() {
 			
-		}
+			@Override
+			public void run() {
+				
+				long seeksize = 0;
+				long reste = 0;
+				Process p4;
+				
+				for (Rush r : plan.getChunks()){
+					
+					script_dd = new String[] {"dd",
+			                  String.format("if='%s'", r.getPath()),
+			                  String.format("of='%s'", String.format("%s/fifo_%s.M2T", ram, plan.getName())),
+			                  String.format("seek=%d", seeksize)};
+
+		            
+		            
+		            
+		        	try {
+		        		System.out.println("\n**script_dd**");
+		    			
+		    			p4 = Runtime.getRuntime().exec(script_dd);
+		    			
+		    			System.out.println(affcommande(script_dd));
+						p4.waitFor();
+						System.out.println(String.format("Wait fo p4"));
+						
+						reste = r.length() % 512;
+						if(reste != 0){
+							seeksize += (r.length() / 512) + 1;
+						}
+						else {
+							seeksize += (r.length() / 512);
+						}
+						System.out.println("seeksize : " + seeksize);
+						
+					} catch (InterruptedException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					
+				}
+				
+			}
+		};
 		
+		
+		new Thread(dd_runnable).start();
 		
 
 	}
@@ -401,21 +324,25 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 			
 			System.out.println("\n**fin process remux**");
 			System.out.println("\n**p2 destroy()**");
-
-			for(String f : liste_des_fifos){
-				
-				System.out.println("\n**script_rmfifos**");
-				System.out.println("** " + f);
-				
-				script_rmfifos = new String[] {"rm",
-	                    "-f",
-	                    f
-	            };
-				p3 = Runtime.getRuntime().exec(script_rmfifos);
-				System.out.println("isAlive() p3[pre] : " +  p3.isAlive());
-	            p3.waitFor();	
-	            System.out.println("isAlive() p3[post] : " +  p3.isAlive());
-			}
+			
+			System.out.println("\n**script_rmfifos**");
+			System.out.println("** " + String.format("%s/fifo_%s.M2T", ram, plan.getName()));
+			
+			script_rmfifos = new String[] {"rm",
+                    "-f",
+                    String.format("%s/fifo_%s.M2T", ram, plan.getName())
+            };
+			p3 = Runtime.getRuntime().exec(script_rmfifos);
+            p3.waitFor();	
+            
+            System.out.println("** " + String.format("%s/fifo_%s.avi", ram, plan.getName()));
+			
+			script_rmfifos = new String[] {"rm",
+                    "-f",
+                    String.format("%s/fifo_%s.avi", ram, plan.getName())
+            };
+			p3 = Runtime.getRuntime().exec(script_rmfifos);
+            p3.waitFor();
 
 			
 		} catch (InterruptedException | IOException e) {
