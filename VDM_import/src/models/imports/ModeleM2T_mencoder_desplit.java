@@ -277,8 +277,8 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 				for (Rush r : plan.getChunks()){
 					
 					script_dd = new String[] {"dd",
-			                  String.format("if='%s'", r.getPath()),
-			                  String.format("of='%s'", String.format("%s/fifo_%s.M2T", ram, plan.getName())),
+			                  String.format("if=%s", r.getPath()),
+			                  String.format("of=%s", String.format("%s/fifo_%s.M2T", ram, plan.getName())),
 			                  String.format("seek=%d", seeksize)};
 
 		        	try {
@@ -288,7 +288,7 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 		    			
 		    			System.out.println(affcommande(script_dd));
 						p4.waitFor();
-						System.out.println(String.format("Wait fo p4"));
+						System.out.println(String.format("Wait for p4"));
 						
 						reste = r.length() % 512;
 						if(reste != 0){

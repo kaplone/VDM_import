@@ -14,13 +14,13 @@ public enum Cadreur {
 	
 	ALBARET   ("MXF", false, ModeleMXF_XDCAM.class, ""),
 	AMOUROUX  ("M2T", true,  ModeleM2T_mencoder_desplit.class,       ""),
-	ARMATOL   ("MP4", false, ModeleMP4_CLPR.class , ""),
+	ARMATOL   ("MP4", false, ModeleMP4_CLPR.class , "merging_MP4_06_SD_prog.py"),
 	BATMAN    ("MXF", true,  ModeleMXF_P2.class, ""),
-	BAUDON    ("MP4", false, ModeleMP4_CLPR.class, ""),
-	BIGEAULT  ("MP4", false, ModeleMP4_CLPR.class, ""),
+	BAUDON    ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
+	BIGEAULT  ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
 	DE_KERDREL("MXF", true,  ModeleMXF_P2.class, ""),
 	DUCOING   ("MOV", false, ModeleMOV_ProRes.class, ""),
-	GIRARD    ("MP4", false, ModeleMP4_CLPR.class, ""),
+	GIRARD    ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
 	GAUTIER   ("M2T", false, ModeleM2T_mencoder_desplit.class, ""),
 	GORWA     ("MTS", false, ModeleMTS.class, ""),
 	HUET      ("MTS", false, ModeleMTS.class, ""),
@@ -28,16 +28,21 @@ public enum Cadreur {
 	LEUX      ("MTS", false, ModeleMTS.class, ""),
 	LE_YOUDEC ("MXF", false, ModeleMXF_XDCAM.class, ""),
 	LOPACKI   ("MTS", true,  ModeleMTS.class, ""),
-	MAS       ("MP4", false, ModeleMP4_CLPR.class, ""),
-	MERCHADOU ("MP4", false, ModeleMP4_CLPR.class, ""),
+	MAS       ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
+	MERCHADOU ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
 	MERCIER   ("M2T", false, ModeleM2T_mencoder_desplit.class, ""),
-	MICHARD   ("MP4", true,  ModeleMP4_CLPR.class, ""),
+	MICHARD   ("MP4", true,  ModeleMP4_CLPR.class, "merging_MP4_06_SD_deint.py"),
 	MISSANA   ("M2T", true,  ModeleM2T_NO_DESPLIT_drop20f.class, "merging_M2T_05_SD_NO_DESPLIT_deint.py"),
 	MOREL     ("MP4", true,  ModeleMP4_CLPR.class, "merging_MP4_06_SD_deint.py"),
 	PARADIS   ("M2T", true,  ModeleM2T_NO_DESPLIT_drop20f.class, ""),
 	PICHON    ("M2T", true,  ModeleM2T_mencoder_desplit.class, ""),
 	QUESADA   ("M2T", true,  ModeleM2T_mencoder_desplit.class, ""),
-	RICO      ("M2T", true,  ModeleM2T_mencoder_desplit.class, "")
+	RICO      ("M2T", true,  ModeleM2T_mencoder_desplit.class, ""),
+	RONCHAUD  ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py"),
+	RUGGIU    ("MOV", false, null, ""),
+	VARLET    ("MXF", true, ModeleMXF_P2.class, ""),
+	VERNIER   ("MTS", false,ModeleMTS.class, ""),
+	VIALATTE  ("MP4", false, ModeleMP4_CLPR.class, "merging_MP4_06_SD_prog.py")
 	;
 	
 	private String extension;
