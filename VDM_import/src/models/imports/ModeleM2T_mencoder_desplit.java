@@ -203,7 +203,16 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 		
 		String source = plan.getPath();
 		if (plan.getChunks().size() > 1){
-			dd(plan);
+			
+			dd();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			source = String.format("%s/fifo_%s.M2T", ram, plan.getName());;
     	}
 
@@ -252,7 +261,7 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 
 	}
 	
-	public void dd(Rush plan){
+	public void dd(){
 		
 		System.out.println("\n**entrée_dd**");
 
@@ -272,9 +281,6 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 			                  String.format("of='%s'", String.format("%s/fifo_%s.M2T", ram, plan.getName())),
 			                  String.format("seek=%d", seeksize)};
 
-		            
-		            
-		            
 		        	try {
 		        		System.out.println("\n**script_dd**");
 		    			
