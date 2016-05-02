@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import models.Cadreur;
 import models.Rush;
@@ -79,10 +80,14 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 			try {
 				init();
 				open();
-			    lire();
+				Thread.sleep(500);
 				dd();
 				Thread.sleep(1000);
+				lire();
+				Thread.sleep(1000);
 				remux();
+				
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -191,7 +196,9 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
 	            new Thread(fluxErreurERR_REMUX).start();
 	            
-	            p2.waitFor();
+	            System.out.println("[pre] Wait for p2");
+	        	p2.waitFor();
+	        	System.out.println("[post] Wait for p2");
 	            close();
 			
             }
@@ -201,7 +208,9 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 				e.printStackTrace();
 			}
 			
-			System.out.println("isAlive() p2 : " +  p2.isAlive());
+        	System.out.println("p2.isAlive() : " + p2.isAlive());
+            
+            
         	
 //        	Runnable remux_runnable = new Runnable() {
 //    			
@@ -263,17 +272,44 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
                 String.format("%s/fifo_%s.avi", ram, plan.getName())
                 };
 		
+//		Process p1;
+//		
+//    	try {
+//    		
+//    		System.out.println("\n**script_lecture**");
+//
+//			p1 = Runtime.getRuntime().exec(script_lecture);
+//			
+//			System.out.println(affcommande(script_lecture));
+//            
+//			
+//			fluxErreurERR_LECTURE = new AfficheurFlux3(p1.getErrorStream(), "[FFMPEG ERR lecture] ", false, p1);
+//			fluxInputSTD_LECTURE = new AfficheurFlux2(p1.getInputStream(), "[FFMPEG STD lecture] ", false, p1, fluxErreurERR_LECTURE);
+//			
+//            new Thread(fluxInputSTD_LECTURE).start();
+//            new Thread(fluxErreurERR_LECTURE).start();
+//            
+//            System.out.println(String.format("Wait fo p1"));
+//        	p1.waitFor();
+//        	close();
+//					
+//		}
+//		catch (Exception e) {
+//			System.out.println("une exception !");
+//			
+//			e.printStackTrace();
+//		}	
+		
 		Runnable lire_runnable = new Runnable() {
 
 			@Override
 			public void run() {
-				Process p1;
-				
+
 		    	try {
 		    		
 		    		System.out.println("\n**script_lecture**");
 
-					p1 = Runtime.getRuntime().exec(script_lecture);
+		    		Process p1 = Runtime.getRuntime().exec(script_lecture);
 					
 					System.out.println(affcommande(script_lecture));
 		            
@@ -284,8 +320,11 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 		            new Thread(fluxInputSTD_LECTURE).start();
 		            new Thread(fluxErreurERR_LECTURE).start();
 		            
-		            System.out.println(String.format("Wait fo p1"));
-		        	p1.waitFor();
+		            System.out.println("p1.isAlive() : " + p1.isAlive());
+		            
+//		            System.out.println("[pre] Wait for p1");
+//		        	p1.waitFor();
+//		        	System.out.println("[post] Wait for p1");
 							
 				}
 				catch (Exception e) {
@@ -309,31 +348,63 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 			@Override
 			public void run() {
 				
-				long seeksize = 0;
-				long reste = 0;
-				Process p4;
-				
-				int taille_script_cat = plan.getChunks().size() + 3;
-				
-				script_cat = new String[taille_script_cat];
-				script_cat[0] = "cat";
-				for (int i = 0; i < plan.getChunks().size(); i++){
-					script_cat[i + 1] = plan.getChunks().get(i).getPath();
-				}
-				script_cat[taille_script_cat - 2] = ">";
-				script_cat[taille_script_cat - 1] = String.format("%s/fifo_%s.M2T", ram, plan.getName());
+				script_cat = new String[]{"sh",
+						                  "-c",
+						                  plan.getChunks()
+						                      .stream()
+						                      .map(a -> a.getPath())
+						                      .collect(Collectors.joining(" ", "cat ", String.format(" > %s/fifo_%s.M2T", ram, plan.getName())))
+				};
 				
 				try {
 					System.out.println("\n**script_cat**");
 	    			
-	    			p4 = Runtime.getRuntime().exec(script_cat);
+	    			Process p4 = Runtime.getRuntime().exec(script_cat);
 	    			
 	    			System.out.println(affcommande(script_cat));
-					p4.waitFor();
-					System.out.println(String.format("Wait for p4"));
-				} catch (InterruptedException | IOException e) {
+	    			
+	    			System.out.println("p4.isAlive() : " + p4.isAlive());
+//	    			System.out.println("[pre] Wait for p4");
+//	            	p4.waitFor();
+//	            	System.out.println("[post] Wait for p4");
+	    			
+//					p4.waitFor();
+//					System.out.println(String.format("Wait for p4"));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+//				long seeksize = 0;
+//				long reste = 0;
+//				Process p4;
+				
+//				int taille_script_cat = plan.getChunks().size() + 3;
+//				
+//				script_cat = new String[taille_script_cat];
+//				script_cat[0] = "cat";
+//				for (int i = 0; i < plan.getChunks().size(); i++){
+//					script_cat[i + 1] = plan.getChunks().get(i).getPath();
+//				}
+//				script_cat[taille_script_cat - 2] = ">";
+//				script_cat[taille_script_cat - 1] = String.format("%s/fifo_%s.M2T", ram, plan.getName());
+//				
+//				try {
+//					System.out.println("\n**script_cat**");
+//	    			
+//	    			Process p4 = Runtime.getRuntime().exec(script_cat);
+//	    			
+//	    			System.out.println(affcommande(script_cat));
+//	    			
+//	    			System.out.println("p4.isAlive() : " + p4.isAlive());
+//	    			System.out.println("[pre] Wait for p4");
+//	            	p4.waitFor();
+//	            	System.out.println("[post] Wait for p4");
+//	    			
+////					p4.waitFor();
+////					System.out.println(String.format("Wait for p4"));
+//				} catch (IOException | InterruptedException e) {
+//					e.printStackTrace();
+//				}
 				
 				
 				
