@@ -52,6 +52,8 @@ public class VDM_import_controller implements Initializable{
 	private Button importer_python_button;
 	@FXML
 	private Button importer_java_button;
+	@FXML
+	private Button importer_java_n_button;
 	
 	private Image im;
 	private File repPreview;
@@ -184,7 +186,9 @@ public class VDM_import_controller implements Initializable{
 		
 		importer_python_button.setOnAction(a -> Import_python.importer(repPreview, cadreur_choicebox.getValue()));
 		
-		importer_java_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue()));
+		importer_java_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), false));
+		
+		importer_java_n_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), true));
 		
 	
 	}

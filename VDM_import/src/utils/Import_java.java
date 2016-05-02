@@ -10,7 +10,7 @@ public class Import_java {
     
 	private static ModeleImport modele;
 	
-	public static void importer(File dossier, Cadreur cadreur){
+	public static void importer(File dossier, Cadreur cadreur, boolean multithread ){
 		
 		
 		try {
@@ -20,7 +20,7 @@ public class Import_java {
 			e.printStackTrace();
 		}
 		
-		modele.import_rushs(dossier, cadreur);
+		modele.import_rushs(dossier, cadreur, multithread);
 		
 	}
 }

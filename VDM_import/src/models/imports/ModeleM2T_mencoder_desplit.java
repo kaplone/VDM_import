@@ -16,60 +16,12 @@ import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleM2T_mencoder_desplit implements ModeleImport{
-	
-	private String[] script_fifo;
-	private String[] script_fifo_dd;
-	private String[] script_rmfifos;
-	private String[] script_lecture;
-	private String[] script_dd;
-	private String[] script_cat;
-	private String[] script_remux;
-	private String[] script_remux_concat;
-	private String[] script_remux_deint;
-	private String[] script_remux_concat_deint;
-
-	private final File ram = new File("/mnt/ramdisk");
-	private final File temp = new File("/home/david/temp");
-	private final File out = new File("/mnt/2015_rushs");
-	//private final File out = new File("/home/autor/Desktop");
-	
-	private String concat_des_rush_du_plan;
-	private String outdir;
-	private String outfile;
-	
-	private List<Rush> liste_des_plans;
-	
-	private List<String[]> liste_des_scripts_lecture;
-	private List<String[]> liste_des_scripts_dd;
-	
-	private int taille_liste;
-	
-	private Cadreur cadreur;
-	
-	private FileWriter fw;
-
-	private AfficheurFlux fluxErreurERR_REMUX;
-	//private AfficheurFlux[] fluxErreurERR_LECTURE;
-	private AfficheurFlux2 fluxInputSTD_LECTURE;
-	private AfficheurFlux3 fluxErreurERR_LECTURE;
-
-	
-	private Process p2;
-	
-	private Rush plan;
-	
-	private String numero_dossier;
-	
+public class ModeleM2T_mencoder_desplit extends ModeleImport{
 
 	@Override
-	public void import_rushs(File dossier, Cadreur cadreur) {
+	public void import_rushs(File dossier, Cadreur cadreur, boolean multithread) {
 		
-		this.cadreur = cadreur;
-		
-		numero_dossier = dossier.toPath().getFileName().toString();
-		
-		outdir = String.format("%s/%s", out, numero_dossier);
+		super.constructeur(dossier, cadreur, multithread);
 		
 		liste_des_plans = Messages.getListeDesPlans();
 		
@@ -85,7 +37,7 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 				Thread.sleep(1000);
 				lire();
 				Thread.sleep(1000);
-				remux();
+				remux(multithread);
 				
 				
 			} catch (InterruptedException e) {
@@ -94,38 +46,7 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 			}	
 		}
 	}
-	
-	
-	public void init() {
-		
-		taille_liste = plan.getChunks().size();
-		
-		script_fifo = new String[] {"mkfifo",
-                String.format("%s/fifo_%s.avi", ram, plan.getName())
-               };
-		
-		script_fifo_dd = new String[] {"mkfifo",
-                String.format("%s/fifo_%s.M2T", ram, plan.getName())
-               };
-	
-		try {
-			Process p0 = Runtime.getRuntime().exec(script_fifo);
-			System.out.println("\n**script_fifo**");
-			System.out.println(affcommande(script_fifo));
 
-			Process p00 = Runtime.getRuntime().exec(script_fifo_dd);
-			System.out.println("\n**script_fifo_dd**");
-			System.out.println(affcommande(script_fifo_dd));
-
-			p00.waitFor();
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-
-	}
-	
 	public void open() {
 
 		concat_des_rush_du_plan = String.format("%s/fifo_%s.avi", ram, plan.getName());
@@ -181,72 +102,74 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
                 };
         }
 
-        public void remux(){
+        public void remux(boolean multithread){
         	
-        	try {
-	            System.out.println("\n**script_remux**");
-	            
-	            p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
-                        : Runtime.getRuntime().exec(script_remux);
+        	if (multithread){
+        		Runnable remux_runnable = new Runnable() {
+        			
+        			@Override
+        			public void run() {
+        				try {
+        		            System.out.println("\n**script_remux**");
+        		            
+        		            p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
+        	                        : Runtime.getRuntime().exec(script_remux);
 
-				System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
-				                                     : affcommande(script_remux));
+        					System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
+        					                                     : affcommande(script_remux));
 
 
-				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
-	            new Thread(fluxErreurERR_REMUX).start();
-	            
-	            System.out.println("[pre] Wait for p2");
-	        	p2.waitFor();
-	        	System.out.println("[post] Wait for p2");
-	            close();
-			
-            }
-			catch (Exception e) {
-				System.out.println("une exception !");
+        					fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
+        		            new Thread(fluxErreurERR_REMUX).start();
+        		            
+        		            //p2.waitFor();
+        		            close();
+        				
+        	            }
+        				catch (Exception e) {
+        					System.out.println("une exception !");
+        					
+        					e.printStackTrace();
+        				}
+        				
+        				System.out.println("isAlive() p2 : " +  p2.isAlive());
+        			}
+            	};
+    			
+            	Thread t_remux = new Thread(remux_runnable);
+        		//t_remux.setPriority(Thread.MAX_PRIORITY);
+        		t_remux.start();
+        	}
+        	
+        	else {
+        		
+            	try {
+		            System.out.println("\n**script_remux**");
+		            
+		            p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
+	                        : Runtime.getRuntime().exec(script_remux);
+	
+					System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
+					                                     : affcommande(script_remux));
+	
+	
+					fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
+		            new Thread(fluxErreurERR_REMUX).start();
+		            
+		            System.out.println("[pre] Wait for p2");
+		        	p2.waitFor();
+		        	System.out.println("[post] Wait for p2");
+		            close();
 				
-				e.printStackTrace();
-			}
-			
-        	System.out.println("p2.isAlive() : " + p2.isAlive());
-            
-            
-        	
-//        	Runnable remux_runnable = new Runnable() {
-//    			
-//    			@Override
-//    			public void run() {
-//    				try {
-//    		            System.out.println("\n**script_remux**");
-//    		            
-//    		            p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
-//    	                        : Runtime.getRuntime().exec(script_remux);
-//
-//    					System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
-//    					                                     : affcommande(script_remux));
-//
-//
-//    					fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
-//    		            new Thread(fluxErreurERR_REMUX).start();
-//    		            
-//    		            p2.waitFor();
-//    		            close();
-//    				
-//    	            }
-//    				catch (Exception e) {
-//    					System.out.println("une exception !");
-//    					
-//    					e.printStackTrace();
-//    				}
-//    				
-//    				System.out.println("isAlive() p2 : " +  p2.isAlive());
-//    			}
-//        	};
-//			
-//        	Thread t_remux = new Thread(remux_runnable);
-//    		//t_remux.setPriority(Thread.MAX_PRIORITY);
-//    		t_remux.start();
-			
+	            }
+				catch (Exception e) {
+					System.out.println("une exception !");
+					
+					e.printStackTrace();
+				}
+				
+	        	System.out.println("p2.isAlive() : " + p2.isAlive());
+        	}			
 	}
 		
 	public void lire(){
@@ -494,14 +417,5 @@ public class ModeleM2T_mencoder_desplit implements ModeleImport{
 		}
 	}
 	
-	public String affcommande(String[] com){
-		
-		String s = "";
-		
-		for (int i = 0; i < com.length; i++){
-			s += " ";
-			s += com[i];
-		}
-		return s;
-	}
+	
 }

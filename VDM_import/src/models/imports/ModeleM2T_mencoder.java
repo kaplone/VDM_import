@@ -15,7 +15,7 @@ import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleM2T_mencoder implements ModeleImport{
+public class ModeleM2T_mencoder extends ModeleImport{
 	
 	private String[] script_fifo;
 	private String[] script_rmfifos;
@@ -39,12 +39,10 @@ public class ModeleM2T_mencoder implements ModeleImport{
 	private List<Rush> liste_des_plans;
 	
 	private List<String[]> liste_des_scripts_lecture;
-	private List<String[]> liste_des_scripts_fifo;
+	
 	private List<String[]> liste_des_scripts_dd;
 	
 	private int taille_liste;
-	
-	private Cadreur cadreur;
 	
 	private FileWriter fw;
 
@@ -78,9 +76,9 @@ public class ModeleM2T_mencoder implements ModeleImport{
 	}
 
 	@Override
-	public void import_rushs(File dossier, Cadreur cadreur) {
+	public void import_rushs(File dossier, Cadreur cadreur, boolean multithread) {
 		
-		this.cadreur = cadreur;
+		super.constructeur(dossier, cadreur, multithread);
 		
 		numero_dossier = dossier.toPath().getFileName().toString();
 		

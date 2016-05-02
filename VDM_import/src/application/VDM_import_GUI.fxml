@@ -7,7 +7,7 @@
 
 <BorderPane fx:id="borderPane" prefHeight="757.0" prefWidth="1277.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
 <center><VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-<children><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
+<children><HBox alignment="CENTER" prefHeight="99.0" prefWidth="1264.0" spacing="100.0">
 <children><Button fx:id="dossier_source_button" mnemonicParsing="false" prefHeight="45.0" prefWidth="390.0" text="Dossier Source" />
 <VBox alignment="CENTER">
 <children><Label text="Cadreur" /><ChoiceBox fx:id="cadreur_choicebox" prefWidth="150.0" />
@@ -34,7 +34,7 @@
 <VBox alignment="CENTER">
 <children>
 <HBox alignment="CENTER" spacing="100.0">
-<children><Button fx:id="importer_python_button" mnemonicParsing="false" text="Importer (python)" BorderPane.alignment="CENTER" /><Button fx:id="importer_java_button" mnemonicParsing="false" text="Importer (java)" />
+<children><Button fx:id="importer_python_button" mnemonicParsing="false" text="Importer (python)" BorderPane.alignment="CENTER" /><Button fx:id="importer_java_button" mnemonicParsing="false" text="Importer (java mono-thread))" /><Button fx:id="importer_java_n_button" mnemonicParsing="false" text="Importer (java multi-thread)" />
 </children>
 </HBox>
 </children>

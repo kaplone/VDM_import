@@ -13,7 +13,7 @@ import models.Rush;
 import utils.AfficheurFlux;
 import utils.Messages;
 
-public class ModeleMP4_CLPR implements ModeleImport{
+public class ModeleMP4_CLPR extends ModeleImport{
 	
 	private String[] script_fifo;
 	private String[] script_rmfifos;
@@ -72,7 +72,7 @@ public class ModeleMP4_CLPR implements ModeleImport{
 	}
 
 	@Override
-	public void import_rushs(File dossier, Cadreur cadreur) {
+	public void import_rushs(File dossier, Cadreur cadreur, boolean multithread) {
 		
 		this.cadreur = cadreur;
 		
