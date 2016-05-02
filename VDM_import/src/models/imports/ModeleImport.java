@@ -2,6 +2,8 @@ package models.imports;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import models.Cadreur;
@@ -18,11 +20,7 @@ public abstract class ModeleImport {
 	
 	protected List<String[]> liste_des_scripts_fifo;
 	protected List<String[]> liste_des_scripts_lecture;
-	
-	protected AfficheurFlux fluxErreurERR_REMUX;
-	protected AfficheurFlux2 fluxInputSTD_LECTURE;
-	protected AfficheurFlux3 fluxErreurERR_LECTURE;
-	
+
 	protected String[] script_fifo;
 	protected String[] script_fifo_dd;
 	protected String[] script_rmfifos;
@@ -57,7 +55,7 @@ public abstract class ModeleImport {
 		
         numero_dossier = dossier.toPath().getFileName().toString();
 		
-		outdir = String.format("%s/%s", out, numero_dossier);
+		outdir = String.format("%s/%s", out.toString(), numero_dossier);
 		
 		taille_liste = plan.getChunks().size();
 		
@@ -83,8 +81,95 @@ public abstract class ModeleImport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+    
+    public void open() {
 
+		concat_des_rush_du_plan = String.format("%s/fifo_%s.avi", ram, plan.getName());
+		
+		outfile = plan.getName();
+    	
+    	script_remux = new String[] {"ffmpeg",
+                "-y",	
+                "-i",
+                concat_des_rush_du_plan,
+                "-s",
+                "720x576",
+                "-sws_flags",
+                "lanczos",
+                "-pix_fmt",
+                "yuv420p",
+                "-aspect",
+                "16:9",
+                "-b:a",
+                "384k",
+                "-c:v",
+                "mpeg2video",
+                "-q:v",
+                "0",
+                String.format("%s/%s.mpg", outdir, outfile) 
+                };
+
+    	script_remux_deint = new String[] {"ffmpeg",
+                "-y",
+                "-i",
+                concat_des_rush_du_plan,
+                "-vf",
+                "yadif=0:0:0",
+                "-s",
+                "720x576",
+                "-sws_flags",
+                "lanczos",
+                "-pix_fmt",
+                "yuv420p",
+                "-aspect",
+                "16:9",
+                "-b:a",
+                "384k",
+                "-c:v",
+                "mpeg2video",
+                "-q:v",
+                "0",
+                String.format("%s/%s.mpg", outdir, outfile) 
+                };
+        }
+       
+    public void close(){
+		
+		Process p3;
+		
+		try {
+
+			Instant deb = Instant.now();
+			
+			while (p2.isAlive()){	
+			}
+			System.out.println("== latence fin remux == " + Duration.between(deb, Instant.now()).toMillis() / 1000.0 + "secondes");
+			
+			System.out.println("\n**fin process remux**");
+			System.out.println("\n**p2 destroy()**");
+			
+			System.out.println("\n**script_rmfifos**");
+			System.out.println("** " + String.format("%s/fifo_%s.M2T", ram, plan.getName()));
+			
+			script_rmfifos = new String[] {"rm",
+                    "-f",
+                    String.format("%s/fifo_%s.M2T", ram, plan.getName())
+            };
+			p3 = Runtime.getRuntime().exec(script_rmfifos);	
+            
+            System.out.println("** " + String.format("%s/fifo_%s.avi", ram, plan.getName()));
+			
+			script_rmfifos = new String[] {"rm",
+                    "-f",
+                    String.format("%s/fifo_%s.avi", ram, plan.getName())
+            };
+			p3 = Runtime.getRuntime().exec(script_rmfifos);
+
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
     
     public String affcommande(String[] com){

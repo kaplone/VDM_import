@@ -16,7 +16,7 @@ import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleM2T_mencoder_desplit extends ModeleImport{
+public class ModeleM2T_mencoder_nodesplit extends ModeleImport{
 	
 	private AfficheurFlux fluxErreurERR_REMUX;
 	private AfficheurFlux2 fluxInputSTD_LECTURE;
@@ -36,8 +36,6 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 			try {
 				init();
 				open();
-				Thread.sleep(500);
-				dd();
 				Thread.sleep(1000);
 				lire();
 				Thread.sleep(1000);
@@ -50,7 +48,7 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 			}	
 		}
 	}
-    
+
 	@Override
 	public void open() {
 
@@ -104,7 +102,7 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
                 "-q:v",
                 "0",
                 String.format("%s/%s.mpg", outdir, outfile) 
-                };
+            };
         }
 
 	public void lire(){
@@ -112,9 +110,6 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 		liste_des_scripts_lecture = new ArrayList<>();
 		
 		String source = plan.getPath();
-		if (plan.getChunks().size() > 1){
-			source = String.format("%s/fifo_%s.M2T", ram, plan.getName());;
-    	}
 
 		script_lecture = new String[] {"mencoder",
                 "-oac",
@@ -165,42 +160,6 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 		t_lire.start();
 	}
 	
-	public void dd(){
-		
-		System.out.println("\n**entrée_dd**");
-
-		Runnable dd_runnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				script_cat = new String[]{"sh",
-						                  "-c",
-						                  plan.getChunks()
-						                      .stream()
-						                      .map(a -> a.getPath())
-						                      .collect(Collectors.joining(" ", "cat ", String.format(" > %s/fifo_%s.M2T", ram, plan.getName())))
-				};
-				
-				try {
-					System.out.println("\n**script_cat**");
-	    			
-	    			Process p4 = Runtime.getRuntime().exec(script_cat);
-	    			
-	    			System.out.println(affcommande(script_cat));			
-	    			System.out.println("p4.isAlive() : " + p4.isAlive());
-	    			
-				} catch (IOException e) {
-					e.printStackTrace();
-				}	
-			}
-		};
-		
-		Thread t_dd = new Thread(dd_runnable);
-		//t_dd.setPriority(Thread.MAX_PRIORITY);
-		t_dd.start();
-	}	
-	
 public void remux(boolean multithread){
     	
     	if (multithread){
@@ -220,7 +179,7 @@ public void remux(boolean multithread){
 
     					fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
     		            new Thread(fluxErreurERR_REMUX).start();
-    		            
+
     		            close();
     				
     	            }
@@ -269,4 +228,5 @@ public void remux(boolean multithread){
         	System.out.println("p2.isAlive() : " + p2.isAlive());
     	}			
     }
+		
 }
