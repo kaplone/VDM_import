@@ -13,50 +13,23 @@ import models.Rush;
 import utils.AfficheurFlux;
 import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
+import utils.AfficheurFlux4;
 import utils.Messages;
 
-public class ModeleM2T_ffmpeg implements ModeleImport{
-	
-	private String[] script_fifo;
-	private String[] script_rmfifos;
-	private String[] script_lecture;
-	private String[] script_remux;
-	private String[] script_remux_concat;
-	private String[] script_remux_deint;
-	private String[] script_remux_concat_deint;
-
-	private final File ram = new File("/mnt/ramdisk");
-	private final File temp = new File("/home/david/temp");
-	private final File out = new File("/mnt/2015_rushs");
-	//private final File out = new File("/home/autor/Desktop");
-	
-	private String concat_des_rush_du_plan;
-	private String outdir;
-	private String outfile;
+public class ModeleMOV_XDCAM extends ModeleImport{
 	
 	private List<String> liste_des_fifos;
 	private List<Rush> liste_des_plans;
 	
-	private List<String[]> liste_des_scripts_lecture;
-	private List<String[]> liste_des_scripts_fifo;
-	
-	private int taille_liste;
-	
-	private Cadreur cadreur;
-	
+	private String[] script_remux_concat;
+	private String[] script_remux_concat_deint;
+
 	private FileWriter fw;
-
+	
 	private AfficheurFlux fluxErreurERR_REMUX;
-	private AfficheurFlux[] fluxErreurERR_LECTURE;
-	//private AfficheurFlux2[] fluxErreurSTD_LECTURE;
-	//private AfficheurFlux3[] fluxErreurERR_LECTURE;
+	private AfficheurFlux2[] fluxInputSTD_LECTURE;
+	private AfficheurFlux3[] fluxErreurERR_LECTURE;
 
-	
-	private Process p2;
-	
-	private Rush plan;
-	
-	private String numero_dossier;
 	
 	public void ecritureTxt(){
 		
@@ -76,13 +49,9 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 	}
 
 	@Override
-	public void import_rushs(File dossier, Cadreur cadreur) {
+	public void import_rushs(File dossier, Cadreur cadreur, boolean multithread) {
 		
-		this.cadreur = cadreur;
-		
-		numero_dossier = dossier.toPath().getFileName().toString();
-		
-		outdir = String.format("%s/%s", out, numero_dossier);
+		super.constructeur(dossier, cadreur, multithread);
 		
 		liste_des_plans = Messages.getListeDesPlans();
 		
@@ -90,16 +59,28 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 			
 			plan = liste_des_plans.get(i);
 
-			init();
-			open();
-			remux();
-			lire();
-			close();	
+			try {
+				init();
+				open();	
+				Thread.sleep(1000);
+				lire();
+				Thread.sleep(1000);
+				remux(multithread);
+				close();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
 		}
 	}
 	
-	
-	public void init() {
+	@Override
+    public void init() {
+		
+        numero_dossier = dossier.toPath().getFileName().toString();
+		
+		outdir = String.format("%s/%s", out.toString(), numero_dossier);
 		
 		taille_liste = plan.getChunks().size();
 		
@@ -116,8 +97,36 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 
 			liste_des_scripts_fifo.add(script_fifo);
         }
-	}
+        
+        Process [] p0 = new Process [100];
+		
+		try {
+			
+			int i = 0;
+			while(i < liste_des_scripts_fifo.size()){
+				
+				p0[i] = Runtime.getRuntime().exec(liste_des_scripts_fifo.get(i));
+				System.out.println("\n**script_fifo**");
+				System.out.println("\n** " + i);
+				System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
+				p0[i].waitFor();
+				i++;
+
+			}
+			
+			System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
+			for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+				System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
+			}
+		}
+		catch (Exception e) {
+			System.out.println("une exception !");
+			
+			e.printStackTrace();
+		}
+	}  
 	
+	@Override
 	public void open() {
 		
 		if (plan.getChunks().size() > 1){
@@ -136,7 +145,7 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
-                "0.24",
+                "0.12",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -147,8 +156,8 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 "16:9",
                 "-b:a",
                 "384k",
-                "-vcodec",
-                "c:v",
+                "-c:v",
+                "mpeg2video",
                 "-q:v",
                 "0",
                 String.format("%s/%s.mpg", outdir, outfile) 
@@ -163,7 +172,7 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
-                "0.24",
+                "0.12",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -186,7 +195,7 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
-                "0.24",
+                "0.12",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -215,7 +224,7 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
-                "0.24",
+                "0.12",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -236,30 +245,9 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
                 };
         }
 
-        public void remux(){
-        	   		
-    		Process [] p0 = new Process [100];
-			
+        public void remux(boolean multithread){
+    		
 			try {
-				
-				int i = 0;
-				while(i < liste_des_scripts_fifo.size()){
-					
-					p0[i] = Runtime.getRuntime().exec(liste_des_scripts_fifo.get(i));
-					System.out.println("\n**script_fifo**");
-					System.out.println("\n** " + i);
-					System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
-
-					p0[i].waitFor();
-					
-					i++;
-
-				}
-				
-				System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
-				for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
-					System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
-				}
 				
 	            System.out.println("\n**script_remux**");
 				
@@ -300,25 +288,34 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 
 		for (int i = 0; i < taille_liste; i++){
 
+//			script_lecture = new String[] {"ffmpeg",
+//			                    "-y",
+//			                    "-analyzeduration",
+//			                    "100M",
+//			                    "-probesize",
+//			                    "100M",
+//			                    "-i",
+//			                    String.format("%s", plan.getChunks().get(i)),
+//			                    "-c:v",
+//			                    "huffyuv",
+//			                    "-c:a",
+//			                    "pcm_s16le",
+//			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+//			                    };
 			
-			script_lecture = new String[] {"ffmpeg",
-                    "-y",
-                    "-analyzeduration",
-                    "100M",
-                    "-probesize",
-                    "100M",
-                    "-i",
-                    String.format("%s", plan.getChunks().get(i)),
-                    "-map",
-                    "0:0",
-                    "-map",
-                    "0:1",
-                    "-c:v",
-                    "huffyuv",
-                    "-c:a",
-                    "pcm_s16le",
-                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-                    };
+			script_lecture = new String[] {"mencoder",
+	                "-oac",
+	                "pcm",
+	                "-ovc",
+	                "lavc",
+	                "-lavcopts",
+	                "vcodec=huffyuv:format=422p",
+	                "-vf",
+	                "scale=1920:1080",
+	                String.format("%s", plan.getChunks().get(i)),
+	                "-o",
+	                String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+	                };	
 				
 
 			liste_des_scripts_lecture.add(script_lecture);
@@ -327,48 +324,58 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 
     	
 		Process [] p1 = new Process [100];
-    	//fluxErreurSTD_LECTURE = new AfficheurFlux2[100];
-    	fluxErreurERR_LECTURE = new AfficheurFlux[100];
-		
-    	try {
-          	int i = 0;
-
-			while(i < liste_des_scripts_lecture.size()){
-
-				System.out.println("\n**script_lecture**");
-				System.out.println("** " + i);
-				
-				p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
-				
-				System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
-                
-				//fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-				fluxErreurERR_LECTURE[i] = new AfficheurFlux(p1[i].getInputStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-				
-	            new Thread(fluxErreurERR_LECTURE[i]).start();
-	            
-	            System.out.println(String.format("Wait fo p1[%d]", i));
-            	p1[i].waitFor();
-
-				i++;
-		    }
+    	fluxErreurERR_LECTURE = new AfficheurFlux3[100];
+    	fluxInputSTD_LECTURE = new AfficheurFlux2[100];
+        
+    	Runnable lire_runnable = new Runnable() {
 			
-			System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
-			for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
-				System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
-				fluxErreurERR_LECTURE[j].close();
-			}
+			@Override
+			public void run() {
+				try {
+		          	int i = 0;
+
+					while(i < liste_des_scripts_lecture.size()){
+
+						System.out.println("\n**script_lecture**");
+						System.out.println("** " + i);
+						
+						p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
+						
+						System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
+						
+						fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
+						fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[FFMPEG STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
+
+			            new Thread(fluxErreurERR_LECTURE[i]).start();
+			            new Thread(fluxInputSTD_LECTURE[i]).start();
+			            
+			            System.out.println(String.format("Wait fo p1[%d]", i));
+		            	p1[i].waitFor();
+			         	            
+						i++;
+				    }
+//					
+//					System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
+//					for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+//						System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
+//						fluxErreurERR_LECTURE[j].close();
+//					}
+//							
+				}
+				catch (Exception e) {
+					System.out.println("une exception !");
 					
-		}
-		catch (Exception e) {
-			System.out.println("une exception !");
-			
-			e.printStackTrace();
-		}
+					e.printStackTrace();
+				}
+			}
+    	};
+    	Thread t_lire = new Thread(lire_runnable);
+		//t_lire.setPriority(Thread.MAX_PRIORITY);
+		t_lire.start();    	
 
 	}
 	
-	public void close(){
+    public void close(){
 		
 		Process p3;
 		
@@ -380,38 +387,19 @@ public class ModeleM2T_ffmpeg implements ModeleImport{
 			}
 			System.out.println("== latence fin remux == " + Duration.between(deb, Instant.now()).toMillis() / 1000.0 + "secondes");
 			
-			System.out.println("\n**fin process remux**");
-			System.out.println("\n**p2 destroy()**");
-
-			for(String f : liste_des_fifos){
-				
-				System.out.println("\n**script_rmfifos**");
-				System.out.println("** " + f);
-				
-				script_rmfifos = new String[] {"rm",
-	                    "-f",
-	                    f
-	            };
-				p3 = Runtime.getRuntime().exec(script_rmfifos);
-				System.out.println("isAlive() p3[pre] : " +  p3.isAlive());
-	            p3.waitFor();	
-	            System.out.println("isAlive() p3[post] : " +  p3.isAlive());
-			}
+			System.out.println("\n**script_rmfifos**");
+			System.out.println("** " + String.format("%s/fifo_%s_*", ram, plan.getName()));
+			
+			script_rmfifos = new String[] {"rm",
+                    "-f",
+                    String.format("%s/fifo_%s_*", ram, plan.getName())
+            };
+			p3 = Runtime.getRuntime().exec(script_rmfifos);	
+           
 
 			
-		} catch (InterruptedException | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public String affcommande(String[] com){
-		
-		String s = "";
-		
-		for (int i = 0; i < com.length; i++){
-			s += " ";
-			s += com[i];
-		}
-		return s;
 	}
 }
