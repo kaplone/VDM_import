@@ -2,29 +2,25 @@ package models;
 
 import java.io.File;
 
-import javax.swing.Box.Filler;
-
-import javafx.collections.FXCollections;
+import application.BatchList_controller;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.util.Callback;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class BatchElement {
 	
 	private File dossier;
 	private Cadreur cadreur;
 	private boolean deint;
+	private String status;
 
 	public BatchElement(File dossier, Cadreur cadreur, boolean deint) {
 		this.dossier = dossier;
 		this.cadreur = cadreur;
 		this.deint = deint;
+        this.status = "En attente";
 	}
 	
 	public File getDossier() {
@@ -47,34 +43,6 @@ public class BatchElement {
 		ChoiceBox<String> cb = new ChoiceBox<>();
 	
 		cb.getItems().addAll("Oui", "Non");
-//        cb.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-//            @Override
-//            public ListCell<String> call(ListView<String> param) {
-//              final ListCell<String> cell = new ListCell<String>() {
-//                {
-//                  super.setPrefWidth(100);
-//                }
-//
-//                @Override
-//                public void updateItem(String item, boolean empty) {
-//                    super.updateItem(item, empty);
-//                    
-//                    setText(item);
-//                    
-//                    if (item != null) {
-//                    	if (item.contains("Oui")) {
-//                            setStyle("-fx-text-fill: GREEN;-fx-font-weight: bold;");
-//                          } else if (item.contains("Non")) {
-//                        	  setStyle("-fx-text-fill: RED;-fx-font-weight: bold;");
-//                          }
-//                    }
-//                    
-//
-//                }
-//              };
-//              return cell;
-//            }
-//          });
 		
 		if (deint){
 			cb.getSelectionModel().select(0);
@@ -94,7 +62,22 @@ public class BatchElement {
 	public void setCadreur(Cadreur cadreur) {
 		this.cadreur = cadreur;
 	}
-	
-	
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public Button getSupprimer(){
+		
+		Button b = new Button ("Supprimer");
+		b.setOnAction(a -> BatchList_controller.getObservable_liste().remove(this));
+		
+		return b;
+		
+	}
+	
 }
