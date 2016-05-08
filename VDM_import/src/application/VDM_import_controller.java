@@ -54,6 +54,10 @@ public class VDM_import_controller implements Initializable{
 	private Button importer_java_button;
 	@FXML
 	private Button importer_java_n_button;
+	@FXML
+	private Button aff_liste_button;
+	@FXML
+	private Button ajouter_liste_button;
 	
 	private Image im;
 	private File repPreview;
@@ -184,11 +188,18 @@ public class VDM_import_controller implements Initializable{
 //			}
 //		});
 		
+		BatchList_controller batch = new BatchList_controller();
+		batch.initialize(location, resources);
+		
 		importer_python_button.setOnAction(a -> Import_python.importer(repPreview, cadreur_choicebox.getValue()));
 		
 		importer_java_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), false));
 		
 		importer_java_n_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), true));
+		
+		ajouter_liste_button.setOnAction(a-> batch.ajouter(repPreview, Messages.getCadreur()));
+		
+		aff_liste_button.setOnAction(a -> batch.afficher());
 		
 	
 	}
