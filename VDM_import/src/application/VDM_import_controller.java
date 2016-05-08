@@ -197,7 +197,7 @@ public class VDM_import_controller implements Initializable{
 		
 		importer_java_n_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), true));
 		
-		ajouter_liste_button.setOnAction(a-> batch.ajouter(repPreview, Messages.getCadreur()));
+		ajouter_liste_button.setOnAction(a-> batch.ajouter(repPreview, Messages.getCadreur(), deint_checkbox.isSelected()));
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());
 		

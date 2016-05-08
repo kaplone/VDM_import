@@ -9,6 +9,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,8 +31,8 @@ public class BatchList_controller implements Initializable{
 		stage.show();
 	}
 	
-	public void ajouter(File dossier, Cadreur cadreur){
-		observable_liste.add(new BatchElement(dossier, cadreur));
+	public void ajouter(File dossier, Cadreur cadreur, boolean deint){
+		observable_liste.add(new BatchElement(dossier, cadreur, deint));
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class BatchList_controller implements Initializable{
 		TableColumn<BatchElement, String> dossier = new TableColumn<>("Dossier");
 		TableColumn<BatchElement, String> cadreur = new TableColumn<>("Cadreur");
 		TableColumn<BatchElement, String> methode = new TableColumn<>("Méthode");
-		TableColumn<BatchElement, String> deint = new TableColumn<>("Déint");
+		TableColumn<BatchElement, ChoiceBox<String>> deint = new TableColumn<>("Déint");
 		liste.getColumns().addAll(dossier, cadreur, methode, deint);
 		observable_liste = FXCollections.observableArrayList();
 		liste.setItems(observable_liste);
@@ -66,7 +69,7 @@ public class BatchList_controller implements Initializable{
 			    new PropertyValueFactory<>("deint")
 			);
 		
-		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.AMOUROUX));
+		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.AMOUROUX, true));
 		
 		root.setCenter(liste);
 		
