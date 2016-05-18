@@ -10,7 +10,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Scene scene = new Scene((Parent) JfxUtils.loadFxml("VDM_import_GUI.fxml"), 1550, 800);
+			Scene scene = new Scene((Parent) JfxUtils.loadFxml("VDM_import_GUI.fxml"), 1020, 800);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(scene);

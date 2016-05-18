@@ -13,7 +13,6 @@ import models.Rush;
 import utils.AfficheurFlux;
 import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
-import utils.AfficheurFlux4;
 import utils.Messages;
 
 public class ModeleMOV_XDCAM extends ModeleImport{

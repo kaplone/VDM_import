@@ -55,6 +55,8 @@ public class VDM_import_controller implements Initializable{
 	@FXML
 	private Button importer_java_n_button;
 	@FXML
+	private Button importer_button;
+	@FXML
 	private Button aff_liste_button;
 	@FXML
 	private Button ajouter_liste_button;
@@ -64,6 +66,8 @@ public class VDM_import_controller implements Initializable{
 	private ObservableList<Path> liste_sample;
 	
 	private ModeleImport modele_import;
+	
+	private String modele;
 
     protected File chooseRepLec(String s){
 		
@@ -93,14 +97,12 @@ public class VDM_import_controller implements Initializable{
     
     protected void select_dossier(){
     	
+    	cadreur_choicebox.getSelectionModel().select(null);
+    	    	
     	repPreview = chooseRepLec("Répertoire sources");
     	dossier_source_button.setText(repPreview.toString());
-    	try {
-			peupler_samples();
-		}
-		catch (NullPointerException npe){
-			
-		}
+    	liste_sample.clear();
+
     }
     
     protected void peupler_samples(){
@@ -141,6 +143,10 @@ public class VDM_import_controller implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		modele = null;
+		importer_button.setDisable(true);
+		ajouter_liste_button.setDisable(true);
+		
 		liste_sample = FXCollections.observableArrayList();
 		
 		dossier_source_button.setOnAction(a -> select_dossier());
@@ -149,25 +155,16 @@ public class VDM_import_controller implements Initializable{
 		cadreur_choicebox.setOnAction(a -> {
 			deint_checkbox.setSelected(cadreur_choicebox.getValue().isDeint());
 			extension_choicebox.getSelectionModel().select(cadreur_choicebox.getValue().getExtension());
-//			Class modele = cadreur_choicebox.getValue().getModele_import();
-//			
-//			try {
-//				modele.newInstance();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-		});
-		
-		extension_choicebox.setItems(Cadreur.getExtensions());
-		extension_choicebox.setOnAction(a -> {
+			
 			try {
 				peupler_samples();
 			}
 			catch (NullPointerException npe){
 				
 			}
+
 		});
+
 		
 		sample_choicebox.setOnAction(a -> {
             affichePreview(100);
@@ -191,13 +188,56 @@ public class VDM_import_controller implements Initializable{
 		BatchList_controller batch = new BatchList_controller();
 		batch.initialize(location, resources);
 		
-		importer_python_button.setOnAction(a -> Import_python.importer(repPreview, cadreur_choicebox.getValue()));
+		importer_python_button.setOnAction(a -> {
+			modele = "python";
+			importer_python_button.setStyle("-fx-background-color:  limegreen");
+			importer_java_button.setStyle("-fx-background-color:  orange");
+			importer_java_n_button.setStyle("-fx-background-color:  orange");
+			importer_button.setDisable(false);
+			ajouter_liste_button.setDisable(false);
+		});
 		
-		importer_java_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), false));
+		importer_java_button.setOnAction(a -> {
+			modele = "java_1";
+			importer_python_button.setStyle("-fx-background-color:  orange");
+			importer_java_button.setStyle("-fx-background-color:  limegreen");
+			importer_java_n_button.setStyle("-fx-background-color:  orange");
+			importer_button.setDisable(false);
+			ajouter_liste_button.setDisable(false);
+		});
 		
-		importer_java_n_button.setOnAction(a -> Import_java.importer(repPreview, cadreur_choicebox.getValue(), true));
+		importer_java_n_button.setOnAction(a -> {
+			modele = "java_n";
+			importer_python_button.setStyle("-fx-background-color:  orange");
+			importer_java_button.setStyle("-fx-background-color:  orange");
+			importer_java_n_button.setStyle("-fx-background-color:  limegreen");
+			importer_button.setDisable(false);
+			ajouter_liste_button.setDisable(false);
+		});
 		
-		ajouter_liste_button.setOnAction(a-> batch.ajouter(repPreview, Messages.getCadreur(), deint_checkbox.isSelected()));
+		importer_button.setOnAction(a -> {
+			
+			if (modele != null){
+				switch (modele){
+				
+				case "python" : Import_python.importer(repPreview, cadreur_choicebox.getValue());
+				                break;
+				case "java_1" : Import_java.importer(repPreview, cadreur_choicebox.getValue(), false);
+				                break;
+				case "java_n" : Import_java.importer(repPreview, cadreur_choicebox.getValue(), true);
+				                break;
+				}
+			}
+		});
+		
+		ajouter_liste_button.setOnAction(a-> {
+			if (modele != null){
+				
+				batch.ajouter(repPreview, modele, cadreur_choicebox.getValue(), deint_checkbox.isSelected());
+
+		    }
+			
+		});
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());
 		

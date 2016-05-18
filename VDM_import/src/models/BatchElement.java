@@ -13,15 +13,28 @@ public class BatchElement {
 	
 	private File dossier;
 	private Cadreur cadreur;
+	private String modele;
+	private Class classe;
 	private boolean deint;
 	private String status;
+	private String multi;
 
-	public BatchElement(File dossier, Cadreur cadreur, boolean deint) {
+	public BatchElement(File dossier, String modele, String multi, Cadreur cadreur, boolean deint) {
 		this.dossier = dossier;
+		this.modele = modele;
 		this.cadreur = cadreur;
 		this.deint = deint;
+		this.multi = multi;
         this.status = "En attente";
 	}
+//	
+//	public BatchElement(File dossier, Cadreur cadreur, boolean deint) {
+//		this.dossier = dossier;
+//		this.classe = cadreur.getModele_import();
+//		this.cadreur = cadreur;
+//		this.deint = deint;
+//        this.status = "En attente";
+//	}
 	
 	public File getDossier() {
 		return dossier;
@@ -35,7 +48,7 @@ public class BatchElement {
 	}
 	
 	public String getMethode() {
-		return cadreur.getModele_import().getSimpleName();
+		return this.classe != null ? this.classe.getSimpleName() : this.modele;
 	}
 
 	public ChoiceBox<String> getDeint(){
@@ -55,6 +68,10 @@ public class BatchElement {
 		
 	}
 	
+	public boolean getDeint_bool(){
+		return deint;
+	}
+	
 	public void setDeint(boolean deint){
 		this.deint = deint;
 	}
@@ -66,6 +83,10 @@ public class BatchElement {
 	public String getStatus() {
 		return status;
 	}
+	
+	public String getStatus_() {
+		return "Terminé";
+	}
 
 	public void setStatus(String status) {
 		this.status = status;
@@ -74,10 +95,30 @@ public class BatchElement {
 	public Button getSupprimer(){
 		
 		Button b = new Button ("Supprimer");
-		b.setOnAction(a -> BatchList_controller.getObservable_liste().remove(this));
+		b.setOnAction(a -> BatchList_controller.getObservable_liste_1().remove(this));
 		
 		return b;
 		
+	}
+
+	public String getModele() {
+		return modele;
+	}
+
+	public void setModele(String modele) {
+		this.modele = modele;
+	}
+
+	public Class getClasse() {
+		return classe;
+	}
+
+	public void setClasse(Class classe) {
+		this.classe = classe;
+	}
+	
+	public boolean isMulti(){
+		return multi.equals("Oui") ? true : false;
 	}
 	
 }

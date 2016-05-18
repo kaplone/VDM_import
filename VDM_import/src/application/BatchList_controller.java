@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,16 +26,25 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import models.BatchElement;
 import models.Cadreur;
+import utils.Import_java;
+import utils.Import_python;
 
 public class BatchList_controller implements Initializable{
 	
 	private Stage stage;
-	private static ObservableList<BatchElement> observable_liste;
-	private TableView<BatchElement> liste;
+	private static ObservableList<BatchElement> observable_liste_1;
+	private static ObservableList<BatchElement> observable_liste_2;
+	private TableView<BatchElement> liste_1;
+	private TableView<BatchElement> liste_2;
+	
+	private VBox vbox;
+	private Label label_1;
+	private Label label_2;
 	
 	private Button lancer;
 	
@@ -42,8 +52,27 @@ public class BatchList_controller implements Initializable{
 		stage.show();
 	}
 	
-	public void ajouter(File dossier, Cadreur cadreur, boolean deint){
-		observable_liste.add(new BatchElement(dossier, cadreur, deint));
+	public void ajouter(File dossier, String modele, Cadreur cadreur, boolean deint){
+		
+		String modele_import = "";
+		String multi = "Non";
+		
+		if (modele != null){
+			switch (modele){
+			
+			case "python" : modele_import = cadreur.getPython_file();
+			                multi = "Non";
+			                break;
+			case "java_1" : multi = "Non";
+			                modele_import = cadreur.getModele_import().getSimpleName();
+                            break;
+			case "java_n" : multi = "Oui";
+				            modele_import = cadreur.getModele_import().getSimpleName();
+			                break;
+			}
+		}
+		
+		observable_liste_1.add(new BatchElement(dossier, modele_import, multi, cadreur, deint));
 	}
 
 	@Override
@@ -55,59 +84,102 @@ public class BatchList_controller implements Initializable{
 		stage.setHeight(800);
 		stage.setWidth(1200);
 		
-		liste = new TableView<>();
-		TableColumn<BatchElement, String> dossier = new TableColumn<>("Dossier");
-		TableColumn<BatchElement, String> cadreur = new TableColumn<>("Cadreur");
-		TableColumn<BatchElement, String> methode = new TableColumn<>("Méthode");
-		TableColumn<BatchElement, ChoiceBox<String>> deint = new TableColumn<>("Déint");
-		TableColumn<BatchElement, String> status = new TableColumn<>("Status");
-		TableColumn<BatchElement, Button> delete = new TableColumn<>("Supprimer");
-		liste.getColumns().addAll(dossier, cadreur, methode, deint, status, delete);
+		vbox = new VBox();
 		
-		observable_liste = FXCollections.observableArrayList();
+		label_1 = new Label("Imports en cours ...");
+		label_2 = new Label("Imports terminés");
 		
-		liste.setItems(observable_liste);
+		liste_1 = new TableView<>();
+		TableColumn<BatchElement, String> dossier_1 = new TableColumn<>("Dossier");
+		TableColumn<BatchElement, String> cadreur_1 = new TableColumn<>("Cadreur");
+		TableColumn<BatchElement, String> methode_1 = new TableColumn<>("Méthode");
+		TableColumn<BatchElement, String> multi_thread_1 = new TableColumn<>("Multi-thread");
+		TableColumn<BatchElement, ChoiceBox<String>> deint_1 = new TableColumn<>("Déint");
+		TableColumn<BatchElement, String> status_1 = new TableColumn<>("Status");
+		TableColumn<BatchElement, Button> delete_1 = new TableColumn<>("Supprimer");
+		liste_1.getColumns().addAll(dossier_1, cadreur_1, methode_1, multi_thread_1, deint_1, status_1, delete_1);
+		
+		observable_liste_1 = FXCollections.observableArrayList();
+		
+		liste_1.setItems(observable_liste_1);
 
-		dossier.setCellValueFactory(
+		dossier_1.setCellValueFactory(
 			    new PropertyValueFactory<>("dossier")
 			);
 		
-		cadreur.setCellValueFactory(
+		cadreur_1.setCellValueFactory(
 			    new PropertyValueFactory<>("cadreur")
 			);
 		
-		methode.setCellValueFactory(
+		methode_1.setCellValueFactory(
 			    new PropertyValueFactory<>("methode")
 			);
 		
-		deint.setCellValueFactory(
+		multi_thread_1.setCellValueFactory(
+			    new PropertyValueFactory<>("multi")
+			);
+		
+		deint_1.setCellValueFactory(
 			    new PropertyValueFactory<>("deint")
 			);
 		
-		status.setCellValueFactory(
+		status_1.setCellValueFactory(
 			    new PropertyValueFactory<>("status")
 			);
 		
-		delete.setCellValueFactory(
+		delete_1.setCellValueFactory(
 			    new PropertyValueFactory<>("supprimer")
 			);
 		
-		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.AMOUROUX, true));
-		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.PARADIS, true));
-		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.VIALATTE, false));
-		observable_liste.add(new BatchElement(new File("/home/blabla/444"), Cadreur.MERCHADOU, true));
+		liste_2 = new TableView<>();
+		TableColumn<BatchElement, String> dossier_2 = new TableColumn<>("Dossier");
+		TableColumn<BatchElement, String> cadreur_2 = new TableColumn<>("Cadreur");
+		TableColumn<BatchElement, String> methode_2 = new TableColumn<>("Méthode");
+		TableColumn<BatchElement, String> multi_thread_2 = new TableColumn<>("Multi-thread");
+		TableColumn<BatchElement, ChoiceBox<String>> deint_2 = new TableColumn<>("Déint");
+		TableColumn<BatchElement, String> status_2 = new TableColumn<>("Status");
+		liste_2.getColumns().addAll(dossier_2, cadreur_2, methode_2, multi_thread_2, deint_2, status_2);
+		
+		observable_liste_2 = FXCollections.observableArrayList();
+		
+		liste_2.setItems(observable_liste_2);
 
-		root.setCenter(liste);
+		dossier_2.setCellValueFactory(
+			    new PropertyValueFactory<>("dossier")
+			);
+		
+		cadreur_2.setCellValueFactory(
+			    new PropertyValueFactory<>("cadreur")
+			);
+		
+		methode_2.setCellValueFactory(
+			    new PropertyValueFactory<>("methode")
+			);
+		
+		multi_thread_2.setCellValueFactory(
+			    new PropertyValueFactory<>("multi")
+			);
+		
+		deint_2.setCellValueFactory(
+			    new PropertyValueFactory<>("deint")
+			);
+		
+		status_2.setCellValueFactory(
+			    new PropertyValueFactory<>("status_")
+			);
 		
 		HBox boutons = new HBox();
 		boutons.setAlignment(Pos.CENTER);
 		boutons.setSpacing(100);
+		boutons.setPadding(new Insets(20, 0, 50, 0));
 		lancer = new Button("Lancer la liste");
 		boutons.getChildren().add(lancer);
 		
-		lancer.setOnAction(a -> Lancer());
-	
-		root.setBottom(boutons);
+		lancer.setOnAction(a -> lancer());
+		
+		vbox.getChildren().addAll(label_1, liste_1, boutons, label_2, liste_2);
+
+		root.setCenter(vbox);
 	
 		Scene scene = new Scene((Parent) root);
 		stage.setScene(scene);
@@ -117,25 +189,61 @@ public class BatchList_controller implements Initializable{
 	
 	}
 	
-	public void Lancer(){
+	public void lancer(){
 		lancer.setText("Mettre en pause le traitement");
-		lancer.setOnAction(a -> Pause());
 		
+		while (observable_liste_1.size() > 0){
+			
+			System.out.println("lancement de : " + observable_liste_1.get(0));
+			
+			observable_liste_1.get(0).setStatus("Import en cours ...");
+			
+			switch (observable_liste_1.get(0).getModele()){
+			
+			case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
+					                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
+			                break;
+			case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+					                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+					                             observable_liste_1.get(0).getDeint_bool());
+			                break;
+			case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+					                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+					                             observable_liste_1.get(0).getDeint_bool());
+			                break;
+			}
+			
+			
+			
+			lancer.setOnAction(a -> lancer());
+			
+			observable_liste_2.add(observable_liste_1.get(0));
+			observable_liste_1.remove(0);
+		}
+		
+		lancer.setText("Lancer le traitement");
+		lancer.setOnAction(a -> Pause());
 	}
 	
 	public void Pause(){
 		lancer.setText("Lancer le traitement");
-		lancer.setOnAction(a -> Lancer());
+		lancer.setOnAction(a -> lancer());
 	}
 
-	public static ObservableList<BatchElement> getObservable_liste() {
-		return observable_liste;
+	public static ObservableList<BatchElement> getObservable_liste_1() {
+		return observable_liste_1;
 	}
 
-	public static void setObservable_liste(ObservableList<BatchElement> observable_liste) {
-		BatchList_controller.observable_liste = observable_liste;
+	public static void setObservable_liste_1(ObservableList<BatchElement> observable_liste) {
+		BatchList_controller.observable_liste_1 = observable_liste;
 	}
 	
-	
+	public static ObservableList<BatchElement> getObservable_liste_2() {
+		return observable_liste_2;
+	}
+
+	public static void setObservable_liste_2(ObservableList<BatchElement> observable_liste) {
+		BatchList_controller.observable_liste_2 = observable_liste;
+	}
 
 }

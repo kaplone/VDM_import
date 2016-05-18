@@ -6,9 +6,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPane" prefHeight="757.0" prefWidth="1277.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
+<BorderPane fx:id="borderPane" prefHeight="757.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
 <center><VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-<children><HBox alignment="CENTER" prefHeight="99.0" prefWidth="1264.0" spacing="100.0">
+<children><HBox alignment="CENTER" prefHeight="89.0" prefWidth="1217.0" spacing="100.0">
 <children><Button fx:id="dossier_source_button" mnemonicParsing="false" prefHeight="45.0" prefWidth="390.0" text="Dossier Source" />
 <VBox alignment="CENTER">
 <children><Label text="Cadreur" /><ChoiceBox fx:id="cadreur_choicebox" prefWidth="150.0" />
@@ -25,7 +25,7 @@
 </children>
 </VBox><CheckBox fx:id="deint_checkbox" mnemonicParsing="false" text="Désentrelacer" />
 </children></HBox><HBox prefHeight="550.0" prefWidth="1277.0" spacing="10.0">
-<children><VBox prefHeight="200.0" prefWidth="100.0">
+<children><VBox prefHeight="545.0" prefWidth="1166.0">
 <children><ImageView fx:id="imageview" fitHeight="478.0" fitWidth="1014.0" pickOnBounds="true" preserveRatio="true" /><Slider fx:id="mediaview_slider" prefHeight="125.0" prefWidth="1152.0" />
 </children></VBox><VBox fx:id="resume_vbox" prefHeight="494.0" prefWidth="255.0" />
 </children></HBox>
@@ -35,12 +35,16 @@
 <VBox alignment="CENTER">
 <children>
 <HBox alignment="CENTER" spacing="50.0">
-<children><Button fx:id="importer_python_button" mnemonicParsing="false" text="Importer (python)" BorderPane.alignment="CENTER" /><Button fx:id="importer_java_button" mnemonicParsing="false" text="Importer (java mono-thread))" /><Button fx:id="importer_java_n_button" mnemonicParsing="false" text="Importer (java multi-thread)" /><Button fx:id="ajouter_liste_button" mnemonicParsing="false" text="Ajouter à la liste des taches" /><Button fx:id="aff_liste_button" mnemonicParsing="false" text="Afficher liste des taches" />
+<children><Button fx:id="importer_python_button" mnemonicParsing="false" text="python" BorderPane.alignment="CENTER" /><Button fx:id="importer_java_button" mnemonicParsing="false" text="java mono-thread" /><Button fx:id="importer_java_n_button" mnemonicParsing="false" text="java multi-thread" />
 </children>
 <VBox.margin>
 <Insets />
 </VBox.margin>
-</HBox>
+</HBox><HBox alignment="CENTER" prefHeight="59.0" prefWidth="1024.0" spacing="50.0">
+<children><Button fx:id="importer_button" mnemonicParsing="false" text="Importer immédiatement" /><Button fx:id="ajouter_liste_button" mnemonicParsing="false" text="Ajouter à la liste des taches" />
+</children></HBox><HBox alignment="CENTER" prefHeight="0.0" prefWidth="1024.0" spacing="50.0">
+<children><Button fx:id="aff_liste_button" mnemonicParsing="false" text="Afficher liste des taches" />
+</children></HBox>
 </children>
 </VBox>
 </bottom></BorderPane>
