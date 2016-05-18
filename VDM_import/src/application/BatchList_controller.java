@@ -72,7 +72,7 @@ public class BatchList_controller implements Initializable{
 			}
 		}
 		
-		observable_liste_1.add(new BatchElement(dossier, modele_import, multi, cadreur, deint));
+		observable_liste_1.add(new BatchElement(dossier, modele, multi, cadreur, deint));
 	}
 
 	@Override
@@ -194,11 +194,13 @@ public class BatchList_controller implements Initializable{
 		
 		while (observable_liste_1.size() > 0){
 			
-			System.out.println("lancement de : " + observable_liste_1.get(0));
+			System.out.println("lancement de : " + observable_liste_1.get(0).getDossier());
+			System.out.println("pour le switch : " + observable_liste_1.get(0).getMessage());
+			
 			
 			observable_liste_1.get(0).setStatus("Import en cours ...");
 			
-			switch (observable_liste_1.get(0).getModele()){
+			switch (observable_liste_1.get(0).getMessage()){
 			
 			case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
 					                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));

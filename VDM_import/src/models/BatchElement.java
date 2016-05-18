@@ -18,10 +18,11 @@ public class BatchElement {
 	private boolean deint;
 	private String status;
 	private String multi;
+	private String message;
 
-	public BatchElement(File dossier, String modele, String multi, Cadreur cadreur, boolean deint) {
+	public BatchElement(File dossier, String message, String multi, Cadreur cadreur, boolean deint) {
 		this.dossier = dossier;
-		this.modele = modele;
+		this.message = message;
 		this.cadreur = cadreur;
 		this.deint = deint;
 		this.multi = multi;
@@ -102,20 +103,16 @@ public class BatchElement {
 	}
 
 	public String getModele() {
-		return modele;
-	}
-
-	public void setModele(String modele) {
-		this.modele = modele;
+		return cadreur.getPython_file();
 	}
 
 	public Class getClasse() {
 		return classe;
 	}
-
-	public void setClasse(Class classe) {
-		this.classe = classe;
-	}
+		
+    public String getMessage(){
+    	return message;
+    }
 	
 	public boolean isMulti(){
 		return multi.equals("Oui") ? true : false;
