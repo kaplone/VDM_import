@@ -1,70 +1,51 @@
 package application;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-
-import javax.imageio.ImageIO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.chart.Axis;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
-import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import models.Cadreur;
 import models.Parties;
 import models.Rush;
 import utils.DateAxis;
-import utils.InstantAxis;
 
 public class Chart_controller implements Initializable{
 	
 	private Stage stage;
 	private Scene scene;
+
+	private DateAxis dateAxis= new DateAxis();
+	private NumberAxis yAxis = new NumberAxis();
+	private LineChart<Date, Number> lineChart = new LineChart<>(dateAxis, yAxis);
+    
+	private Rush precedent;
+	private ObservableList<XYChart.Data<Date, Number>> series1Data;
+	private int index;
+    
+	private String extension ;
+	private int duree_coupure;
+    
+	private boolean partie;
+    
+	private Duration duree_partie;
 	
-	final static Axis<String> xAxis = new CategoryAxis();
-	final static InstantAxis instantAxis= new InstantAxis();
-	final static DateAxis dateAxis= new DateAxis();
-    final static NumberAxis yAxis = new NumberAxis();
-    final static BarChart<String, Number> bc = new BarChart<>(xAxis,yAxis);
-    final static LineChart<Date, Number> lineChart = new LineChart<>(dateAxis, yAxis);
-    
-    static Rush precedent;
-    static ObservableList<XYChart.Data<Date, Number>> series1Data;
-    static int index;
-    
-    static String extension ;
-    static int duree_coupure;
-    static int duree_min;
-    
-    static boolean partie;
-    
-    static Duration duree_partie;
-	
-    public void bilan (String plan, Cadreur cadreur, List<Rush> times){
+    public Scene bilan (String plan, Cadreur cadreur, List<Rush> times){
     	
     	index = 0;
+    	
+    	precedent = null;
+	    partie = false;
 
 	    extension = cadreur.getExtension();
 	    if (extension.equals("MXF")){
@@ -177,28 +158,24 @@ public class Chart_controller implements Initializable{
 	    series1Data.add(new Data<Date, Number>(ldt, 0));
 	  //flush dernière partie
         series.add(new XYChart.Series<>(Parties.values()[index++].toString() + affDuree(duree_partie), series1Data));
-
+        
+        lineChart.getData().clear();
+        
+        dateAxis= new DateAxis();
+		yAxis = new NumberAxis();
+		lineChart = new LineChart<>(dateAxis, yAxis);
         lineChart.getData().addAll(series);
-		//lineChart.setTitle("Bilan tournage");
-    
-        saveAsPng(plan, cadreur.toString());
-      //TODO n'affiche pas les graduations dans l'image exportée
+		lineChart.setTitle(String.format("Bilan tournage %s (%s)", plan, cadreur));
+		
+		scene  = new Scene(lineChart,1920,500);
+
+	    stage.setScene(scene);
+        stage.show();
+        stage.toFront();
+
+		return scene;
+
 	}
-    
-    public void saveAsPng(String plan, String cadreur) {
-    	
-    	System.out.println(scene.getHeight());
-        WritableImage image = scene.snapshot(null);
-
-        // TODO: probably use a file chooser here
-        File file = new File(String.format("smb://debian_backup/f/VDM 2016/rapports_CADREURS/%s_%s.png", plan, cadreur));
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            // TODO: handle exception here
-        }
-    }
     
     public static String affDuree(Duration duree){	
     	
@@ -216,22 +193,11 @@ public class Chart_controller implements Initializable{
 		
         stage = new Stage();
 		
-		stage.setTitle("Bar Chart Sample");
+		stage.setTitle("BILAN");
 
 	    dateAxis.setLabel("Heure");       
 	    yAxis.setLabel("Durée");
-	    
-	    precedent = null;
-	    partie = false;
-	    
-	    duree_min = 90;
-	    
-	    scene  = new Scene(lineChart,1920,500);
-        stage.setScene(scene);
 
-        stage.show();
-        stage.toFront();
-		
 	}
 
 }

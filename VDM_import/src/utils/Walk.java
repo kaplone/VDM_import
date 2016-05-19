@@ -13,8 +13,10 @@ import java.util.List;
 
 import application.Chart_controller;
 import application.VDM_import_controller;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
 import models.Cadreur;
 import models.Rush;
 
@@ -58,11 +60,21 @@ public class Walk {
 		    	 TimeStamp.plage(a);
 		     });
 
-//	    Chart_controller chart = new Chart_controller();
-//	    chart.initialize(VDM_import_controller.getLocation(), VDM_import_controller.getResources());
-//	    
-//		chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
-		
+		 Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				Chart_controller chart = new Chart_controller();
+			    chart.initialize(VDM_import_controller.getLocation(), VDM_import_controller.getResources());
+			    
+				Scene chart_scene = chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);	
+				
+
+		        Snapshot.saveAsPng(chart_scene, Messages.getPlan(), cadreur.toString());
+		      //TODO n'affiche pas les graduations dans l'image exportée
+			}
+		 });
+
 		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
 		Messages.setListeDesPlans(liste_plans);
 

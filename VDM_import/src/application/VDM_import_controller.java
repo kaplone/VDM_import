@@ -87,8 +87,6 @@ public class VDM_import_controller implements Initializable{
         	dirChooser.setInitialDirectory(repPreview.getParentFile());
     	}
         else {
-        	//dirChooser.setInitialDirectory(new File("/mnt/nfs2"));
-        	//dirChooser.setInitialDirectory(new File("/mnt/2015_cartes"));
         	dirChooser.setInitialDirectory(new File("/mnt"));
         }
 				
@@ -108,6 +106,7 @@ public class VDM_import_controller implements Initializable{
     	cadreur_choicebox.getSelectionModel().select(null);
     	    	
     	repPreview = chooseRepLec("Répertoire sources");
+    	Messages.setPlan(repPreview.getName());
     	dossier_source_button.setText(repPreview.toString());
     	liste_sample.clear();
 
@@ -116,9 +115,7 @@ public class VDM_import_controller implements Initializable{
     protected void peupler_samples(){
     	
     	liste_sample.clear();
-    	
-    	//final Cursor oldCursor = Main.getScene().getCursor();
-    	//Main.getScene().setCursor(Cursor.WAIT);
+
         final Service<Void> calculateService = new Service<Void>() {
 
             @Override
@@ -143,12 +140,10 @@ public class VDM_import_controller implements Initializable{
         };
         calculateService.stateProperty().addListener((ObservableValue<? extends Worker.State> observableValue, Worker.State oldValue, Worker.State newValue) -> {
             switch (newValue) {
-                case FAILED:
-                case CANCELLED:
                 case SUCCEEDED:
                 	sample_choicebox.setItems(liste_sample);
             		sample_choicebox.getSelectionModel().select(0);
-            		affichePreview(100);
+            		affichePreview(20);
                     break;
             }
         });

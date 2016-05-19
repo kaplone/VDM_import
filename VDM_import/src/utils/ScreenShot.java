@@ -13,7 +13,7 @@ public class ScreenShot {
                 "-ss", 
                 Float.toString(at_frame/25.0F), 
                 "-i", 
-                fichier.toString(), 
+	                fichier.toString(), 
                 "-f", 
                 "image2", 
                 "-vframes", 

@@ -11,6 +11,7 @@ public class Messages {
 	private static String duration;
 	private static Cadreur cadreur;
 	private static List<Rush> listeDesPlans;
+	private static String plan;
 	
 	
 	public static String getTimestamp() {
@@ -38,6 +39,12 @@ public class Messages {
 	public static void setListeDesPlans(List<Rush> listeDesPlans) {
 		System.out.println("(set) liste_des_plans : " + listeDesPlans);
 		Messages.listeDesPlans = listeDesPlans;
+	}
+	public static String getPlan() {
+		return plan;
+	}
+	public static void setPlan(String plan) {
+		Messages.plan = plan;
 	}
 	
 	
