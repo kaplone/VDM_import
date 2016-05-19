@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 public class Main extends Application {
 	
 	private static Stage stage;
+	private static Scene scene;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -16,7 +17,7 @@ public class Main extends Application {
 		this.stage = primaryStage;
 		
 		try {
-			Scene scene = new Scene((Parent) JfxUtils.loadFxml("VDM_import_GUI.fxml"), 1020, 800);
+			scene = new Scene((Parent) JfxUtils.loadFxml("VDM_import_GUI.fxml"), 1020, 800);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(scene);
@@ -33,6 +34,10 @@ public class Main extends Application {
 
 	public static Stage getStage() {
 		return stage;
+	}
+	
+	public static Scene getScene() {
+		return scene;
 	}
 	
 	

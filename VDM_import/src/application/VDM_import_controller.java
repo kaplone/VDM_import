@@ -11,8 +11,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -113,32 +117,42 @@ public class VDM_import_controller implements Initializable{
     	
     	liste_sample.clear();
     	
-    	Runnable peupler_runnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				System.out.println("peupler liste des samples");
-		    	
-		    	Messages.setCadreur(cadreur_choicebox.getValue());
-		    	
-		    	try {
-		    		
-		    		liste_sample = Walk.walk(repPreview.toPath(), cadreur_choicebox.getValue());
-					
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}
-		};
-    	
-    	Thread peupler_thread = new Thread(peupler_runnable);
-    	peupler_thread.start();
-    	
-    	sample_choicebox.setItems(liste_sample);
-		sample_choicebox.getSelectionModel().select(0);
-		affichePreview(100);
-    	
+    	//final Cursor oldCursor = Main.getScene().getCursor();
+    	//Main.getScene().setCursor(Cursor.WAIT);
+        final Service<Void> calculateService = new Service<Void>() {
+
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+
+                    @Override
+                    protected Void call() throws Exception {
+                    	System.out.println("peupler liste des samples");
+        		    	
+        		    	Messages.setCadreur(cadreur_choicebox.getValue());
+        		    	
+        		    	try {      		    		
+        		    		liste_sample = Walk.walk(repPreview.toPath(), cadreur_choicebox.getValue());       					
+        				} catch (FileNotFoundException e) {
+        					e.printStackTrace();
+        				}
+                        return null;
+                    }
+                };
+            }
+        };
+        calculateService.stateProperty().addListener((ObservableValue<? extends Worker.State> observableValue, Worker.State oldValue, Worker.State newValue) -> {
+            switch (newValue) {
+                case FAILED:
+                case CANCELLED:
+                case SUCCEEDED:
+                	sample_choicebox.setItems(liste_sample);
+            		sample_choicebox.getSelectionModel().select(0);
+            		affichePreview(100);
+                    break;
+            }
+        });
+        calculateService.start();    	
     }
     
     protected void affichePreview(int frame){
