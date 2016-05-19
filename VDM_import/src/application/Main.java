@@ -7,8 +7,14 @@ import javafx.scene.Scene;
 
 
 public class Main extends Application {
+	
+	private static Stage stage;
+	
 	@Override
 	public void start(Stage primaryStage) {
+		
+		this.stage = primaryStage;
+		
 		try {
 			Scene scene = new Scene((Parent) JfxUtils.loadFxml("VDM_import_GUI.fxml"), 1020, 800);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -24,4 +30,10 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+	public static Stage getStage() {
+		return stage;
+	}
+	
+	
 }

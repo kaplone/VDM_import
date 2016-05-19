@@ -11,6 +11,8 @@ import java.security.GuardedObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import application.Chart_controller;
+import application.VDM_import_controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Cadreur;
@@ -56,8 +58,10 @@ public class Walk {
 		    	 TimeStamp.plage(a);
 		     });
 
-		
-		Chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
+//	    Chart_controller chart = new Chart_controller();
+//	    chart.initialize(VDM_import_controller.getLocation(), VDM_import_controller.getResources());
+//	    
+//		chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
 		
 		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
 		Messages.setListeDesPlans(liste_plans);

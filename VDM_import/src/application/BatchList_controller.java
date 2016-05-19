@@ -190,41 +190,52 @@ public class BatchList_controller implements Initializable{
 	}
 	
 	public void lancer(){
+		
 		lancer.setText("Mettre en pause le traitement");
 		
-		while (observable_liste_1.size() > 0){
+		Runnable import_runnable = new Runnable() {
 			
-			System.out.println("lancement de : " + observable_liste_1.get(0).getDossier());
-			System.out.println("pour le switch : " + observable_liste_1.get(0).getMessage());
-			
-			
-			observable_liste_1.get(0).setStatus("Import en cours ...");
-			
-			switch (observable_liste_1.get(0).getMessage()){
-			
-			case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
-					                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
-			                break;
-			case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-					                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-					                             observable_liste_1.get(0).getDeint_bool());
-			                break;
-			case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-					                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-					                             observable_liste_1.get(0).getDeint_bool());
-			                break;
-			}
-			
-			
-			
-			lancer.setOnAction(a -> lancer());
-			
-			observable_liste_2.add(observable_liste_1.get(0));
-			observable_liste_1.remove(0);
-		}
+			@Override
+			public void run() {
+				while (observable_liste_1.size() > 0){
+					
+					System.out.println("lancement de : " + observable_liste_1.get(0).getDossier());
+					System.out.println("pour le switch : " + observable_liste_1.get(0).getMessage());
+					
+					
+					observable_liste_1.get(0).setStatus("Import en cours ...");
+					
+					switch (observable_liste_1.get(0).getMessage()){
+					
+					case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
+							                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
+					                break;
+					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+							                             observable_liste_1.get(0).getDeint_bool());
+					                break;
+					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+							                             observable_liste_1.get(0).getDeint_bool());
+					                break;
+					}
+					
+					
+					
+					lancer.setOnAction(a -> lancer());
+					
+					observable_liste_2.add(observable_liste_1.get(0));
+					observable_liste_1.remove(0);
+				}
+				
+				lancer.setText("Lancer le traitement");
+				lancer.setOnAction(a -> Pause());
+			}		
+		};
 		
-		lancer.setText("Lancer le traitement");
-		lancer.setOnAction(a -> Pause());
+		Thread import_thread = new Thread(import_runnable);
+		import_thread.start();
+
 	}
 	
 	public void Pause(){

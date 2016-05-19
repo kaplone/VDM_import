@@ -1,8 +1,9 @@
-package utils;
+package application;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -12,12 +13,14 @@ import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.Axis;
@@ -32,11 +35,13 @@ import javafx.stage.Stage;
 import models.Cadreur;
 import models.Parties;
 import models.Rush;
+import utils.DateAxis;
+import utils.InstantAxis;
 
-public class Chart {
+public class Chart_controller implements Initializable{
 	
-	static Stage stage;
-	static Scene scene;
+	private Stage stage;
+	private Scene scene;
 	
 	final static Axis<String> xAxis = new CategoryAxis();
 	final static InstantAxis instantAxis= new InstantAxis();
@@ -57,22 +62,10 @@ public class Chart {
     
     static Duration duree_partie;
 	
-    public static void bilan (String plan, Cadreur cadreur, List<Rush> times){
+    public void bilan (String plan, Cadreur cadreur, List<Rush> times){
     	
     	index = 0;
-		
-		stage = new Stage();
-		
-		stage.setTitle("Bar Chart Sample");
 
-	    dateAxis.setLabel("Heure");       
-	    yAxis.setLabel("Durée");
-	    
-	    precedent = null;
-	    partie = false;
-	    
-	    duree_min = 90;
-	    
 	    extension = cadreur.getExtension();
 	    if (extension.equals("MXF")){
 	    	duree_coupure = 294;
@@ -81,7 +74,7 @@ public class Chart {
 	    else {
 	    	duree_coupure = 300;
 	    }
-	    
+
 	    ObservableList<XYChart.Series<Date, Number>> series = FXCollections.observableArrayList();
 	    
         times.stream().forEach(a -> {
@@ -187,28 +180,24 @@ public class Chart {
 
         lineChart.getData().addAll(series);
 		//lineChart.setTitle("Bilan tournage");
-        
-        scene  = new Scene(lineChart,1920,500);
-        stage.setScene(scene);
-
-        stage.show();
-        stage.toFront();
-        
-        saveAsPng(plan, cadreur.toString(), scene);
+    
+        saveAsPng(plan, cadreur.toString());
       //TODO n'affiche pas les graduations dans l'image exportée
 	}
     
-    public static void saveAsPng(String plan, String cadreur, Scene sceneAsPng) {
-        WritableImage image = sceneAsPng.snapshot(null);
+    public void saveAsPng(String plan, String cadreur) {
+    	
+    	System.out.println(scene.getHeight());
+        WritableImage image = scene.snapshot(null);
 
         // TODO: probably use a file chooser here
-//        File file = new File(String.format("/home/david/Desktop/bilans/%s_%s.png", plan, cadreur));
-//
-//        try {
-//            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-//        } catch (IOException e) {
-//            // TODO: handle exception here
-//        }
+        File file = new File(String.format("smb://debian_backup/f/VDM 2016/rapports_CADREURS/%s_%s.png", plan, cadreur));
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+        }
     }
     
     public static String affDuree(Duration duree){	
@@ -219,5 +208,30 @@ public class Chart {
     		
     	return String.format(" (%2dh %02dm %02ds)", hours, minutes, secondes);
     }
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		
+		System.out.println("________________ INITIALISATION CHART _____________________");
+		
+        stage = new Stage();
+		
+		stage.setTitle("Bar Chart Sample");
+
+	    dateAxis.setLabel("Heure");       
+	    yAxis.setLabel("Durée");
+	    
+	    precedent = null;
+	    partie = false;
+	    
+	    duree_min = 90;
+	    
+	    scene  = new Scene(lineChart,1920,500);
+        stage.setScene(scene);
+
+        stage.show();
+        stage.toFront();
+		
+	}
 
 }

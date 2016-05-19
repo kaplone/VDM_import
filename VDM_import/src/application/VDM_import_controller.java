@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.Thread.State;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
@@ -68,6 +69,9 @@ public class VDM_import_controller implements Initializable{
 	private ModeleImport modele_import;
 	
 	private String modele;
+	
+	private static URL location;
+	private static ResourceBundle resources;
 
     protected File chooseRepLec(String s){
 		
@@ -107,20 +111,33 @@ public class VDM_import_controller implements Initializable{
     
     protected void peupler_samples(){
     	
-    	System.out.println("peupler liste des samples");
+    	liste_sample.clear();
     	
-    	Messages.setCadreur(cadreur_choicebox.getValue());
+    	Runnable peupler_runnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("peupler liste des samples");
+		    	
+		    	Messages.setCadreur(cadreur_choicebox.getValue());
+		    	
+		    	try {
+		    		
+		    		liste_sample = Walk.walk(repPreview.toPath(), cadreur_choicebox.getValue());
+					
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+		};
     	
-    	try {
-    		liste_sample.clear();
-    		liste_sample = Walk.walk(repPreview.toPath(), cadreur_choicebox.getValue());
-			sample_choicebox.setItems(liste_sample);
-			sample_choicebox.getSelectionModel().select(0);
-			affichePreview(100);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	Thread peupler_thread = new Thread(peupler_runnable);
+    	peupler_thread.start();
+    	
+    	sample_choicebox.setItems(liste_sample);
+		sample_choicebox.getSelectionModel().select(0);
+		affichePreview(100);
     	
     }
     
@@ -142,6 +159,9 @@ public class VDM_import_controller implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		this.location = location;
+		this.resources = resources;
 		
 		modele = null;
 		importer_button.setDisable(true);
@@ -240,8 +260,14 @@ public class VDM_import_controller implements Initializable{
 		});
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());
-		
+	}
 	
+	public static URL getLocation(){
+		return location;
+	}
+	
+	public static ResourceBundle getResources(){
+		return resources;
 	}
 
 }
