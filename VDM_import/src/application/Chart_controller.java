@@ -166,6 +166,7 @@ public class Chart_controller implements Initializable{
 		lineChart = new LineChart<>(dateAxis, yAxis);
         lineChart.getData().addAll(series);
 		lineChart.setTitle(String.format("Bilan tournage %s (%s)", plan, cadreur));
+		lineChart.setAnimated(false);
 		
 		scene  = new Scene(lineChart,1920,500);
 

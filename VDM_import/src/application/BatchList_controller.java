@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,6 +49,9 @@ public class BatchList_controller implements Initializable{
 	private Label label_2;
 	
 	private Button lancer;
+	
+	private Thread import_thread;
+	private Service import_runnable;
 	
 	public void afficher(){
 		stage.show();
@@ -193,54 +198,71 @@ public class BatchList_controller implements Initializable{
 		
 		lancer.setText("Mettre en pause le traitement");
 		
-		Runnable import_runnable = new Runnable() {
+		import_runnable = new Service() {
 			
 			@Override
-			public void run() {
-				while (observable_liste_1.size() > 0){
-					
-					System.out.println("lancement de : " + observable_liste_1.get(0).getDossier());
-					System.out.println("pour le switch : " + observable_liste_1.get(0).getMessage());
-					
-					
-					observable_liste_1.get(0).setStatus("Import en cours ...");
-					
-					switch (observable_liste_1.get(0).getMessage()){
-					
-					case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
-							                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
-					                break;
-					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-							                             observable_liste_1.get(0).getDeint_bool());
-					                break;
-					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-							                             observable_liste_1.get(0).getDeint_bool());
-					                break;
-					}
-					
-					
-					
-					lancer.setOnAction(a -> lancer());
-					
-					observable_liste_2.add(observable_liste_1.get(0));
-					observable_liste_1.remove(0);
-				}
+	        protected Task<String> createTask() {
+	            return new Task<String>() {
+	                @Override
+	                protected String call(){
+	                	
+	                	while (observable_liste_1.size() > 0){
+	                		
+	                		lancer.setOnAction(a -> pause());
+	    					
+	    					System.out.println("lancement de : " + observable_liste_1.get(0).getDossier());
+	    					System.out.println("pour le switch : " + observable_liste_1.get(0).getMessage());
+	    					
+	    					
+	    					observable_liste_1.get(0).setStatus("Import en cours ...");
+	    					
+	    					switch (observable_liste_1.get(0).getMessage()){
+	    					
+	    					case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
+	    							                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
+	    					                break;
+	    					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+	    							                             observable_liste_1.get(0).getDeint_bool());
+	    					                break;
+	    					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
+	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+	    							                             observable_liste_1.get(0).getDeint_bool());
+	    					                break;
+	    					}
+	    					
+	    					
+	    					
+	    					
+	    					
+	    					observable_liste_2.add(observable_liste_1.get(0));
+	    					observable_liste_1.remove(0);
+	    				}
+	    				
+	    				lancer.setText("Lancer le traitement");
+	    				lancer.setOnAction(a -> lancer());
+						return "OK";
+	    			};		
+	             };
+	                	
+	         }
 				
-				lancer.setText("Lancer le traitement");
-				lancer.setOnAction(a -> Pause());
-			}		
 		};
 		
-		Thread import_thread = new Thread(import_runnable);
-		import_thread.start();
+		import_runnable.start();
 
 	}
 	
-	public void Pause(){
+	public void pause(){
 		lancer.setText("Lancer le traitement");
-		lancer.setOnAction(a -> lancer());
+		import_runnable.cancel();
+		lancer.setOnAction(a -> relancer());
+	}
+	
+	public void relancer(){
+		lancer.setText("Relancer le traitement");
+		import_runnable.start();
+		lancer.setOnAction(a -> pause());
 	}
 
 	public static ObservableList<BatchElement> getObservable_liste_1() {
