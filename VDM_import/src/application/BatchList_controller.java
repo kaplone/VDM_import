@@ -223,11 +223,11 @@ public class BatchList_controller implements Initializable{
 	    					                break;
 	    					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
 	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-	    							                             observable_liste_1.get(0).getDeint_bool());
+	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
 	    					                break;
 	    					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
 	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
-	    							                             observable_liste_1.get(0).getDeint_bool());
+	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
 	    					                break;
 	    					}
 	    					

@@ -58,15 +58,23 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 		for (int i = 0; i < liste_des_plans.size(); i++){
 			
 			plan = liste_des_plans.get(i);
+			
+			System.out.println("[BOUCLE] : " + plan.getName());
 
 			try {
+				System.out.println("[BOUCLE (début)]");
 				init();
+				System.out.println("[BOUCLE init() -> open()]");
 				open();	
+				System.out.println("[BOUCLE open() -> lire()]");
 				Thread.sleep(1000);
 				lire();
+				System.out.println("[BOUCLE lire() -> remux()]");
 				Thread.sleep(1000);
 				remux(multithread);
-				close();
+//				System.out.println("[BOUCLE remux() -> close()]");
+//				close();
+				System.out.println("[BOUCLE (fin)]");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -137,6 +145,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
     	else {
     		concat_des_rush_du_plan = liste_des_fifos.get(0);
     	}
+		
+		concat_des_rush_du_plan = liste_des_fifos.get(0);
 		
 		outfile = plan.getName();
     	
@@ -246,40 +256,103 @@ public class ModeleMP4_XDCAM extends ModeleImport{
         }
 
         public void remux(boolean multithread){
-    		
-			try {
-				
-	            System.out.println("\n**script_remux**");
-				
-				if (plan.getChunks().size() > 1){
-					
-					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_concat_deint)
-	                                       : Runtime.getRuntime().exec(script_remux_concat);
-					
-					System.out.println(cadreur.isDeint() ? affcommande(script_remux_concat_deint)
-	                                                     : affcommande(script_remux_concat));
-				}
-				else {
-					
-					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
-	                                       : Runtime.getRuntime().exec(script_remux);
-		
-		            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
-	                                                     : affcommande(script_remux));
-				}
+        	
+        	System.out.println("================= Multithread : " + multithread);
+        	
+        	if (multithread){
+        		Runnable remux_runnable = new Runnable() {
+        			
+        			@Override
+        			public void run() {
+        				try {
+        					
+        		            System.out.println("\n**script_remux**");
+        					
+        					if (plan.getChunks().size() > 1){
+        						
+        						p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_concat_deint)
+        		                                       : Runtime.getRuntime().exec(script_remux_concat);
+        						
+        						System.out.println(cadreur.isDeint() ? affcommande(script_remux_concat_deint)
+        		                                                     : affcommande(script_remux_concat));
+        					}
+        					else {
+        						
+        						p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
+        		                                       : Runtime.getRuntime().exec(script_remux);
+        			
+        			            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
+        		                                                     : affcommande(script_remux));
+        					}
 
-				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
-	            new Thread(fluxErreurERR_REMUX).start();
-			
-            }
-			catch (Exception e) {
-				System.out.println("une exception !");
-				
-				e.printStackTrace();
-			}
-			
-			System.out.println("isAlive() p2 : " +  p2.isAlive());
-			
+        					fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
+        		            new Thread(fluxErreurERR_REMUX).start();
+        				
+        	            }
+        				catch (Exception e) {
+        					System.out.println("une exception !");
+        					
+        					e.printStackTrace();
+        				}
+        				
+        				
+        	        	try {
+        	        		System.out.println("isAlive() p2 : " +  p2.isAlive());
+            				System.out.println("[pre] Wait for p2");
+							p2.waitFor();
+							System.out.println("[post] Wait for p2");
+	        	            close();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+        	        	
+        			}
+        		};
+        		Thread t_remux = new Thread(remux_runnable);
+        		//t_remux.setPriority(Thread.MAX_PRIORITY);
+        		t_remux.start();
+        	}
+        	else {
+        		try {
+    				
+    	            System.out.println("\n**script_remux**");
+    				
+    				if (taille_liste > 1){
+    					
+    					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_concat_deint)
+    	                                       : Runtime.getRuntime().exec(script_remux_concat);
+    					
+    					System.out.println(cadreur.isDeint() ? affcommande(script_remux_concat_deint)
+    	                                                     : affcommande(script_remux_concat));
+    				}
+    				else {
+    					
+    					p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_deint)
+    	                                       : Runtime.getRuntime().exec(script_remux);
+    		
+    		            System.out.println(cadreur.isDeint() ? affcommande(script_remux_deint)
+    	                                                     : affcommande(script_remux));
+    				}
+
+    				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
+    	            new Thread(fluxErreurERR_REMUX).start();
+    	            
+    	            System.out.println("[pre] Wait for p2");
+    	        	p2.waitFor();
+    	        	System.out.println("[post] Wait for p2");
+    	            close();
+    			
+    			
+                }
+    			catch (Exception e) {
+    				System.out.println("une exception !");
+    				
+    				e.printStackTrace();
+    			}
+    			
+    			System.out.println("isAlive() p2 : " +  p2.isAlive());
+        	}	
 	}
 		
 	public void lire(){
@@ -312,7 +385,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 	                "vcodec=huffyuv:format=422p",
 	                "-vf",
 	                "scale=1920:1080",
-	                String.format("%s", plan.getChunks().get(i)),
+	                plan.getChunks().get(i).toString(),
 	                "-o",
 	                String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
 	                };	
@@ -375,31 +448,31 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 
 	}
 	
-    public void close(){
-		
-		Process p3;
-		
-		try {
-
-			Instant deb = Instant.now();
-			
-			while (p2.isAlive()){	
-			}
-			System.out.println("== latence fin remux == " + Duration.between(deb, Instant.now()).toMillis() / 1000.0 + "secondes");
-			
-			System.out.println("\n**script_rmfifos**");
-			System.out.println("** " + String.format("%s/fifo_%s_*", ram, plan.getName()));
-			
-			script_rmfifos = new String[] {"rm",
-                    "-f",
-                    String.format("%s/fifo_%s_*", ram, plan.getName())
-            };
-			p3 = Runtime.getRuntime().exec(script_rmfifos);	
-           
-
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//    public void close(){
+//		
+//		Process p3;
+//		
+//		try {
+//
+//			Instant deb = Instant.now();
+//			
+//			while (p2.isAlive()){	
+//			}
+//			System.out.println("== latence fin remux == " + Duration.between(deb, Instant.now()).toMillis() / 1000.0 + "secondes");
+//			
+//			System.out.println("\n**script_rmfifos**");
+//			System.out.println("** " + String.format("%s/fifo_%s_*", ram, plan.getName()));
+//			
+//			script_rmfifos = new String[] {"rm",
+//                    "-f",
+//                    String.format("%s/fifo_%s_*", ram, plan.getName())
+//            };
+//			p3 = Runtime.getRuntime().exec(script_rmfifos);	
+//           
+//
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

@@ -27,6 +27,8 @@ public class BatchElement {
 		this.deint = deint;
 		this.multi = multi;
         this.status = "En attente";
+        this.classe = cadreur.getModele_import();
+        this.modele = cadreur.getPython_file();
 	}
 //	
 //	public BatchElement(File dossier, Cadreur cadreur, boolean deint) {
@@ -49,7 +51,7 @@ public class BatchElement {
 	}
 	
 	public String getMethode() {
-		return this.classe != null ? this.classe.getSimpleName() : this.modele;
+		return message.equals("python") ? this.modele : this.classe.getSimpleName();
 	}
 
 	public ChoiceBox<String> getDeint(){
@@ -117,5 +119,14 @@ public class BatchElement {
 	public boolean isMulti(){
 		return multi.equals("Oui") ? true : false;
 	}
+
+	public String getMulti() {
+		return multi;
+	}
+
+	public void setMulti(String multi) {
+		this.multi = multi;
+	}
+
 	
 }

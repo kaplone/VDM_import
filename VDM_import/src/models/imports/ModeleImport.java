@@ -152,22 +152,31 @@ public abstract class ModeleImport {
 			System.out.println("\n**script_rmfifos**");
 			System.out.println("** " + String.format("%s/fifo_%s.M2T", ram, plan.getName()));
 			
-			script_rmfifos = new String[] {"rm",
-                    "-f",
-                    String.format("%s/fifo_%s.M2T", ram, plan.getName())
-            };
-			p3 = Runtime.getRuntime().exec(script_rmfifos);	
-            
-            System.out.println("** " + String.format("%s/fifo_%s.avi", ram, plan.getName()));
+//			script_rmfifos = new String[] {"rm",
+//                    "-f",
+//                    String.format("%s/fifo_%s.M2T", ram, plan.getName())
+//            };
+//			p3 = Runtime.getRuntime().exec(script_rmfifos);	
+//            
+//            System.out.println("** " + String.format("%s/fifo_%s.avi", ram, plan.getName()));
+//			
+//			script_rmfifos = new String[] {"rm",
+//                    "-f",
+//                    String.format("%s/fifo_%s.avi", ram, plan.getName())
+//            };
+//			p3 = Runtime.getRuntime().exec(script_rmfifos);
 			
-			script_rmfifos = new String[] {"rm",
-                    "-f",
-                    String.format("%s/fifo_%s.avi", ram, plan.getName())
+			script_rmfifos = new String[] {"sh",
+					"-c",
+                    String.format("rm -f %s/fifo_%s*", ram, plan.getName())
             };
 			p3 = Runtime.getRuntime().exec(script_rmfifos);
+			System.out.println("[pre] Wait for p3");
+        	p3.waitFor();
+        	System.out.println("[post] Wait for p3");
 
 			
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
