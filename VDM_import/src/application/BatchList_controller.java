@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -230,16 +231,19 @@ public class BatchList_controller implements Initializable{
 	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
 	    					                break;
 	    					}
-	    					
-	    					
-	    					
-	    					
-	    					
+
 	    					observable_liste_2.add(observable_liste_1.get(0));
 	    					observable_liste_1.remove(0);
 	    				}
 	    				
-	    				lancer.setText("Lancer le traitement");
+	                	Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								lancer.setText("Lancer le traitement");
+							}
+						});
+	    				
 	    				lancer.setOnAction(a -> lancer());
 						return "OK";
 	    			};		

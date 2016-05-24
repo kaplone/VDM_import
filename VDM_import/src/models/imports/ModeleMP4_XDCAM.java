@@ -137,7 +137,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 	@Override
 	public void open() {
 		
-		if (plan.getChunks().size() > 1){
+		if (taille_liste > 1){
 
 			ecritureTxt();
 			concat_des_rush_du_plan = ram + String.format("/liste_%s.txt", numero_dossier);
@@ -145,8 +145,6 @@ public class ModeleMP4_XDCAM extends ModeleImport{
     	else {
     		concat_des_rush_du_plan = liste_des_fifos.get(0);
     	}
-		
-		concat_des_rush_du_plan = liste_des_fifos.get(0);
 		
 		outfile = plan.getName();
     	
@@ -268,7 +266,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
         					
         		            System.out.println("\n**script_remux**");
         					
-        					if (plan.getChunks().size() > 1){
+        					if (taille_liste > 1){
         						
         						p2 = cadreur.isDeint() ? Runtime.getRuntime().exec(script_remux_concat_deint)
         		                                       : Runtime.getRuntime().exec(script_remux_concat);
@@ -407,7 +405,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				try {
 		          	int i = 0;
 
-					while(i < liste_des_scripts_lecture.size()){
+					while(i < taille_liste){
 
 						System.out.println("\n**script_lecture**");
 						System.out.println("** " + i);
