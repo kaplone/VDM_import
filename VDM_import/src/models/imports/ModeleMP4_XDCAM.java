@@ -65,15 +65,15 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				System.out.println("[BOUCLE (début)]");
 				init();
 				System.out.println("[BOUCLE init() -> open()]");
-				open();	
+				open();		
 				System.out.println("[BOUCLE open() -> lire()]");
 				Thread.sleep(1000);
 				lire();
 				System.out.println("[BOUCLE lire() -> remux()]");
 				Thread.sleep(1000);
 				remux(multithread);
-//				System.out.println("[BOUCLE remux() -> close()]");
-//				close();
+				System.out.println("[BOUCLE remux() -> close()]");
+				close();
 				System.out.println("[BOUCLE (fin)]");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -149,7 +149,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 		outfile = plan.getName();
     	
     	script_remux = new String[] {"ffmpeg",
-                "-y",	
+                "-y",
                 "-i",
                 concat_des_rush_du_plan,
                 "-ss",
@@ -294,16 +294,18 @@ public class ModeleMP4_XDCAM extends ModeleImport{
         				}
         				
         				
-        	        	try {
-        	        		System.out.println("isAlive() p2 : " +  p2.isAlive());
-            				System.out.println("[pre] Wait for p2");
-							p2.waitFor();
-							System.out.println("[post] Wait for p2");
-	        	            close();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+//        	        	try {
+//        	        		System.out.println("isAlive() p2 : " +  p2.isAlive());
+//            				System.out.println("[pre] Wait for p2");
+//							p2.waitFor();
+//							System.out.println("[post] Wait for p2");
+//	        	            close();
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+        				
+        				System.out.println("isAlive() p2 : " +  p2.isAlive());
         	        	
         			}
         		};
@@ -336,10 +338,12 @@ public class ModeleMP4_XDCAM extends ModeleImport{
     				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
     	            new Thread(fluxErreurERR_REMUX).start();
     	            
-    	            System.out.println("[pre] Wait for p2");
-    	        	p2.waitFor();
-    	        	System.out.println("[post] Wait for p2");
-    	            close();
+//    	            System.out.println("[pre] Wait for p2");
+//    	        	p2.waitFor();
+//    	        	System.out.println("[post] Wait for p2");
+//    	            close();
+    	            
+    	            System.out.println("isAlive() p2 : " +  p2.isAlive());
     			
     			
                 }

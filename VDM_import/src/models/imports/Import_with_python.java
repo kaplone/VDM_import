@@ -1,20 +1,12 @@
 package models.imports;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 import models.Cadreur;
-import models.Rush;
 import utils.AfficheurFlux;
-import utils.Messages;
 
-public class Import_with_python implements ModeleImport{
+public class Import_with_python extends ModeleImport{
 	
 	
 	private String[] script_python;
@@ -29,10 +21,9 @@ public class Import_with_python implements ModeleImport{
 	
 	private Process process;
 
-	private String numero_dossier;
 
 	@Override
-	public void import_rushs(File dossier, Cadreur cadreur) {
+	public void import_rushs(File dossier, Cadreur cadreur, boolean multi) {
 		
 		this.cadreur = cadreur;
 		
@@ -53,8 +44,8 @@ public class Import_with_python implements ModeleImport{
 			System.out.println("\n**script_encode**");
 			System.out.println(affcommande(script_python));
 			
-			fluxSortieSTD = new AfficheurFlux(process.getInputStream(), "[PYTHON STD] ", true);
-			fluxErreurERR = new AfficheurFlux(process.getErrorStream(), "[PYTHON ERR] ", true);
+			fluxSortieSTD = new AfficheurFlux(process.getInputStream(), "[PYTHON STD] ", true, null);
+			fluxErreurERR = new AfficheurFlux(process.getErrorStream(), "[PYTHON ERR] ", true, null);
 			new Thread(fluxSortieSTD).start();
             new Thread(fluxErreurERR).start();
             process.waitFor();

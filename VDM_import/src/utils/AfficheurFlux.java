@@ -38,7 +38,10 @@ public class AfficheurFlux implements Runnable {
             
             System.out.println("___ Derniere ligne " + pre + ligne);
             close();
-            p.destroy();
+            if (p != null){
+            	p.destroy();
+            }
+            
             
         } catch (IOException e) {
             e.printStackTrace();

@@ -40,7 +40,9 @@ public class AfficheurFlux4 implements Runnable {
             System.out.println("___ Derniere ligne " + pre + ligne);
             err.close();
             close();
-            p.destroy();
+            if (p != null){
+            	p.destroy();
+            }
             
         } catch (IOException e) {
             e.printStackTrace();
