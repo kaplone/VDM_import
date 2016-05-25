@@ -335,7 +335,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
     	                                                     : affcommande(script_remux));
     				}
 
-    				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", false, p2);
+    				fluxErreurERR_REMUX = new AfficheurFlux(p2.getErrorStream(), "[FFMPEG ERR remux] ", true, p2);
     	            new Thread(fluxErreurERR_REMUX).start();
     	            
 //    	            System.out.println("[pre] Wait for p2");
@@ -382,11 +382,9 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 	                "-oac",
 	                "pcm",
 	                "-ovc",
-	                "lavc",
-	                "-lavcopts",
-	                "vcodec=huffyuv:format=422p",
+	                "raw",
 	                "-vf",
-	                "scale=1920:1080",
+	                "scale=1440:1080",
 	                plan.getChunks().get(i).toString(),
 	                "-o",
 	                String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
@@ -418,8 +416,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 						
 						System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
 						
-						fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[FFMPEG ERR lecture] ", false, p1[i]);
-						fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[FFMPEG STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
+						fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[MENCODER ERR lecture] ", true, p1[i]);
+						fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[MENCODER STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
 
 			            new Thread(fluxErreurERR_LECTURE[i]).start();
 			            new Thread(fluxInputSTD_LECTURE[i]).start();
