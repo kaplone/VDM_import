@@ -1,6 +1,7 @@
 package models;
 
 import java.io.File;
+import java.util.List;
 
 import application.BatchList_controller;
 import javafx.scene.control.Button;
@@ -19,8 +20,9 @@ public class BatchElement {
 	private String status;
 	private String multi;
 	private String message;
+	private List<Rush> listeDesPlans;
 
-	public BatchElement(File dossier, String message, String multi, Cadreur cadreur, boolean deint) {
+	public BatchElement(File dossier, String message, String multi, Cadreur cadreur, boolean deint, List<Rush> listeDesPlans) {
 		this.dossier = dossier;
 		this.message = message;
 		this.cadreur = cadreur;
@@ -29,6 +31,7 @@ public class BatchElement {
         this.status = "En attente";
         this.classe = cadreur.getModele_import();
         this.modele = cadreur.getPython_file();
+        this.listeDesPlans = listeDesPlans;
 	}
 //	
 //	public BatchElement(File dossier, Cadreur cadreur, boolean deint) {
@@ -46,8 +49,8 @@ public class BatchElement {
 		this.dossier = dossier;
 	}
 	
-	public String getCadreur() {
-		return cadreur.name();
+	public Cadreur getCadreur() {
+		return cadreur;
 	}
 	
 	public String getMethode() {
@@ -128,5 +131,11 @@ public class BatchElement {
 		this.multi = multi;
 	}
 
-	
+	public List<Rush> getListeDesPlans() {
+		return listeDesPlans;
+	}
+
+	public void setListeDesPlans(List<Rush> listeDesPlans) {
+		this.listeDesPlans = listeDesPlans;
+	}	
 }

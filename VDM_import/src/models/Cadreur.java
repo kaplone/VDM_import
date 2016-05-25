@@ -33,7 +33,7 @@ public enum Cadreur {
 	LEUX        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py"),
 	LE_YOUDEC   ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_pas_P2_06.py"),
 	LOPACKI     ("MTS", true,  ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_212_deint.py"),
-	MAS         ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py"),
+	MAS         ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py"),
 	MERCHADOU   ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py"),
 	MERCIER     ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py"),
 	MICHARD     ("MP4", true,  ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_deint.py"),

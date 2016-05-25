@@ -116,13 +116,18 @@ public class MediaInfo {
 
 				while (boucle && (line = reader.readLine())!= null) {
 	                String tag = line.split(":")[0].trim();
-	                String date ;
+	                String date = null ;
 	                String [] elements ;
 	                
 	                switch(tag){
 	                
 	                case "File Modification Date/Time" : ;
-	                case "Date/Time Original"     :  date = line.split("\\+")[0].trim();
+	                case "Date/Time Original"     :  if (line.contains("+")){
+									                	date = line.split("\\+")[0].trim();
+									                 }
+									                 else if (line.contains("-")) {
+									                	date = line.split("\\-")[0].trim();
+									                 }
 	                	                             elements = date.split(":");
 	                	                             timestamp = String.format("%s-%s-%s %s:%s:%s", elements[1],
 	                	                            		                                        elements[2],

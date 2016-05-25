@@ -24,7 +24,7 @@ import models.Rush;
 public class Walk {
 	
 	private static String extension;
-	private static List<Rush> list;
+	private static final List<Rush> list = new ArrayList<>();
 	private static ObservableList<Rush>  liste_rush;
 	private static List<Rush>  liste_plans;
 	private static ObservableList<Path>  liste_path;
@@ -33,12 +33,15 @@ public class Walk {
 	
 	public static ObservableList<Path> walk(Path homeFolder, Cadreur cadreur_) throws FileNotFoundException {
 		
-		list = new ArrayList<>();
+		
 		liste_rush = FXCollections.observableArrayList();
 		liste_path = FXCollections.observableArrayList();
-		
+		liste_plans = new ArrayList<>();
+
 		extension = cadreur_.getExtension();
 		cadreur = cadreur_;
+		
+		list.clear();
 
 		FileVisitor<Path> fileVisitor = new FileSizeVisitor(new Long(50));
 		try {
@@ -46,6 +49,9 @@ public class Walk {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		liste_path.clear();
+		liste_rush.clear();
 		
 		list.stream()
             .sorted((e1, e2) -> Long.compare(e1.getDebutLong(),
@@ -74,7 +80,8 @@ public class Walk {
 		      //TODO n'affiche pas les graduations dans l'image exportée
 			}
 		 });
-
+        
+		liste_plans.clear();
 		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
 		Messages.setListeDesPlans(liste_plans);
 
@@ -122,10 +129,7 @@ public class Walk {
 				System.out.println("walk trouvé " + path);
 				
 				Rush r = MediaInfo.getTimeStamp(path);
-				
-//				Rush r = new Rush(path.toString());
-//				r.setDebut(MediaInfo.getTimeStamp(path));
-//				r.setDuree(MediaInfo.getDuree());
+
 				list.add(r);
 				
 			}

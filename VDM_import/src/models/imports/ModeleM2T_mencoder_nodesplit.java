@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import models.BatchElement;
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
@@ -28,6 +29,33 @@ public class ModeleM2T_mencoder_nodesplit extends ModeleImport{
 		super.constructeur(dossier, cadreur, multithread);
 		
 		liste_des_plans = Messages.getListeDesPlans();
+		
+		for (int i = 0; i < liste_des_plans.size(); i++){
+			
+			plan = liste_des_plans.get(i);
+
+			try {
+				init();
+				open();
+				Thread.sleep(1000);
+				lire();
+				Thread.sleep(1000);
+				remux(multithread);
+				
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+	}
+	
+	@Override
+    public void import_rushs(BatchElement element) {
+		
+		super.constructeur(element.getDossier(), element.getCadreur(), element.isMulti());
+		
+		liste_des_plans = element.getListeDesPlans();
 		
 		for (int i = 0; i < liste_des_plans.size(); i++){
 			

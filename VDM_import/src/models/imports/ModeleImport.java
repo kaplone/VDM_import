@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+import models.BatchElement;
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
@@ -50,6 +51,8 @@ public abstract class ModeleImport {
 	}
 
 	public abstract void import_rushs(File dossier, Cadreur cadreur, boolean multithread);
+	
+	public abstract void import_rushs(BatchElement element);
 	
     public void init() {
 		

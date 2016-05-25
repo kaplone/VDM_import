@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -34,6 +35,7 @@ import javafx.stage.Stage;
 
 import models.BatchElement;
 import models.Cadreur;
+import models.Rush;
 import utils.Import_java;
 import utils.Import_python;
 
@@ -58,7 +60,7 @@ public class BatchList_controller implements Initializable{
 		stage.show();
 	}
 	
-	public void ajouter(File dossier, String modele, Cadreur cadreur, boolean deint){
+	public void ajouter(File dossier, String modele, Cadreur cadreur, boolean deint, List<Rush> listeDesPlans){
 		
 		String modele_import = "";
 		String multi = "Non";
@@ -78,7 +80,7 @@ public class BatchList_controller implements Initializable{
 			}
 		}
 		
-		observable_liste_1.add(new BatchElement(dossier, modele, multi, cadreur, deint));
+		observable_liste_1.add(new BatchElement(dossier, modele, multi, cadreur, deint, listeDesPlans));
 	}
 
 	@Override
@@ -220,14 +222,14 @@ public class BatchList_controller implements Initializable{
 	    					switch (observable_liste_1.get(0).getMessage()){
 	    					
 	    					case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
-	    							                               Cadreur.valueOf(observable_liste_1.get(0).getCadreur()));
+	    							                               observable_liste_1.get(0).getCadreur());
 	    					                break;
 	    					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+	    							                             observable_liste_1.get(0).getCadreur(),
 	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
 	    					                break;
 	    					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-	    							                             Cadreur.valueOf(observable_liste_1.get(0).getCadreur()),
+	    							                             observable_liste_1.get(0).getCadreur(),
 	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
 	    					                break;
 	    					}

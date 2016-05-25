@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.BatchElement;
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
@@ -54,6 +55,41 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 		super.constructeur(dossier, cadreur, multithread);
 		
 		liste_des_plans = Messages.getListeDesPlans();
+		
+		for (int i = 0; i < liste_des_plans.size(); i++){
+			
+			plan = liste_des_plans.get(i);
+			
+			System.out.println("[BOUCLE] : " + plan.getName());
+
+			try {
+				System.out.println("[BOUCLE (début)]");
+				init();
+				System.out.println("[BOUCLE init() -> open()]");
+				open();		
+				System.out.println("[BOUCLE open() -> lire()]");
+				Thread.sleep(1000);
+				lire();
+				System.out.println("[BOUCLE lire() -> remux()]");
+				Thread.sleep(1000);
+				remux(multithread);
+				System.out.println("[BOUCLE remux() -> close()]");
+				close();
+				System.out.println("[BOUCLE (fin)]");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+		}
+	}
+	
+	@Override
+    public void import_rushs(BatchElement element) {
+		
+		super.constructeur(element.getDossier(), element.getCadreur(), element.isMulti());
+		
+		liste_des_plans = element.getListeDesPlans();  
 		
 		for (int i = 0; i < liste_des_plans.size(); i++){
 			
@@ -154,6 +190,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
                 concat_des_rush_du_plan,
                 "-ss",
                 "0.12",
+                "-r",
+                "25",
+                "-filter:v",
+                "setpts=N/(25*TB)",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -181,6 +221,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
                 concat_des_rush_du_plan,
                 "-ss",
                 "0.12",
+                "-r",
+                "25",
+                "-filter:v",
+                "setpts=N/(25*TB)",
                 "-s",
                 "720x576",
                 "-sws_flags",
@@ -204,6 +248,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
                 concat_des_rush_du_plan,
                 "-ss",
                 "0.12",
+                "-r",
+                "25",
+                "-filter:v",
+                "setpts=N/(25*TB)",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
@@ -233,6 +281,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
                 concat_des_rush_du_plan,
                 "-ss",
                 "0.12",
+                "-r",
+                "25",
+                "-filter:v",
+                "setpts=N/(25*TB)",
                 "-vf",
                 "yadif=0:0:0",
                 "-s",
