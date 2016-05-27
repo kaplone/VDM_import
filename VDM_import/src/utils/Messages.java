@@ -33,8 +33,8 @@ public class Messages {
 		Messages.cadreur = cadreur;
 	}
 	public static List<Rush> getListeDesPlans() {
-		System.out.println("(get) liste_des_plans : " + listeDesPlans);
-		return listeDesPlans;
+		System.out.println("(get) liste_des_plans : " + Messages.listeDesPlans);
+		return Messages.listeDesPlans;
 	}
 	public static void setListeDesPlans(List<Rush> listeDesPlans) {
 		System.out.println("(set) liste_des_plans : " + listeDesPlans);

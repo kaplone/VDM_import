@@ -224,13 +224,9 @@ public class BatchList_controller implements Initializable{
 	    					case "python" : Import_python.importer(observable_liste_1.get(0).getDossier(),
 	    							                               observable_liste_1.get(0).getCadreur());
 	    					                break;
-	    					case "java_1" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-	    							                             observable_liste_1.get(0).getCadreur(),
-	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
+	    					case "java_1" : Import_java.importer(observable_liste_1.get(0));
 	    					                break;
-	    					case "java_n" : Import_java.importer(observable_liste_1.get(0).getDossier(),
-	    							                             observable_liste_1.get(0).getCadreur(),
-	    							                             observable_liste_1.get(0).isMulti()); // multi != deint
+	    					case "java_n" : Import_java.importer(observable_liste_1.get(0));
 	    					                break;
 	    					}
 

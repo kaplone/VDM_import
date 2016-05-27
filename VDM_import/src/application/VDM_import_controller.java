@@ -260,12 +260,7 @@ public class VDM_import_controller implements Initializable{
 		});
 		
 		ajouter_liste_button.setOnAction(a-> {
-			if (modele != null){
-				
-				batch.ajouter(repPreview, modele, cadreur_choicebox.getValue(), deint_checkbox.isSelected(), Messages.getListeDesPlans());
-
-		    }
-			
+				batch.ajouter(repPreview, modele, cadreur_choicebox.getValue(), deint_checkbox.isSelected(), Messages.getListeDesPlans());		
 		});
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());

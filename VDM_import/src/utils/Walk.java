@@ -50,6 +50,8 @@ public class Walk {
 			e.printStackTrace();
 		}
 		
+		//list.stream().forEach(a -> System.out.println("== SORTIE DE WALK == " + a));
+		
 		liste_path.clear();
 		liste_rush.clear();
 		
@@ -60,6 +62,8 @@ public class Walk {
             	 liste_rush.add(e);
             	 liste_path.add(e.toPath());
              });
+		
+		//liste_path.stream().forEach(a -> System.out.println("== SORTIE DE SORT() == " + a));
 		
 		liste_rush.stream()
 		     .forEach(a-> { 
@@ -83,6 +87,8 @@ public class Walk {
         
 		liste_plans.clear();
 		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
+		//liste_plans.stream().forEach(a -> System.out.println("== SORTIE DE RushToPlan.rushs_to_plan() == " + a));
+		
 		Messages.setListeDesPlans(liste_plans);
 
 		return liste_path;

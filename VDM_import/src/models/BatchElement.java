@@ -132,10 +132,11 @@ public class BatchElement {
 	}
 
 	public List<Rush> getListeDesPlans() {
-		return listeDesPlans;
+		return this.listeDesPlans;
 	}
 
 	public void setListeDesPlans(List<Rush> listeDesPlans) {
 		this.listeDesPlans = listeDesPlans;
 	}	
+
 }

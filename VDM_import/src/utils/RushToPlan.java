@@ -18,6 +18,7 @@ public class RushToPlan {
 	public static List<Rush> rushs_to_plan(ObservableList<Rush> liste_des_rushs){
 		
 		liste_des_plans = new ArrayList<>();
+		precedent = null;
 		
 		liste_des_rushs.stream()
 	        .forEach(a-> {
