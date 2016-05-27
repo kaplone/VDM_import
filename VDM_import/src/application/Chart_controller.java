@@ -63,7 +63,8 @@ public class Chart_controller implements Initializable{
         	if (precedent != null){
         		
         		// cas général des bouts consécutifs dans une partie
-        		if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < 1200){
+        		//if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < 1200){
+        		if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < cadreur.getEcart_minimum()){
         			
         			System.out.println("cas général des bouts consécutifs dans une partie");
         			

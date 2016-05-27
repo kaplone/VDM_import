@@ -86,7 +86,7 @@ public class Walk {
 		 });
         
 		liste_plans.clear();
-		liste_plans = RushToPlan.rushs_to_plan(liste_rush);
+		liste_plans = RushToPlan.rushs_to_plan(liste_rush, cadreur.getEcart_minimum());
 		//liste_plans.stream().forEach(a -> System.out.println("== SORTIE DE RushToPlan.rushs_to_plan() == " + a));
 		
 		Messages.setListeDesPlans(liste_plans);

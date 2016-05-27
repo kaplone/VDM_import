@@ -14,11 +14,14 @@ public class RushToPlan {
 	private static Rush plan_courant;
 	
 	private static List<Rush> liste_des_plans;
+	private static int ecart_minimum;
 	
-	public static List<Rush> rushs_to_plan(ObservableList<Rush> liste_des_rushs){
+	public static List<Rush> rushs_to_plan(ObservableList<Rush> liste_des_rushs, int ecart_mini){
 		
 		liste_des_plans = new ArrayList<>();
 		precedent = null;
+		
+		ecart_minimum = ecart_mini;
 		
 		liste_des_rushs.stream()
 	        .forEach(a-> {
@@ -45,7 +48,8 @@ public class RushToPlan {
 		System.out.println("r1.getDebut() : " + r1.getDebut());
 		System.out.println("écart : " + Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()));
 		
-		if (Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()) < 1200){
+		//if (Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()) < 1200){
+		if (Math.abs(Duration.between(r0.getDebut().plus(r0.getDuree()), r1.getDebut()).toMillis()) < ecart_minimum){
 			plan_courant.add(r1);
 		}
 		else {
