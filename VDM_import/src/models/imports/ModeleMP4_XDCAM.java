@@ -42,6 +42,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				fw.write(String.format("file '%s'\n", f ));
 			}
 			fw.close();
+			
+			System.out.println(String.format("liste_%s.txt [CLOSED]", numero_dossier));
 		}
 		
 		catch (IOException e) {
@@ -68,10 +70,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				System.out.println("[BOUCLE init() -> open()]");
 				open();		
 				System.out.println("[BOUCLE open() -> lire()]");
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				lire();
 				System.out.println("[BOUCLE lire() -> remux()]");
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				remux(multithread);
 				System.out.println("[BOUCLE remux() -> close()]");
 				close();
@@ -103,10 +105,10 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				System.out.println("[BOUCLE init() -> open()]");
 				open();		
 				System.out.println("[BOUCLE open() -> lire()]");
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				lire();
 				System.out.println("[BOUCLE lire() -> remux()]");
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				remux(multithread);
 				System.out.println("[BOUCLE remux() -> close()]");
 				close();

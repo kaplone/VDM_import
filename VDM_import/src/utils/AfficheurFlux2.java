@@ -30,6 +30,10 @@ public class AfficheurFlux2 implements Runnable {
     public void run() {
         br = getBufferedReader(inputStream);
         String ligne = "";
+        
+        System.out.println("br = " + br);
+        System.out.println("ligne = " + ligne);
+        
         try {
 
             while (! (ligne = br.readLine()).contains("Audio stream: ")) {

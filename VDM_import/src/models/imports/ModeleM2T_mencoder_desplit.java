@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import models.BatchElement;
 import models.Cadreur;
 import models.Rush;
 import utils.AfficheurFlux;
@@ -42,6 +43,43 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 				lire();
 				Thread.sleep(1000);
 				remux(multithread);
+				
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+	}
+	
+	@Override
+    public void import_rushs(BatchElement element) {
+		
+		super.constructeur(element.getDossier(), element.getCadreur(), element.isMulti());
+		
+		liste_des_plans = element.getListeDesPlans();
+		
+		System.out.println("import rush : " + liste_des_plans.get(0));
+		
+		for (int i = 0; i < liste_des_plans.size(); i++){
+			
+			plan = liste_des_plans.get(i);
+
+			try {
+				System.out.println("[BOUCLE (début)]");
+				init();
+				System.out.println("[BOUCLE init() -> open()]");
+				open();
+				Thread.sleep(500);
+				System.out.println("[BOUCLE open() -> dd()]");
+				dd();
+				Thread.sleep(2000);
+				System.out.println("[BOUCLE dd() -> lire()]");
+				lire();
+				Thread.sleep(2000);
+				System.out.println("[BOUCLE lire() -> remux()]");
+				remux(multithread);
+				System.out.println("[BOUCLE (fin)]");
 				
 				
 			} catch (InterruptedException e) {
@@ -120,9 +158,7 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
                 "-oac",
                 "pcm",
                 "-ovc",
-                "lavc",
-                "-lavcopts",
-                "vcodec=huffyuv:format=422p",
+                "raw",
                 "-vf",
                 "scale=1440:1080",
                 source,
@@ -178,7 +214,7 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
 						                  "-c",
 						                  plan.getChunks()
 						                      .stream()
-						                      .map(a -> a.getPath())
+						                      .map(a -> String.format("'%s'", a.getPath().toString()))
 						                      .collect(Collectors.joining(" ", "cat ", String.format(" > %s/fifo_%s.M2T", ram, plan.getName())))
 				};
 				

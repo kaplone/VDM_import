@@ -36,14 +36,20 @@ public class ModeleMTS_ffmpeg_desplit extends ModeleImport{
 			plan = liste_des_plans.get(i);
 
 			try {
+				System.out.println("[BOUCLE (début)]");
 				init();
+				System.out.println("[BOUCLE init() -> open()]");
 				open();
 				Thread.sleep(500);
+				System.out.println("[BOUCLE open() -> dd()]");
 				dd();
 				Thread.sleep(1000);
+				System.out.println("[BOUCLE dd() -> lire()]");
 				lire();
 				Thread.sleep(1000);
+				System.out.println("[BOUCLE lire() -> remux()]");
 				remux(multithread);
+				System.out.println("[BOUCLE (fin)]");
 				
 				
 			} catch (InterruptedException e) {

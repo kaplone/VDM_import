@@ -27,6 +27,7 @@ public class Import_java {
 	
     public static void importer(BatchElement element){
 		
+    	System.out.println("Import_java.importer() : " + element.getListeDesPlans().size() + " plans");
 		
 		try {
 			modele = (ModeleImport) element.getCadreur().getModele_import().newInstance();

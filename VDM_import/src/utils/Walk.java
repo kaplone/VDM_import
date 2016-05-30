@@ -51,9 +51,9 @@ public class Walk {
 		}
 		
 		//list.stream().forEach(a -> System.out.println("== SORTIE DE WALK == " + a));
-		
-		liste_path.clear();
-		liste_rush.clear();
+//		
+//		liste_path.clear();
+//		liste_rush.clear();
 		
 		list.stream()
             .sorted((e1, e2) -> Long.compare(e1.getDebutLong(),
@@ -85,7 +85,7 @@ public class Walk {
 			}
 		 });
         
-		liste_plans.clear();
+		//liste_plans.clear();
 		liste_plans = RushToPlan.rushs_to_plan(liste_rush, cadreur.getEcart_minimum());
 		//liste_plans.stream().forEach(a -> System.out.println("== SORTIE DE RushToPlan.rushs_to_plan() == " + a));
 		

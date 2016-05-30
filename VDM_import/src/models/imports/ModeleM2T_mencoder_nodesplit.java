@@ -53,21 +53,30 @@ public class ModeleM2T_mencoder_nodesplit extends ModeleImport{
 	@Override
     public void import_rushs(BatchElement element) {
 		
+		
+		
 		super.constructeur(element.getDossier(), element.getCadreur(), element.isMulti());
 		
 		liste_des_plans = element.getListeDesPlans();
+		
+		System.out.println("import rush : " + liste_des_plans.get(0));
 		
 		for (int i = 0; i < liste_des_plans.size(); i++){
 			
 			plan = liste_des_plans.get(i);
 
 			try {
+				System.out.println("[BOUCLE (début)]");
 				init();
+				System.out.println("[BOUCLE init() -> open()]");
 				open();
 				Thread.sleep(1000);
+				System.out.println("[BOUCLE open() -> lire()]");
 				lire();
 				Thread.sleep(1000);
+				System.out.println("[BOUCLE lire() -> remux()]");
 				remux(multithread);
+				System.out.println("[BOUCLE (fin)]");
 				
 				
 			} catch (InterruptedException e) {
@@ -143,9 +152,7 @@ public class ModeleM2T_mencoder_nodesplit extends ModeleImport{
                 "-oac",
                 "pcm",
                 "-ovc",
-                "lavc",
-                "-lavcopts",
-                "vcodec=huffyuv:format=422p",
+                "raw",
                 "-vf",
                 "scale=1440:1080",
                 source,
