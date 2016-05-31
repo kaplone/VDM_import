@@ -38,8 +38,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 		
 		try {
 			fw = new FileWriter(txt);
-			for (String f : liste_des_fifos){
-				fw.write(String.format("file '%s'\n", f ));
+			for (Rush r : plan.getChunks()){
+				fw.write(String.format("file '%s'\n", r.getAbsolutePath() ));
 			}
 			fw.close();
 			
@@ -70,8 +70,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				System.out.println("[BOUCLE init() -> open()]");
 				open();		
 				System.out.println("[BOUCLE open() -> lire()]");
-				Thread.sleep(2000);
-				lire();
+//				Thread.sleep(2000);
+//				lire();
 				System.out.println("[BOUCLE lire() -> remux()]");
 				Thread.sleep(2000);
 				remux(multithread);
@@ -105,8 +105,8 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 				System.out.println("[BOUCLE init() -> open()]");
 				open();		
 				System.out.println("[BOUCLE open() -> lire()]");
-				Thread.sleep(2000);
-				lire();
+//				Thread.sleep(2000);
+//				lire();
 				System.out.println("[BOUCLE lire() -> remux()]");
 				Thread.sleep(2000);
 				remux(multithread);
@@ -130,46 +130,46 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 		
 		taille_liste = plan.getChunks().size();
 		
-		liste_des_fifos = new ArrayList<>();
-		liste_des_scripts_fifo = new ArrayList<>();
-		
-        for (int i = 0; i < taille_liste; i++){
-			
-			script_fifo = new String[] {"mkfifo",
-					                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-			                           };
-			
-			liste_des_fifos.add(String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i));
-
-			liste_des_scripts_fifo.add(script_fifo);
-        }
-        
-        Process [] p0 = new Process [100];
-		
-		try {
-			
-			int i = 0;
-			while(i < liste_des_scripts_fifo.size()){
-				
-				p0[i] = Runtime.getRuntime().exec(liste_des_scripts_fifo.get(i));
-				System.out.println("\n**script_fifo**");
-				System.out.println("\n** " + i);
-				System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
-				p0[i].waitFor();
-				i++;
-
-			}
-			
-			System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
-			for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
-				System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
-			}
-		}
-		catch (Exception e) {
-			System.out.println("une exception !");
-			
-			e.printStackTrace();
-		}
+//		liste_des_fifos = new ArrayList<>();
+//		liste_des_scripts_fifo = new ArrayList<>();
+//		
+//        for (int i = 0; i < taille_liste; i++){
+//			
+//			script_fifo = new String[] {"mkfifo",
+//					                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+//			                           };
+//			
+//			liste_des_fifos.add(String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i));
+//
+//			liste_des_scripts_fifo.add(script_fifo);
+//        }
+//        
+//        Process [] p0 = new Process [100];
+//		
+//		try {
+//			
+//			int i = 0;
+//			while(i < liste_des_scripts_fifo.size()){
+//				
+//				p0[i] = Runtime.getRuntime().exec(liste_des_scripts_fifo.get(i));
+//				System.out.println("\n**script_fifo**");
+//				System.out.println("\n** " + i);
+//				System.out.println(affcommande(liste_des_scripts_fifo.get(i)));
+//				p0[i].waitFor();
+//				i++;
+//
+//			}
+//			
+//			System.out.println("sortie le la boucle de mkfifo " + 0  + " > " + (i -1));
+//			for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+//				System.out.println("isAlive() p0[" + (j) + "] : " +  p0[j].isAlive());	
+//			}
+//		}
+//		catch (Exception e) {
+//			System.out.println("une exception !");
+//			
+//			e.printStackTrace();
+//		}
 	}  
 	
 	@Override
@@ -181,7 +181,7 @@ public class ModeleMP4_XDCAM extends ModeleImport{
 			concat_des_rush_du_plan = ram + String.format("/liste_%s.txt", numero_dossier);
     	}
     	else {
-    		concat_des_rush_du_plan = liste_des_fifos.get(0);
+    		concat_des_rush_du_plan = plan.getAbsolutePath();
     	}
 		
 		outfile = plan.getName();
@@ -411,96 +411,96 @@ public class ModeleMP4_XDCAM extends ModeleImport{
         	}	
 	}
 		
-	public void lire(){
-
-		liste_des_scripts_lecture = new ArrayList<>();
-
-		for (int i = 0; i < taille_liste; i++){
-
-//			script_lecture = new String[] {"ffmpeg",
-//			                    "-y",
-//			                    "-analyzeduration",
-//			                    "100M",
-//			                    "-probesize",
-//			                    "100M",
-//			                    "-i",
-//			                    String.format("%s", plan.getChunks().get(i)),
-//			                    "-c:v",
-//			                    "huffyuv",
-//			                    "-c:a",
-//			                    "pcm_s16le",
-//			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-//			                    };
-			
-			script_lecture = new String[] {"mencoder",
-	                "-oac",
-	                "pcm",
-	                "-ovc",
-	                "raw",
-	                "-vf",
-	                "scale=1440:1080",
-	                plan.getChunks().get(i).toString(),
-	                "-o",
-	                String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
-	                };	
-				
-
-			liste_des_scripts_lecture.add(script_lecture);
-
-		}
-
-    	
-		Process [] p1 = new Process [100];
-    	fluxErreurERR_LECTURE = new AfficheurFlux3[100];
-    	fluxInputSTD_LECTURE = new AfficheurFlux2[100];
-        
-    	Runnable lire_runnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-		          	int i = 0;
-
-					while(i < taille_liste){
-
-						System.out.println("\n**script_lecture**");
-						System.out.println("** " + i);
-						
-						p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
-						
-						System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
-						
-						fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[MENCODER ERR lecture] ", true, p1[i]);
-						fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[MENCODER STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
-
-			            new Thread(fluxErreurERR_LECTURE[i]).start();
-			            new Thread(fluxInputSTD_LECTURE[i]).start();
-			            
-			            System.out.println(String.format("Wait fo p1[%d]", i));
-		            	p1[i].waitFor();
-			         	            
-						i++;
-				    }
+//	public void lire(){
+//
+//		liste_des_scripts_lecture = new ArrayList<>();
+//
+//		for (int i = 0; i < taille_liste; i++){
+//
+////			script_lecture = new String[] {"ffmpeg",
+////			                    "-y",
+////			                    "-analyzeduration",
+////			                    "100M",
+////			                    "-probesize",
+////			                    "100M",
+////			                    "-i",
+////			                    String.format("%s", plan.getChunks().get(i)),
+////			                    "-c:v",
+////			                    "huffyuv",
+////			                    "-c:a",
+////			                    "pcm_s16le",
+////			                    String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+////			                    };
+//			
+//			script_lecture = new String[] {"mencoder",
+//	                "-oac",
+//	                "pcm",
+//	                "-ovc",
+//	                "raw",
+//	                "-vf",
+//	                "scale=1440:1080",
+//	                plan.getChunks().get(i).toString(),
+//	                "-o",
+//	                String.format("%s/fifo_%s_%d.avi", ram, plan.getName(), i)
+//	                };	
+//				
+//
+//			liste_des_scripts_lecture.add(script_lecture);
+//
+//		}
+//
+//    	
+//		Process [] p1 = new Process [100];
+//    	fluxErreurERR_LECTURE = new AfficheurFlux3[100];
+//    	fluxInputSTD_LECTURE = new AfficheurFlux2[100];
+//        
+//    	Runnable lire_runnable = new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				try {
+//		          	int i = 0;
+//
+//					while(i < taille_liste){
+//
+//						System.out.println("\n**script_lecture**");
+//						System.out.println("** " + i);
+//						
+//						p1[i] = Runtime.getRuntime().exec(liste_des_scripts_lecture.get(i));
+//						
+//						System.out.println(affcommande(liste_des_scripts_lecture.get(i)));
+//						
+//						fluxErreurERR_LECTURE[i] = new AfficheurFlux3(p1[i].getErrorStream(), "[MENCODER ERR lecture] ", true, p1[i]);
+//						fluxInputSTD_LECTURE[i] = new AfficheurFlux2(p1[i].getInputStream(), "[MENCODER STD lecture] ", false, p1[i], fluxErreurERR_LECTURE[i]);
+//
+//			            new Thread(fluxErreurERR_LECTURE[i]).start();
+//			            new Thread(fluxInputSTD_LECTURE[i]).start();
+//			            
+//			            System.out.println(String.format("Wait fo p1[%d]", i));
+//		            	p1[i].waitFor();
+//			         	            
+//						i++;
+//				    }
+////					
+////					System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
+////					for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
+////						System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
+////						fluxErreurERR_LECTURE[j].close();
+////					}
+////							
+//				}
+//				catch (Exception e) {
+//					System.out.println("une exception !");
 //					
-//					System.out.println("sortie le la boucle de lecture " + 0  + " > " + (i -1));
-//					for (int j = 0;j < liste_des_scripts_fifo.size(); j++){
-//						System.out.println("isAlive() p1[" + (j) + "] : " +  p1[j].isAlive());	
-//						fluxErreurERR_LECTURE[j].close();
-//					}
-//							
-				}
-				catch (Exception e) {
-					System.out.println("une exception !");
-					
-					e.printStackTrace();
-				}
-			}
-    	};
-    	Thread t_lire = new Thread(lire_runnable);
-		//t_lire.setPriority(Thread.MAX_PRIORITY);
-		t_lire.start();    	
-
-	}
+//					e.printStackTrace();
+//				}
+//			}
+//    	};
+//    	Thread t_lire = new Thread(lire_runnable);
+//		//t_lire.setPriority(Thread.MAX_PRIORITY);
+//		t_lire.start();    	
+//
+//	}
 	
 //    public void close(){
 //		
