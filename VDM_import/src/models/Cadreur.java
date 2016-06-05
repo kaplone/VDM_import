@@ -23,6 +23,7 @@ public enum Cadreur {
 	CRUMEYROLLE ("???", false, null, null, 																  1200),
 	DE_KERDREL  ("MXF", true,  ModeleMXF_P2.class,                 "merging_MXF_08_SD.py", 				  1200),
 	DUCOING     ("MOV", false, ModeleMOV_ProRes.class, "", 			 									  1200),
+	DUGUE       ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py", 	  1200),
 	GIRARD      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
 	GAUTIER     ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py",	  1200),
 	GEOFFRIAU   ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  1200),
