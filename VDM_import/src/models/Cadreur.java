@@ -12,7 +12,7 @@ import models.imports.*;
 
 public enum Cadreur {
 	
-	ALBARET     ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_pas_P2_06.py", 			  1200),
+	ALBARET     ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_AVCHD_06_SD_prog.py", 			  1200),
 	AMOUROUX    ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 1200),
 	ARMATOL     ("MP4", false, ModeleMP4_XDCAM.class ,             "merging_MP4_06_SD_prog.py", 	      1200),
 	BATMAN      ("MXF", true,  null              ,                 "merging_MXF_08_SD.py", 			 	  1200),
@@ -32,7 +32,7 @@ public enum Cadreur {
 	HUET        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  1200),
 	HUGUES      ("MOV", false, ModeleMOV_ProRes.class, "", 												  1200),
 	LEUX        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  1200),
-	LE_YOUDEC   ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_pas_P2_06.py", 			  1200),
+	LE_YOUDEC   ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_AVCHD_06_SD_prog", 			  1200),
 	LOPACKI     ("MTS", true,  ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_212_deint.py", 	  1200),
 	MAS         ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  3100),
 	MERCHADOU   ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
@@ -48,9 +48,11 @@ public enum Cadreur {
 	RICO        ("M2T", false, ModeleM2T_mencoder_desplit.class,  "merging_M2T_05_SD_prog_rico.py", 	  1200),
 	RONCHAUD    ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
 	RUGGIU      ("MOV", false, ModeleMOV_XDCAM.class,              "merging_MOV_05_SD_prog.py", 		  1200),
+	ULYSSE      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
 	VARLET      ("MXF", true,  null,                               "merging_MXF_08_SD.py", 				  1200),
 	VERNIER     ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  1200),
-	VIALATTE    ("M2T", false, ModeleM2T_mencoder_desplit.class,  "merging_M2T_05_SD_prog_rico.py", 	  1200)
+	VIALATTE    ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py", 	  1200),
+	WOJ         ("MOV", false, ModeleMOV_XDCAM.class,               "merging_MOV_05_SD_prog.py", 	      1200)
 	;
 	
 	private String extension;

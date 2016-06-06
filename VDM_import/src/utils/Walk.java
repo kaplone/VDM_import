@@ -130,7 +130,7 @@ public class Walk {
 		public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
 				throws IOException {
 			
-			if(path.toString().toUpperCase().endsWith(extension)){
+			if(path.toString().toUpperCase().endsWith(extension) && ! path.toString().startsWith("._")){
 				
 				System.out.println("walk trouvé " + path);
 				
