@@ -46,7 +46,7 @@ public enum Cadreur {
 	PICHON      ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 1200),
 	QUESADA     ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 1200),
 	RICO        ("M2T", false, ModeleM2T_mencoder_desplit.class,  "merging_M2T_05_SD_prog_rico.py", 	  1200),
-	RONCHAUD    ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
+	RONCHAUD    ("MP4", false, ModeleMP4_XDCAM_50.class,              "merging_MP4_06_SD_prog.py", 		  3100),
 	RUGGIU      ("MOV", false, ModeleMOV_XDCAM.class,              "merging_MOV_05_SD_prog.py", 		  1200),
 	ULYSSE      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  1200),
 	VARLET      ("MXF", true,  null,                               "merging_MXF_08_SD.py", 				  1200),
