@@ -37,8 +37,8 @@ public class ModeleMOV_XDCAM extends ModeleImport{
 		
 		try {
 			fw = new FileWriter(txt);
-			for (String f : liste_des_fifos){
-				fw.write(String.format("file '%s'\n", f ));
+			for (Rush f : plan.getChunks()){
+				fw.write(String.format("file '%s'\n", f.getAbsolutePath() ));
 			}
 			fw.close();
 		}
