@@ -2,7 +2,7 @@ package models.imports;
 
 import java.io.File;
 
-
+import models.BatchElement;
 import models.Cadreur;
 import utils.AfficheurFlux;
 
@@ -69,5 +69,12 @@ public class Import_with_python extends ModeleImport{
 			s += com[i];
 		}
 		return s;
+	}
+
+	@Override
+	public void import_rushs(BatchElement element) {
+		
+		import_rushs(element.getDossier(), element.getCadreur(), element.isMulti());
+		
 	}
 }

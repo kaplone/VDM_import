@@ -20,8 +20,6 @@ import utils.Messages;
 public class ModeleMTS_ffmpeg_desplit extends ModeleImport{
 	
 	private AfficheurFlux fluxErreurERR_REMUX;
-	//private AfficheurFlux2 fluxInputSTD_LECTURE;
-	//private AfficheurFlux3 fluxErreurERR_LECTURE;
 	private AfficheurFlux fluxErreurERR_LECTURE;
 
 	@Override
@@ -126,7 +124,7 @@ public class ModeleMTS_ffmpeg_desplit extends ModeleImport{
 
 		concat_des_rush_du_plan = String.format("%s/fifo_%s.avi", ram, plan.getName());
 		
-		outfile = plan.getName();
+		outfile = plan.getRename();
     	
     	script_remux = new String[] {"ffmpeg",
                 "-y",	
@@ -206,20 +204,6 @@ public class ModeleMTS_ffmpeg_desplit extends ModeleImport{
                 String.format("%s/fifo_%s.avi", ram, plan.getName())
                 };
 
-//		script_lecture = new String[] {"mencoder",
-//                "-oac",
-//                "pcm",
-//                "-ovc",
-//                "lavc",
-//                "-lavcopts",
-//                "vcodec=huffyuv:format=422p",
-//                "-vf",
-//                "scale=1920:1080",
-//                source,
-//                "-o",
-//                String.format("%s/fifo_%s.avi", ram, plan.getName())
-//                };	
-		
 		Runnable lire_runnable = new Runnable() {
 
 			@Override
@@ -232,13 +216,6 @@ public class ModeleMTS_ffmpeg_desplit extends ModeleImport{
 		    		Process p1 = Runtime.getRuntime().exec(script_lecture);
 					
 					System.out.println(affcommande(script_lecture));
-		            
-					
-//					fluxErreurERR_LECTURE = new AfficheurFlux3(p1.getErrorStream(), "[FFMPEG ERR lecture] ", false, p1);
-//					fluxInputSTD_LECTURE = new AfficheurFlux2(p1.getInputStream(), "[FFMPEG STD lecture] ", false, p1, fluxErreurERR_LECTURE);
-//					
-//		            new Thread(fluxInputSTD_LECTURE).start();
-//		            new Thread(fluxErreurERR_LECTURE).start();
 		            
 		            fluxErreurERR_LECTURE = new AfficheurFlux(p1.getErrorStream(), "[FFMPEG ERR lecture] ", false, p1);
 		            new Thread(fluxErreurERR_LECTURE).start();

@@ -30,7 +30,7 @@ public class AfficheurFlux implements Runnable {
         String ligne = "";
         try {
 
-            while (! (ligne = br.readLine()).contains("muxing overhead:")) {
+            while (br != null && ! (ligne = br.readLine()).contains("muxing overhead:")) {
             	if (aff){
             		System.out.println(pre + ligne);
             	}    
@@ -43,7 +43,7 @@ public class AfficheurFlux implements Runnable {
             }
             
             
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }

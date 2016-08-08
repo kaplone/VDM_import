@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.Messages;
+
 public class Rush extends File{
 	
 	/**
@@ -19,6 +21,8 @@ public class Rush extends File{
 	private String debut_str;
 	private String duree_str;
 	private List<Rush> chunks;
+	
+	private static int compteur = 0;
 
 	public Rush(String pathname) {
 		super(pathname);
@@ -105,6 +109,25 @@ public class Rush extends File{
 
 	public void setDuree_str(String duree_str) {
 		this.duree_str = duree_str;
+	}
+	
+	public String getRename(){
+		
+		String suite = this.getPath().split(String.format("%s/", Messages.getPlan()))[1];
+		
+		String extented_name = "";
+		
+		if (suite.contains("/PRIVATE/AVCHD/BDMV/STREAM/")){
+			extented_name = String.format("%s_%s", suite.split("/PRIVATE/AVCHD/BDMV/STREAM/")[0].replace("/", "_"), this.getName());
+		}
+		else if (suite.contains("/AVCHD/BDMV/STREAM/")){
+			extented_name = String.format("%s_%s", suite.split("/AVCHD/BDMV/STREAM/")[0].replace("/", "_"), this.getName());
+		}
+		else {
+			extented_name = String.format("%05d_%s", compteur ++, this.getName());
+		}
+		
+		return extented_name;
 	}
 	
 	

@@ -15,15 +15,15 @@ public enum Cadreur {
 	ALBARET     ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_AVCHD_06_SD_prog.py", 	  6100),
 	AMOUROUX    ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	ARMATOL     ("MP4", false, ModeleMP4_XDCAM.class ,             "merging_MP4_06_SD_prog.py", 	      6100),
-	BATMAN      ("MXF", false,  null              ,                 "merging_MXF_08_SD.py", 			 	  6100),
-	BAUDON      ("MP4", true, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
+	BATMAN      ("MXF", false,  null              ,                 "merging_MXF_09_SD.py", 			  6100),
+	BAUDON      ("MP4", true, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		 	  6100),
 	BENSEMHOUN  ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
 	BIGEAULT    ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
-	CHARLES     ("MXF", true,  null              ,                 "merging_MXF_08_SD.py", 			 	  6100),
+	CHARLES     ("MXF", true,  null              ,                 "merging_MXF_09_SD.py", 			 	  6100),
 	BROCCHI     ("M2T", false,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	CRUMEYROLLE ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
 	DE_KERDREL_MTS ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
-	DE_KERDREL  ("MXF", true,  ModeleMXF_P2.class,                 "merging_MXF_08_SD.py", 				  6100),
+	DE_KERDREL  ("MXF", true,  ModeleMXF_P2.class,                 "merging_MXF_09_SD.py", 				  6100),
 	DEBERGUE    ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_debergue.py",  6100),
 	DUCOING     ("MOV", false, ModeleMOV_ProRes.class, "", 			 									  6100),
 	DUGUE       ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py", 	  6100),
@@ -47,7 +47,7 @@ public enum Cadreur {
 	MOREL       ("MP4", true,  ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_deint.py", 		  6100),
 	PARADIS_chunk     ("M2T", true,  ModeleM2T_mencoder_desplit.class, "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	PARADIS_full      ("M2T", true,  ModeleM2T_mencoder_nodesplit.class, "merging_M2T_05_SD_NO_DESPLIT_deint.py",	  6100),
-	PEIGNARD    ("MXF", true,  null,                               "merging_MXF_08_SD.py", 				  6100),
+	PEIGNARD    ("MXF", true,  null,                               "merging_MXF_09_SD.py", 				  6100),
 	PICHON      ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	QUESADA     ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	RICO        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
@@ -57,10 +57,10 @@ public enum Cadreur {
 	RONCHAUD_MVI("MP4", false, ModeleMP4_XDCAM_50.class,           "merging_MP4_MVI_06_SD.py",   		  6100),
 	RUGGIU      ("MOV", true, ModeleMOV_XDCAM.class,               "merging_MOV_05_SD_deint.py",		  6100),
 	ULYSSE      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
-	VARLET      ("MXF", true,  null,                               "merging_MXF_08_SD.py", 				  6100),
+	VARLET      ("MXF", true,  null,                               "merging_MXF_09_SD.py", 				  6100),
 	VERNIER     ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
 	VIALATTE    ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py", 	  6100),
-	WOJ         ("MOV", false, ModeleMOV_XDCAM.class,               "merging_MOV_05_SD_prog.py", 	      6100)
+	WOJ         ("MOV", false, ModeleMOV_XDCAM.class,              "merging_MOV_05_SD_prog.py", 	      6100)
 	;
 	
 	private String extension;
