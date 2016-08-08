@@ -12,20 +12,20 @@ import models.imports.*;
 
 public enum Cadreur {
 	
-	ALBARET     ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_AVCHD_06_SD_prog.py", 	  6100),
+	ALBARET     ("MXF", false, null,                               "merging_MXF_AVCHD_06_SD_prog.py", 	  6100),
 	AMOUROUX    ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	ARMATOL     ("MP4", false, ModeleMP4_XDCAM.class ,             "merging_MP4_06_SD_prog.py", 	      6100),
-	BATMAN      ("MXF", false,  null              ,                 "merging_MXF_09_SD.py", 			  6100),
-	BAUDON      ("MP4", true, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		 	  6100),
+	BATMAN      ("MXF", false,  null              ,                "merging_MXF_09_SD.py", 			 	  6100),
+	BAUDON      ("MP4", true, ModeleMP4_XDCAM.class,               "merging_MP4_06_SD_prog.py", 		  6100),
 	BENSEMHOUN  ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
 	BIGEAULT    ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
 	CHARLES     ("MXF", true,  null              ,                 "merging_MXF_09_SD.py", 			 	  6100),
-	BROCCHI     ("M2T", false,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
+	BROCCHI     ("M2T", false,  ModeleM2T_mencoder_desplit.class,  "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	CRUMEYROLLE ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
-	DE_KERDREL_MTS ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
-	DE_KERDREL  ("MXF", true,  ModeleMXF_P2.class,                 "merging_MXF_09_SD.py", 				  6100),
+	DE_KERDREL_MTS ("MTS", false, ModeleMTS_ffmpeg_desplit.class,  "merging_MTS_05_SD_prog.py", 		  6100),
+	DE_KERDREL  ("MXF", true,  null,             			       "merging_MXF_09_SD.py", 				  6100),
 	DEBERGUE    ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_debergue.py",  6100),
-	DUCOING     ("MOV", false, ModeleMOV_ProRes.class, "", 			 									  6100),
+	DUCOING     ("MOV", false, ModeleMOV_ProRes.class, 			   null,								  6100),
 	DUGUE       ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py", 	  6100),
 	GIRARD      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
 	GAUTIER     ("M2T", false, ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_prog_rico.py",	  6100),
@@ -37,7 +37,7 @@ public enum Cadreur {
 	HUGUES      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
 	LECLERC     ("MP4", false, ModeleMP4_XDCAM.class ,             "merging_MP4_06_SD_prog.py", 	      6100),
 	LEUX        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
-	LE_YOUDEC   ("MXF", false, ModeleMXF_XDCAM.class,              "merging_MXF_AVCHD_06_SD_prog.py",     6100),
+	LE_YOUDEC   ("MXF", false, null,              				   "merging_MXF_AVCHD_06_SD_prog.py",     6100),
 	LOPACKI     ("MTS", true,  ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_212_deint.py", 	  6100),
 	MAS         ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
 	MERCHADOU   ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
@@ -51,11 +51,11 @@ public enum Cadreur {
 	PICHON      ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	QUESADA     ("M2T", true,  ModeleM2T_mencoder_desplit.class,   "merging_M2T_05_SD_deint_amouroux.py", 6100),
 	RICO        ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
-	ROCHETA    ("MXF", false, ModeleMXF_XDCAM.class,               "merging_MXF_AVCHD_06_SD_prog", 		  6100),
+	ROCHETA     ("MXF", false, null,				               "merging_MXF_AVCHD_06_SD_prog", 		  6100), //ModeleMXF_XDCAM.class
 	RONCHAUD_25 ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
-	RONCHAUD_50 ("MP4", false, ModeleMP4_XDCAM_50.class,           "merging_MP4_06_SD_prog.py", 		  6100),
-	RONCHAUD_MVI("MP4", false, ModeleMP4_XDCAM_50.class,           "merging_MP4_MVI_06_SD.py",   		  6100),
-	RUGGIU      ("MOV", true, ModeleMOV_XDCAM.class,               "merging_MOV_05_SD_deint.py",		  6100),
+	RONCHAUD_50 ("MP4", false, ModeleMP4_XDCAM_50.class,           null,						 		  6100), //merging_MP4_06_SD_prog.py
+	RONCHAUD_MVI("MP4", false, ModeleMP4_XDCAM_50.class,           null,  						 		  6100), //merging_MP4_06_SD_prog.py
+	RUGGIU      ("MOV", true,  ModeleMOV_XDCAM.class,              "merging_MOV_05_SD_deint.py",		  6100), //merging_MOV_05_SD_deint.py
 	ULYSSE      ("MP4", false, ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  6100),
 	VARLET      ("MXF", true,  null,                               "merging_MXF_09_SD.py", 				  6100),
 	VERNIER     ("MTS", false, ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  6100),
@@ -109,7 +109,8 @@ public enum Cadreur {
 	}
 	
 	public String getPython_file(){
-		return currentUsersHomeDir + File.separator + "encodage" + File.separator + python_file;
+		
+		return python_file == null ? null : currentUsersHomeDir + File.separator + "encodage" + File.separator + python_file;
 	}
 
 	public static ObservableList<String> getExtensions () {

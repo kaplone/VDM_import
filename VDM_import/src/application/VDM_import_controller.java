@@ -165,6 +165,20 @@ public class VDM_import_controller implements Initializable{
     	
     	MediaInfo.getInfos(sample_choicebox.getValue(), resume_vbox);
     }
+    
+    protected void boutons_actifs(){
+    	
+    	modele = null;	
+		importer_python_button.setStyle("-fx-background-color:  lightgrey");
+		importer_java_button.setStyle("-fx-background-color:  lightgrey");
+		importer_java_n_button.setStyle("-fx-background-color:  lightgrey");
+		importer_button.setDisable(true);
+		ajouter_liste_button.setDisable(true);
+    	
+    	importer_python_button.setDisable(cadreur_choicebox.getValue().getPython_file() == null);
+    	importer_java_button.setDisable(cadreur_choicebox.getValue().getModele_import() == null);
+    	importer_java_n_button.setDisable(cadreur_choicebox.getValue().getModele_import() == null);
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -184,12 +198,12 @@ public class VDM_import_controller implements Initializable{
 		cadreur_choicebox.setOnAction(a -> {
 			deint_checkbox.setSelected(cadreur_choicebox.getValue().isDeint());
 			extension_choicebox.getSelectionModel().select(cadreur_choicebox.getValue().getExtension());
+			boutons_actifs();
 			
 			try {
 				peupler_samples();
 			}
-			catch (NullPointerException npe){
-				
+			catch (NullPointerException npe){	
 			}
 
 		});
@@ -220,25 +234,25 @@ public class VDM_import_controller implements Initializable{
 		importer_python_button.setOnAction(a -> {
 			modele = "python";
 			importer_python_button.setStyle("-fx-background-color:  limegreen");
-			importer_java_button.setStyle("-fx-background-color:  orange");
-			importer_java_n_button.setStyle("-fx-background-color:  orange");
+			importer_java_button.setStyle("-fx-background-color:  lightgrey");
+			importer_java_n_button.setStyle("-fx-background-color:  lightgrey");
 			importer_button.setDisable(false);
 			ajouter_liste_button.setDisable(false);
 		});
 		
 		importer_java_button.setOnAction(a -> {
 			modele = "java_1";
-			importer_python_button.setStyle("-fx-background-color:  orange");
+			importer_python_button.setStyle("-fx-background-color:  lightgrey");
 			importer_java_button.setStyle("-fx-background-color:  limegreen");
-			importer_java_n_button.setStyle("-fx-background-color:  orange");
+			importer_java_n_button.setStyle("-fx-background-color:  lightgrey");
 			importer_button.setDisable(false);
 			ajouter_liste_button.setDisable(false);
 		});
 		
 		importer_java_n_button.setOnAction(a -> {
 			modele = "java_n";
-			importer_python_button.setStyle("-fx-background-color:  orange");
-			importer_java_button.setStyle("-fx-background-color:  orange");
+			importer_python_button.setStyle("-fx-background-color:  lightgrey");
+			importer_java_button.setStyle("-fx-background-color:  lightgrey");
 			importer_java_n_button.setStyle("-fx-background-color:  limegreen");
 			importer_button.setDisable(false);
 			ajouter_liste_button.setDisable(false);
