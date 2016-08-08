@@ -8,22 +8,29 @@
 
 <BorderPane fx:id="borderPane" prefHeight="757.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VDM_import_controller">
 <center><VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-<children><HBox alignment="CENTER" prefHeight="89.0" prefWidth="1217.0" spacing="100.0">
-<children><Button fx:id="dossier_source_button" mnemonicParsing="false" prefHeight="45.0" prefWidth="390.0" text="Dossier Source" />
+<children><HBox alignment="CENTER" prefHeight="89.0" prefWidth="1217.0" spacing="40.0">
+<children><Button fx:id="dossier_source_button" mnemonicParsing="false" prefHeight="45.0" prefWidth="292.0" text="Dossier Source" />
 <VBox alignment="CENTER">
-<children><Label text="Cadreur" /><ChoiceBox fx:id="cadreur_choicebox" prefWidth="150.0" />
+<children><Label text="Cadreur" /><ChoiceBox fx:id="cadreur_choicebox" prefHeight="25.0" prefWidth="199.0" />
 </children>
 </VBox>
 <VBox alignment="CENTER">
-<children><Label text="Extension" /><ChoiceBox fx:id="extension_choicebox" prefWidth="150.0" />
+<children><Label text="Extension" /><ChoiceBox fx:id="extension_choicebox" prefHeight="25.0" prefWidth="92.0" />
 </children>
-</VBox>
+</VBox><VBox prefHeight="53.0" prefWidth="338.0" spacing="10.0">
+<children><CheckBox fx:id="deint_checkbox" mnemonicParsing="false" text="Désentrelacer" /><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+<children><Label text="Ecart minimum (millisecondes) :" wrapText="true" /><TextField fx:id="ecart_max" prefHeight="25.0" prefWidth="71.0" promptText="1000" /><Button fx:id="ecart_ok_button" mnemonicParsing="false" text="ok" />
+</children></HBox>
+</children>
+<HBox.margin>
+<Insets bottom="10.0" top="10.0" />
+</HBox.margin></VBox>
 </children></HBox><HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
 <children>
 <VBox>
 <children><Label text="Sample :" /><ChoiceBox fx:id="sample_choicebox" prefHeight="25.0" prefWidth="842.0" />
 </children>
-</VBox><CheckBox fx:id="deint_checkbox" mnemonicParsing="false" text="Désentrelacer" />
+</VBox>
 </children></HBox><HBox prefHeight="550.0" prefWidth="1277.0" spacing="10.0">
 <children><VBox prefHeight="545.0" prefWidth="1166.0">
 <children><ImageView fx:id="imageview" fitHeight="478.0" fitWidth="1014.0" pickOnBounds="true" preserveRatio="true" /><Slider fx:id="mediaview_slider" prefHeight="125.0" prefWidth="1152.0" />

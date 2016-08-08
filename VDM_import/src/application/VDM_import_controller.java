@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.lang.Thread.State;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -29,6 +33,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import models.Cadreur;
 import models.imports.ModeleImport;
+//import utils.AutoCompletion;
 import utils.Import_java;
 import utils.Import_python;
 import utils.MediaInfo;
@@ -65,6 +70,10 @@ public class VDM_import_controller implements Initializable{
 	private Button aff_liste_button;
 	@FXML
 	private Button ajouter_liste_button;
+	@FXML
+	private Button ecart_ok_button;
+	@FXML
+	private TextField ecart_max;
 	
 	private Image im;
 	private File repPreview;
@@ -186,6 +195,13 @@ public class VDM_import_controller implements Initializable{
 		this.location = location;
 		this.resources = resources;
 		
+		ObservableList<String> liste_ext = FXCollections.observableArrayList();
+		liste_ext.addAll(new HashSet(Arrays.asList(Cadreur.values()).stream()
+				                                                    .map(a-> a.getExtension())
+				                                                    .collect(Collectors.toList())));
+		extension_choicebox.setItems(liste_ext);	
+		extension_choicebox.setDisable(true);
+		
 		modele = null;
 		importer_button.setDisable(true);
 		ajouter_liste_button.setDisable(true);
@@ -278,6 +294,27 @@ public class VDM_import_controller implements Initializable{
 		});
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());
+		
+		
+		ecart_max.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue){
+				
+				int max = 0;
+				
+				try {
+					max = (Integer.parseInt(ecart_max.getText()));
+				}
+				catch(NumberFormatException nfe){
+					ecart_max.setText("1000");
+				}
+				
+				System.out.println(max);
+			}
+		});
+		
+		ecart
 	}
 	
 	public static URL getLocation(){
