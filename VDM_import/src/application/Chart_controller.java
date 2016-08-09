@@ -19,6 +19,7 @@ import models.Cadreur;
 import models.Parties;
 import models.Rush;
 import utils.DateAxis;
+import utils.Messages;
 
 public class Chart_controller implements Initializable{
 	
@@ -64,7 +65,7 @@ public class Chart_controller implements Initializable{
         		
         		// cas général des bouts consécutifs dans une partie
         		//if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < 1200){
-        		if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < cadreur.getEcart_minimum()){
+        		if (partie && Math.abs(Duration.between(precedent.getDebut().plus(precedent.getDuree()), a.getDebut()).toMillis()) < Messages.getEcart_min()){
         			
         			System.out.println("cas général des bouts consécutifs dans une partie");
         			
@@ -166,7 +167,7 @@ public class Chart_controller implements Initializable{
 		yAxis = new NumberAxis();
 		lineChart = new LineChart<>(dateAxis, yAxis);
         lineChart.getData().addAll(series);
-		lineChart.setTitle(String.format("Bilan tournage %s (%s)", plan, cadreur));
+		lineChart.setTitle(String.format("Bilan tournage %s (%s) [%d millisecondes]", plan, cadreur, Messages.getEcart_min()));
 		lineChart.setAnimated(false);
 		
 		scene  = new Scene(lineChart,1920,500);

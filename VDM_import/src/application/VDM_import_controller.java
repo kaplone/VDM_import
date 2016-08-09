@@ -214,6 +214,10 @@ public class VDM_import_controller implements Initializable{
 		cadreur_choicebox.setOnAction(a -> {
 			deint_checkbox.setSelected(cadreur_choicebox.getValue().isDeint());
 			extension_choicebox.getSelectionModel().select(cadreur_choicebox.getValue().getExtension());
+			ecart_max.setText(String.format("%d", cadreur_choicebox.getValue().getEcart_minimum()));
+			
+			Messages.setEcart_min(cadreur_choicebox.getValue().getEcart_minimum());
+			
 			boutons_actifs();
 			
 			try {
@@ -294,27 +298,38 @@ public class VDM_import_controller implements Initializable{
 		});
 		
 		aff_liste_button.setOnAction(a -> batch.afficher());
+
 		
-		
+		ecart_max.setText("1000");
+	
 		ecart_max.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue){
-				
-				int max = 0;
-				
-				try {
-					max = (Integer.parseInt(ecart_max.getText()));
-				}
-				catch(NumberFormatException nfe){
-					ecart_max.setText("1000");
-				}
-				
-				System.out.println(max);
+				ecart_max.setStyle("-fx-background-color:  white");
+				//process_ecart();
 			}
 		});
 		
-		ecart
+		ecart_ok_button.setOnAction(a-> process_ecart());
+	}
+	
+	protected void process_ecart(){
+		
+		int max = 0;
+		
+		try {
+			max = (Integer.parseInt(ecart_max.getText()));
+			
+		}
+		catch(NumberFormatException nfe){
+			ecart_max.setText("1000");
+			ecart_max.setStyle("-fx-background-color:  lightcoral");
+		}
+		
+		Messages.setEcart_min(max);
+		System.out.println(max);
+		Walk.dessine_chart(Messages.getHomeFolder());
 	}
 	
 	public static URL getLocation(){

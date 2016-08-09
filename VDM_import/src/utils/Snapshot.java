@@ -16,7 +16,7 @@ public class Snapshot {
         WritableImage image = new WritableImage(1920, 500);
         image = scene.snapshot(image);
 
-        File file = new File(String.format("/mnt/F/VDM 2016/rapports_CADREURS/%s_%s.png", plan, cadreur));
+        File file = new File(String.format("/mnt/F/VDM 2016/rapports_CADREURS/%s_%s_%dms.png", plan, cadreur, Messages.getEcart_min()));
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);

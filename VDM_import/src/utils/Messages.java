@@ -1,5 +1,6 @@
 package utils;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import models.Cadreur;
@@ -11,7 +12,10 @@ public class Messages {
 	private static String duration;
 	private static Cadreur cadreur;
 	private static List<Rush> listeDesPlans;
+	private static List<Rush> listeDesRushs;
 	private static String plan;
+	private static int ecart_min;
+	private static Path homeFolder;
 	
 	
 	public static String getTimestamp() {
@@ -45,6 +49,24 @@ public class Messages {
 	}
 	public static void setPlan(String plan) {
 		Messages.plan = plan;
+	}
+	public static int getEcart_min() {
+		return ecart_min;
+	}
+	public static void setEcart_min(int ecart_min) {
+		Messages.ecart_min = ecart_min;
+	}
+	public static List<Rush> getListeDesRushs() {
+		return listeDesRushs;
+	}
+	public static void setListeDesRushs(List<Rush> listeDesRushs) {
+		Messages.listeDesRushs = listeDesRushs;
+	}
+	public static Path getHomeFolder() {
+		return homeFolder;
+	}
+	public static void setHomeFolder(Path homeFolder) {
+		Messages.homeFolder = homeFolder;
 	}
 	
 	

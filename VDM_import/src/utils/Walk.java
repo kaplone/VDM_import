@@ -33,6 +33,7 @@ public class Walk {
 	
 	public static ObservableList<Path> walk(Path homeFolder, Cadreur cadreur_) throws FileNotFoundException {
 		
+		Messages.setHomeFolder(homeFolder);
 		
 		liste_rush = FXCollections.observableArrayList();
 		liste_path = FXCollections.observableArrayList();
@@ -70,23 +71,11 @@ public class Walk {
 		    	 TimeStamp.plage(a);
 		     });
 
-		 Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				Chart_controller chart = new Chart_controller();
-			    chart.initialize(VDM_import_controller.getLocation(), VDM_import_controller.getResources());
-			    
-				Scene chart_scene = chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);	
-				
-
-		        Snapshot.saveAsPng(chart_scene, Messages.getPlan(), cadreur.toString());
-		      //TODO n'affiche pas les graduations dans l'image exportée
-			}
-		 });
+		dessine_chart(homeFolder);
         
 		//liste_plans.clear();
-		liste_plans = RushToPlan.rushs_to_plan(liste_rush, cadreur.getEcart_minimum());
+		liste_plans = RushToPlan.rushs_to_plan(liste_rush, Messages.getEcart_min());
+		Messages.setListeDesPlans(liste_plans);
 		//liste_plans.stream().forEach(a -> System.out.println("== SORTIE DE RushToPlan.rushs_to_plan() == " + a));
 		
 		Messages.setListeDesPlans(liste_plans);
@@ -95,6 +84,20 @@ public class Walk {
 		
 	}
   
+	public static void dessine_chart(Path homeFolder){
+		
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				Chart_controller chart = new Chart_controller();
+			    chart.initialize(VDM_import_controller.getLocation(), VDM_import_controller.getResources());
+			    
+				Scene chart_scene = chart.bilan(homeFolder.getFileName().toString(), Messages.getCadreur(), liste_rush);
+		        Snapshot.saveAsPng(chart_scene, Messages.getPlan(), cadreur.toString());
+			}
+		 });
+	}
 	
 	static class FileSizeVisitor implements FileVisitor<Path> {
 
