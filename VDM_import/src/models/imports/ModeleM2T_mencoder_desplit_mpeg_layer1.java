@@ -17,7 +17,7 @@ import utils.AfficheurFlux2;
 import utils.AfficheurFlux3;
 import utils.Messages;
 
-public class ModeleM2T_mencoder_desplit extends ModeleImport{
+public class ModeleM2T_mencoder_desplit_mpeg_layer1 extends ModeleImport{
 	
 	private AfficheurFlux fluxErreurERR_REMUX;
 	private AfficheurFlux2 fluxInputSTD_LECTURE;
@@ -110,8 +110,8 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
                 "yuv420p",
                 "-aspect",
                 "16:9",
-                "-c:a",
-                "pcm_s16le",
+                "-b:a",
+                "384k",
                 "-c:v",
                 "mpeg2video",
                 "-q:v",
@@ -135,8 +135,8 @@ public class ModeleM2T_mencoder_desplit extends ModeleImport{
                 "yuv420p",
                 "-aspect",
                 "16:9",
-                "-c:a",
-                "pcm_s16le",
+                "-b:a",
+                "384k",
                 "-c:v",
                 "mpeg2video",
                 "-q:v",
