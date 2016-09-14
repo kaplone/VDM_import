@@ -18,7 +18,7 @@ public enum Cadreur {
 	BATMAN      	("MXF", false,  null              ,                	"merging_MXF_09_SD.py", 			 	  	6100),
 	BAUDON      	("MP4", true, 	ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  		6100),
 	BENSEMHOUN  	("MTS", false, 	ModeleMTS_ffmpeg_desplit.class,     "merging_MTS_05_SD_prog.py", 		  		6100),
-	BIGEAULT    	("MP4", false,	 ModeleMP4_XDCAM.class,             "merging_MP4_06_SD_prog.py", 		  		6100),
+	BIGEAULT    	("MP4", false,	ModeleMP4_XDCAM.class,             "merging_MP4_06_SD_prog.py", 		  		6100),
 	CHARLES     	("MXF", true,  	null              ,                 "merging_MXF_09_SD.py", 			 	  	6100),
 	BROCCHI     	("M2T", false,  ModeleM2T_mencoder_desplit.class,  	"merging_M2T_05_SD_deint_amouroux.py", 		6100),
 	CRUMEYROLLE 	("MP4", false, 	ModeleMP4_XDCAM.class,              "merging_MP4_06_SD_prog.py", 		  		6100),
